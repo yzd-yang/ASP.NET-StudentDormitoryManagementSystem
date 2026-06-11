@@ -1,0 +1,53 @@
+﻿<%@ Master Language="C#" CodeFile="MasterPage.master.cs" Inherits="student_MasterPage" %>
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title><asp:ContentPlaceHolder ID="title" runat="server">智慧宿舍</asp:ContentPlaceHolder></title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="/css/style.css" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="head" runat="server" />
+</head>
+<body>
+    <form id="form1" runat="server">
+
+        <header class="student-header glass-strong">
+            <div class="student-header-inner">
+                <div class="student-header-left">
+                    <span class="material-symbols-outlined" style="color: var(--primary); font-size: 28px;">apartment</span>
+                    <span class="student-header-title">智慧宿舍</span>
+                </div>
+                <div class="student-header-right">
+                    <span class="student-header-name"><%= Session["UserName"] ?? "同学" %></span>
+                    <asp:LinkButton ID="btnLogout" runat="server" OnClick="btnLogout_Click" CssClass="student-header-logout">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">logout</span>
+                    </asp:LinkButton>
+                </div>
+            </div>
+        </header>
+
+        <main class="student-main">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+        </main>
+
+        <nav class="student-tabbar glass-strong">
+            <a href="/student/home.aspx" class="student-tab-item <%= IsActive("home") %>">
+                <span class="material-symbols-outlined">home</span>
+                <span class="student-tab-label">首页</span>
+            </a>
+            <a href="/student/repair.aspx" class="student-tab-item <%= IsActive("repair") %>">
+                <span class="material-symbols-outlined">build</span>
+                <span class="student-tab-label">故障报修</span>
+            </a>
+            <a href="/student/profile.aspx" class="student-tab-item <%= IsActive("profile") %>">
+                <span class="material-symbols-outlined">person</span>
+                <span class="student-tab-label">我的</span>
+            </a>
+        </nav>
+
+    </form>
+</body>
+</html>

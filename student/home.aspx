@@ -1,0 +1,113 @@
+﻿<%@ Page Language="C#" MasterPageFile="~/student/MasterPage.master" AutoEventWireup="true" CodeFile="home.aspx.cs" Inherits="student_home" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="title" runat="server">我的宿舍 - 智慧宿舍</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="head" runat="server">
+    <link href="/css/student.css" rel="stylesheet" />
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+
+    <div class="hero-card">
+        <div class="hero-card-title">我的宿舍</div>
+        <div class="hero-card-value">北校区 3号楼 502-A室</div>
+        <div class="hero-card-subtitle">02号床位 · 四人间</div>
+    </div>
+
+    <div class="feature-grid">
+        <div class="feature-card" onclick="location.href='/student/repair.aspx'">
+            <div class="feature-card-icon green">
+                <span class="material-symbols-outlined">build</span>
+            </div>
+            <div>
+                <div class="feature-card-title">故障报修</div>
+                <div class="feature-card-desc">提交报修申请</div>
+            </div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-card-icon blue">
+                <span class="material-symbols-outlined">star</span>
+            </div>
+            <div>
+                <div class="feature-card-title">宿舍评分</div>
+                <div class="feature-card-desc">94分 · 优秀</div>
+            </div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-card-icon orange">
+                <span class="material-symbols-outlined">payments</span>
+            </div>
+            <div>
+                <div class="feature-card-title">住宿费</div>
+                <div class="feature-card-desc">已缴纳 ¥1,200</div>
+            </div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-card-icon purple">
+                <span class="material-symbols-outlined">event</span>
+            </div>
+            <div>
+                <div class="feature-card-title">宿舍预约</div>
+                <div class="feature-card-desc">预约维修时间</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">
+        <span class="material-symbols-outlined" style="color: var(--primary);">group</span>
+        我的室友
+    </div>
+
+    <div style="margin-bottom: 24px;">
+        <div class="roommate-card">
+            <div class="roommate-avatar">李</div>
+            <div class="roommate-info">
+                <div class="roommate-name">李小明</div>
+                <div class="roommate-detail">信息工程学院 · 计算机科学与技术 · 2023级</div>
+            </div>
+        </div>
+        <div class="roommate-card">
+            <div class="roommate-avatar">王</div>
+            <div class="roommate-info">
+                <div class="roommate-name">王小华</div>
+                <div class="roommate-detail">信息工程学院 · 软件工程 · 2023级</div>
+            </div>
+        </div>
+        <div class="roommate-card">
+            <div class="roommate-avatar">张</div>
+            <div class="roommate-info">
+                <div class="roommate-name">张小强</div>
+                <div class="roommate-detail">信息工程学院 · 网络工程 · 2023级</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">
+        <span class="material-symbols-outlined" style="color: var(--primary);">home_repair_service</span>
+        设施状态
+    </div>
+
+    <div class="facility-list">
+        <div class="facility-item">
+            <div class="facility-dot ok"></div>
+            <div class="facility-name">空调</div>
+            <div class="facility-status">正常</div>
+        </div>
+        <div class="facility-item">
+            <div class="facility-dot ok"></div>
+            <div class="facility-name">热水器</div>
+            <div class="facility-status">正常</div>
+        </div>
+        <div class="facility-item">
+            <div class="facility-dot warning"></div>
+            <div class="facility-name">照明</div>
+            <div class="facility-status">等待维修</div>
+        </div>
+        <div class="facility-item">
+            <div class="facility-dot ok"></div>
+            <div class="facility-name">校园网</div>
+            <div class="facility-status">正常</div>
+        </div>
+    </div>
+
+</asp:Content>

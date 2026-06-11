@@ -1,0 +1,103 @@
+﻿<%@ Master Language="C#" CodeFile="MasterPage.master.cs" Inherits="admin_MasterPage" %>
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><asp:ContentPlaceHolder ID="title" runat="server">SmartDorm - 管理后台</asp:ContentPlaceHolder></title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="/css/style.css" rel="stylesheet" />
+    <link href="/css/admin.css" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="head" runat="server" />
+</head>
+<body>
+    <form id="form1" runat="server">
+
+        <header class="admin-header glass-strong">
+            <div class="admin-header-inner">
+                <div class="admin-header-left">
+                    <button type="button" class="admin-sidebar-toggle" onclick="toggleSidebar()">
+                        <span class="material-symbols-outlined">menu</span>
+                    </button>
+                    <span class="admin-header-brand">SmartDorm</span>
+                </div>
+                <div class="admin-header-right">
+                    <button type="button" class="admin-header-btn">
+                        <span class="material-symbols-outlined">notifications</span>
+                        <span class="admin-header-badge"></span>
+                    </button>
+                    <div class="admin-header-user">
+                        <div class="admin-header-avatar">
+                            <span class="material-symbols-outlined">person</span>
+                        </div>
+                        <div class="admin-header-user-info">
+                            <span class="admin-header-user-name"><%= Session["AdminName"] ?? "管理员" %></span>
+                            <span class="admin-header-user-role"><%= Session["AdminRoleName"] ?? "系统管理员" %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <aside id="sidebar" class="admin-sidebar glass">
+            <div class="admin-sidebar-brand">
+                <div class="admin-sidebar-brand-icon">
+                    <span class="material-symbols-outlined">apartment</span>
+                </div>
+                <div>
+                    <div class="admin-sidebar-brand-title">管理门户</div>
+                    <div class="admin-sidebar-brand-subtitle">高校学生宿舍</div>
+                </div>
+            </div>
+
+            <nav class="admin-nav">
+                <a href="/admin/dashboard.aspx" class="admin-nav-item <%= IsActive("dashboard") %>">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    <span class="admin-nav-label">仪表盘</span>
+                </a>
+                <a href="/admin/allocation.aspx" class="admin-nav-item <%= IsActive("allocation") %>">
+                    <span class="material-symbols-outlined">bed</span>
+                    <span class="admin-nav-label">宿舍分配</span>
+                </a>
+                <a href="/admin/repair.aspx" class="admin-nav-item <%= IsActive("repair") %>">
+                    <span class="material-symbols-outlined">build</span>
+                    <span class="admin-nav-label">报修管理</span>
+                </a>
+                <a href="/admin/notice.aspx" class="admin-nav-item <%= IsActive("notice") %>">
+                    <span class="material-symbols-outlined">campaign</span>
+                    <span class="admin-nav-label">通知公告</span>
+                </a>
+                <a href="/admin/building.aspx" class="admin-nav-item <%= IsActive("building") %>">
+                    <span class="material-symbols-outlined">meeting_room</span>
+                    <span class="admin-nav-label">楼宇管理</span>
+                </a>
+            </nav>
+
+            <div class="admin-sidebar-footer">
+                <asp:LinkButton ID="btnLogout" runat="server" OnClick="btnLogout_Click" class="admin-nav-item admin-nav-logout">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="admin-nav-label">退出登录</span>
+                </asp:LinkButton>
+            </div>
+        </aside>
+
+        <div id="sidebarOverlay" class="admin-sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <main class="admin-main">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
+        </main>
+
+    </form>
+
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById('sidebar');
+            var overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        }
+    </script>
+</body>
+</html>

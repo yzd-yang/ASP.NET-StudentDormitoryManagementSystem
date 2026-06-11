@@ -1,0 +1,371 @@
+﻿/* ========== 学生端母版页样式 ========== */
+
+/* 顶部导航 */
+.student-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    z-index: 100;
+    border-bottom: 1px solid rgba(186, 202, 197, 0.3);
+}
+
+.student-header-inner {
+    max-width: 768px;
+    margin: 0 auto;
+    padding: 0 16px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.student-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.student-header-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--on-primary-container);
+}
+
+.student-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.student-header-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--on-surface-variant);
+}
+
+.student-header-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: var(--on-surface-variant);
+    transition: all 0.2s;
+}
+
+.student-header-logout:hover {
+    background: rgba(186, 26, 26, 0.1);
+    color: var(--error);
+}
+
+/* 主内容区域 */
+.student-main {
+    padding-top: 72px;
+    padding-bottom: 80px;
+    min-height: 100vh;
+    max-width: 768px;
+    margin: 0 auto;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+/* 底部 Tab 导航 */
+.student-tabbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    z-index: 100;
+    border-top: 1px solid rgba(186, 202, 197, 0.3);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.student-tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    color: var(--on-surface-variant);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.student-tab-item .material-symbols-outlined {
+    font-size: 24px;
+    transition: all 0.2s ease;
+}
+
+.student-tab-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.student-tab-item.active {
+    color: var(--primary);
+}
+
+.student-tab-item.active .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+
+.student-tab-item:hover {
+    background: rgba(73, 234, 206, 0.1);
+}
+
+/* ========== 学生端页面通用组件 ========== */
+
+/* Hero 卡片（宿舍信息） */
+.hero-card {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: var(--on-primary);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 32px rgba(73, 234, 206, 0.3);
+}
+
+.hero-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0.85;
+    margin-bottom: 8px;
+    letter-spacing: 0.1em;
+}
+
+.hero-card-value {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.hero-card-subtitle {
+    font-size: 14px;
+    opacity: 0.75;
+}
+
+/* 功能卡片网格 */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.feature-card {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.feature-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.feature-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.feature-card-icon.green {
+    background: rgba(73, 234, 206, 0.15);
+    color: var(--primary);
+}
+
+.feature-card-icon.blue {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.feature-card-icon.orange {
+    background: rgba(251, 192, 45, 0.1);
+    color: #b58900;
+}
+
+.feature-card-icon.purple {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+}
+
+.feature-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--on-surface);
+}
+
+.feature-card-desc {
+    font-size: 13px;
+    color: var(--on-surface-variant);
+}
+
+/* 区块标题 */
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--on-surface);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 室友卡片 */
+.roommate-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-md);
+    margin-bottom: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.roommate-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--on-primary);
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.roommate-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.roommate-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--on-surface);
+}
+
+.roommate-detail {
+    font-size: 13px;
+    color: var(--on-surface-variant);
+}
+
+/* 设施状态 */
+.facility-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.facility-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.facility-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.facility-dot.ok { background: var(--primary); }
+.facility-dot.warning { background: var(--status-pending); }
+.facility-dot.error { background: var(--error); }
+
+.facility-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--on-surface);
+}
+
+.facility-status {
+    font-size: 12px;
+    color: var(--on-surface-variant);
+    margin-left: auto;
+}
+
+/* 列表项 */
+.list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-md);
+    margin-bottom: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.list-item:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.list-item-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.list-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.list-item-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--on-surface);
+    margin-bottom: 2px;
+}
+
+.list-item-desc {
+    font-size: 13px;
+    color: var(--on-surface-variant);
+}
+
+/* 响应式 - 平板以上 */
+@media (min-width: 768px) {
+    .student-main {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+    
+    .feature-grid {
+        gap: 16px;
+    }
+}
