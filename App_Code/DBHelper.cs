@@ -57,7 +57,7 @@ public class DBHelper
         return cmd.ExecuteReader(CommandBehavior.CloseConnection);
     }
 
-    public static bool ExecuteTransaction(params (string sql, MySqlParameter[] param)[] commands)
+    public static bool ExecuteTransaction(string[] sqls, MySqlParameter[][] parameters)
     {
         using (MySqlConnection conn = GetConnection())
         {
@@ -65,10 +65,13 @@ public class DBHelper
             MySqlTransaction transaction = conn.BeginTransaction();
             try
             {
-                foreach (var (sql, param) in commands)
+                for (int i = 0; i < sqls.Length; i++)
                 {
-                    MySqlCommand cmd = new MySqlCommand(sql, conn, transaction);
-                    if (param != null) cmd.Parameters.AddRange(param);
+                    MySqlCommand cmd = new MySqlCommand(sqls[i], conn, transaction);
+                    if (parameters != null && parameters[i] != null)
+                    {
+                        cmd.Parameters.AddRange(parameters[i]);
+                    }
                     cmd.ExecuteNonQuery();
                 }
                 transaction.Commit();
