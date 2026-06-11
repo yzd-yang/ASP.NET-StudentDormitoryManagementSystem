@@ -62,7 +62,7 @@
                     </div>
                 </a>
                 <a href="/admin/allocation.aspx" class="btn btn-outline" style="justify-content: flex-start; padding: 16px 20px; border-radius: 16px;">
-                    <span class="material-symbols-outlined" style="color: var(--primary);">rule</span>
+                    <span class="material-symbols-outlined" style="color: var(--primary);">bed</span>
                     <div style="text-align: left;">
                         <div style="font-weight: 700;">宿舍分配管理</div>
                         <div style="font-size: 11px; color: var(--on-surface-variant);">管理学生宿舍分配</div>
