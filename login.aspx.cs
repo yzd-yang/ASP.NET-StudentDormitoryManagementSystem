@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Web;
 using System.Web.UI;
 
@@ -41,11 +42,38 @@ public partial class login : System.Web.UI.Page
             return;
         }
 
-        Session["UserId"] = 1;
-        Session["UserNo"] = userNo;
-        Session["UserName"] = "\u6D4B\u8BD5\u540C\u5B66";
-        Session["Role"] = "student";
-        Response.Redirect("/student/home.aspx");
+        DataTable dt = UserBLL.Login(userNo, password);
+        if (dt.Rows.Count == 0)
+        {
+            ShowError("\u5B66\u53F7/\u5DE5\u53F7\u6216\u5BC6\u7801\u9519\u8BEF");
+            return;
+        }
+
+        DataRow row = dt.Rows[0];
+        int userId = Convert.ToInt32(row["Id"]);
+        string name = row["Name"].ToString();
+        string role = row["Role"].ToString();
+
+        if (role == "student")
+        {
+            Session["UserId"] = userId;
+            Session["UserNo"] = userNo;
+            Session["UserName"] = name;
+            Session["Role"] = "student";
+            Response.Redirect("/student/home.aspx");
+        }
+        else
+        {
+            DataTable adminInfo = UserBLL.GetAdminById(userId);
+            string roleName = adminInfo.Rows.Count > 0 ? adminInfo.Rows[0]["RoleName"].ToString() : "\u7BA1\u7406\u5458";
+
+            Session["AdminId"] = userId;
+            Session["AdminNo"] = userNo;
+            Session["AdminName"] = name;
+            Session["AdminRoleName"] = roleName;
+            Session["Role"] = "admin";
+            Response.Redirect("/admin/dashboard.aspx");
+        }
     }
 
     private void ShowError(string msg)

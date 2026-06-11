@@ -47,7 +47,22 @@ public partial class register : System.Web.UI.Page
             return;
         }
 
-        Response.Redirect("login.aspx");
+        if (role == "student")
+        {
+            bool success = UserBLL.RegisterStudent(userNo, userNo, phone, password);
+            if (success)
+            {
+                Response.Redirect("login.aspx");
+            }
+            else
+            {
+                ShowError("\u5B66\u53F7\u5DF2\u5B58\u5728");
+            }
+        }
+        else
+        {
+            ShowError("\u8001\u5E08\u6CE8\u518C\u529F\u80FD\u6682\u672A\u5F00\u653E");
+        }
     }
 
     private void ShowError(string msg)

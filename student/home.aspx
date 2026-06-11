@@ -10,8 +10,8 @@
 
     <div class="hero-card">
         <div class="hero-card-title">我的宿舍</div>
-        <div class="hero-card-value">北校区 3号楼 502-A室</div>
-        <div class="hero-card-subtitle">02号床位 · 四人间</div>
+        <div class="hero-card-value"><asp:Literal ID="litDormInfo" runat="server" Text="暂未分配宿舍" /></div>
+        <div class="hero-card-subtitle"><asp:Literal ID="litBedInfo" runat="server" Text="请等待管理员分配" /></div>
     </div>
 
     <div class="feature-grid">
@@ -59,27 +59,23 @@
     </div>
 
     <div style="margin-bottom: 24px;">
-        <div class="roommate-card">
-            <div class="roommate-avatar">李</div>
-            <div class="roommate-info">
-                <div class="roommate-name">李小明</div>
-                <div class="roommate-detail">信息工程学院 · 计算机科学与技术 · 2023级</div>
+        <asp:Repeater ID="rptRoommates" runat="server">
+            <ItemTemplate>
+                <div class="roommate-card">
+                    <div class="roommate-avatar"><%# GetAvatarText(Eval("Name").ToString()) %></div>
+                    <div class="roommate-info">
+                        <div class="roommate-name"><%# Eval("Name") %></div>
+                        <div class="roommate-detail"><%# Eval("College") %> · <%# Eval("Major") %> · <%# Eval("Grade") %></div>
+                    </div>
+                </div>
+            </ItemTemplate>
+        </asp:Repeater>
+        <asp:Panel ID="pnlNoRoommate" runat="server" Visible="false">
+            <div style="text-align: center; padding: 24px; color: var(--on-surface-variant);">
+                <span class="material-symbols-outlined" style="font-size: 48px; opacity: 0.5;">group_off</span>
+                <p style="margin-top: 8px;">暂无室友信息</p>
             </div>
-        </div>
-        <div class="roommate-card">
-            <div class="roommate-avatar">王</div>
-            <div class="roommate-info">
-                <div class="roommate-name">王小华</div>
-                <div class="roommate-detail">信息工程学院 · 软件工程 · 2023级</div>
-            </div>
-        </div>
-        <div class="roommate-card">
-            <div class="roommate-avatar">张</div>
-            <div class="roommate-info">
-                <div class="roommate-name">张小强</div>
-                <div class="roommate-detail">信息工程学院 · 网络工程 · 2023级</div>
-            </div>
-        </div>
+        </asp:Panel>
     </div>
 
     <div class="section-title">
