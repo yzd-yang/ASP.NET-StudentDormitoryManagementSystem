@@ -1,0 +1,272 @@
+<!DOCTYPE html><html class="light" lang="zh-CN" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>选宿批次 - 智慧宿舍</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Google Fonts: Manrope -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary": "#596247",
+                    "tertiary-fixed-dim": "#cfc2d1",
+                    "secondary-fixed-dim": "#c1cbaa",
+                    "on-tertiary-fixed": "#201923",
+                    "surface": "#f4fafd",
+                    "surface-container-highest": "#dde4e6",
+                    "on-surface-variant": "#3b4a46",
+                    "background": "#f4fafd",
+                    "surface-container-low": "#eef5f7",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed": "#ecdeed",
+                    "secondary-container": "#dde7c5",
+                    "inverse-surface": "#2b3234",
+                    "inverse-primary": "#36dec2",
+                    "surface-tint": "#006b5c",
+                    "on-primary-container": "#006658",
+                    "on-secondary-fixed": "#161e09",
+                    "on-primary-fixed": "#00201b",
+                    "primary-container": "#49eace",
+                    "surface-bright": "#f4fafd",
+                    "primary": "#006b5c",
+                    "on-tertiary-container": "#605763",
+                    "on-secondary-fixed-variant": "#414a31",
+                    "tertiary": "#655b67",
+                    "surface-dim": "#d4dbdd",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-background": "#161d1f",
+                    "outline": "#6b7a76",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#dbcedd",
+                    "surface-container-high": "#e2e9ec",
+                    "inverse-on-surface": "#ebf2f4",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#5efade",
+                    "primary-fixed-dim": "#36dec2",
+                    "on-primary-fixed-variant": "#005045",
+                    "on-secondary-container": "#5f684d",
+                    "surface-container": "#e8eff1",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#dde7c5",
+                    "on-surface": "#161d1f",
+                    "error-container": "#ffdad6",
+                    "surface-variant": "#dde4e6",
+                    "outline-variant": "#bacac5",
+                    "on-tertiary-fixed-variant": "#4d444f",
+                    "error": "#ba1a1a",
+                    "custom-yellow-bg": "#FFF9E6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-desktop": "64px",
+                    "gutter": "24px",
+                    "xs": "4px",
+                    "md": "24px",
+                    "lg": "48px",
+                    "margin-mobile": "16px",
+                    "sm": "12px",
+                    "xl": "80px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Manrope"],
+                    "body-lg": ["Manrope"],
+                    "label-md": ["Manrope"],
+                    "headline-lg": ["Manrope"],
+                    "headline-xl": ["Manrope"],
+                    "headline-md": ["Manrope"],
+                    "headline-lg-mobile": ["Manrope"],
+                    "body-md": ["Manrope"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .mint-gradient-bg {
+            background: linear-gradient(135deg, #49EACE 0%, #F5FFDC 50%, #FEF0FF 100%);
+            background-attachment: fixed;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(73, 234, 206, 0.1);
+        }
+        .text-shadow-sm {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .tinted-shadow {
+            box-shadow: 0 10px 30px -5px rgba(73, 234, 206, 0.15);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-on-surface mint-gradient-bg">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-desktop h-20 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-base">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">选宿</span>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-2 hover:bg-primary-container/10 dark:hover:bg-primary-container/20 rounded-lg transition-all">
+<span class="material-symbols-outlined text-primary">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
+<img alt="学生个人头像" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg4n6rBinIr68K2zKOOAraQRmf6MODg1s9SrEXZ2x0v7R-Xtyrik2CyOQqluMe7OjG0q18_APUOncaeGdHs6UMhY5op9BEcC_XFSd2fVnWwoH9cT3B3eJ2yPeFd6OlAscBLSF7FMFb91vb6WbV6h4SivIxuu_wEucpYwFJSEeDbTBt0uzQIGhuQ-Sz_d7oKF2d_zG-SbMFRO4FtytUuhKzuit_t1PYudSiPz8rKn7Ha3SeKPqbR48KC2jpt3bkdpFGDcs-0exZCQ">
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-grow pt-32 pb-xl px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto w-full">
+<!-- Header Section -->
+<header class="mb-lg text-center md:text-left">
+<h1 class="font-headline-xl text-headline-xl text-primary mb-sm text-shadow-sm">选宿批次</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                当前没有已分配宿舍，请选择以下开放批次参与选宿。
+            </p>
+</header>
+<!-- Search/Filter Section -->
+<div class="mb-lg glass-card p-md rounded-xl">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-md items-end">
+<!-- Batch Name -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-on-surface-variant">批次名称</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors text-[20px]">search</span>
+<input class="w-full pl-12 pr-4 py-2 rounded-lg border-none bg-custom-yellow-bg ring-1 ring-outline/10 focus:ring-2 focus:ring-primary-container transition-all font-body-md" placeholder="搜索批次..." type="text">
+</div>
+</div>
+<!-- Building -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-on-surface-variant">楼栋</label>
+<select class="w-full px-4 py-2 rounded-lg border-none bg-custom-yellow-bg ring-1 ring-outline/10 focus:ring-2 focus:ring-primary-container transition-all font-body-md">
+<option>全部楼栋</option>
+<option>南区1号楼</option>
+<option>南区2号楼</option>
+<option>北区5号楼</option>
+</select>
+</div>
+<!-- Grade -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-on-surface-variant">适用学院</label>
+<select class="w-full px-4 py-2 rounded-lg border-none bg-custom-yellow-bg ring-1 ring-outline/10 focus:ring-2 focus:ring-primary-container transition-all font-body-md"><option>全部学院</option><option>信息工程学院</option><option>商学院</option><option>外国语学院</option></select>
+</div>
+<!-- Major -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-on-surface-variant">专业限定</label>
+<select class="w-full px-4 py-2 rounded-lg border-none bg-custom-yellow-bg ring-1 ring-outline/10 focus:ring-2 focus:ring-primary-container transition-all font-body-md">
+<option>不限专业</option>
+<option>计算机科学</option>
+<option>艺术设计</option>
+<option>机械工程</option>
+</select>
+</div>
+<!-- Status -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-on-surface-variant">状态</label>
+<select class="w-full px-4 py-2 rounded-lg border-none bg-custom-yellow-bg ring-1 ring-outline/10 focus:ring-2 focus:ring-primary-container transition-all font-body-md">
+<option>全部状态</option>
+<option>进行中</option>
+<option>即将开始</option>
+<option>已结束</option>
+</select>
+</div>
+<!-- Filter Button -->
+<div class="flex flex-col">
+<button class="w-full bg-[#49EACE] text-on-background font-label-md py-2 rounded-lg flex items-center justify-center gap-sm hover:brightness-105 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+                        筛选
+                    </button>
+</div>
+</div>
+</div>
+<!-- Bento-style Grid for Batch Cards -->
+<div class="glass-card rounded-xl overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-primary-container/10 border-b border-outline-variant/30">
+<th class="p-md font-label-md text-on-surface-variant">批次名称</th>
+<th class="p-md font-label-md text-on-surface-variant">楼栋</th>
+<th class="p-md font-label-md text-on-surface-variant">适用年级</th>
+<th class="p-md font-label-md text-on-surface-variant">专业限定</th>
+<th class="p-md font-label-md text-on-surface-variant">状态</th>
+<th class="p-md font-label-md text-on-surface-variant text-center">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-primary-container/5 transition-colors">
+<td class="p-md font-body-md text-on-surface font-bold">2024级新生第一批 (男生)</td>
+<td class="p-md font-body-md text-on-surface-variant">南区 1-5号楼</td>
+<td class="p-md font-body-md text-on-surface-variant">2024级</td>
+<td class="p-md font-body-md text-on-surface-variant">不限专业</td>
+<td class="p-md">
+<span class="bg-primary-container text-on-background font-label-md px-3 py-1 rounded-full text-sm animate-pulse">进行中</span>
+</td>
+<td class="p-md text-center">
+<button class="bg-[#49EACE] text-on-background font-label-md px-4 py-2 rounded-lg hover:brightness-105 active:scale-95 transition-all shadow-sm">进入选宿</button>
+</td>
+</tr>
+<tr class="hover:bg-primary-container/5 transition-colors">
+<td class="p-md font-body-md text-on-surface font-bold">2024级新生第二批 (女生)</td>
+<td class="p-md font-body-md text-on-surface-variant">北区 1-3号楼</td>
+<td class="p-md font-body-md text-on-surface-variant">2024级</td>
+<td class="p-md font-body-md text-on-surface-variant">信息工程学院</td>
+<td class="p-md">
+<span class="bg-surface-container-high text-on-surface-variant font-label-md px-3 py-1 rounded-full text-sm">即将开始</span>
+</td>
+<td class="p-md text-center">
+<button class="bg-surface-container-highest text-on-surface-variant font-label-md px-4 py-2 rounded-lg hover:bg-surface-container-high transition-all">查看详情</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- System Notice Section -->
+<section class="mt-xl glass-card p-lg rounded-xl border-secondary-container/20 flex flex-col md:flex-row items-center gap-lg">
+<div class="w-24 h-24 bg-primary-container/20 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[48px]">info</span>
+</div>
+<div class="text-center md:text-left">
+<h4 class="font-headline-md text-headline-md text-primary mb-xs">选宿小贴士</h4>
+<p class="font-body-md text-on-surface-variant mb-md max-w-xl">请确保您的网络环境稳定，提前了解心仪宿舍楼层及配置。若遇到问题，可点击右上角“帮助”或联系宿管中心。</p>
+<a class="text-primary font-label-md underline underline-offset-4 hover:opacity-80 transition-opacity" href="#">了解更多规则</a>
+</div>
+</section>
+</main>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // Potential for adding small JS animations if needed
+            });
+        });
+    </script>
+
+
+</body></html>

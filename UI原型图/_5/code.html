@@ -1,0 +1,502 @@
+<!DOCTYPE html><html lang="zh-CN" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>选/抢宿舍 - 智慧宿舍系统</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#cfc2d1",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#e8eff1",
+                        "on-secondary-fixed-variant": "#414a31",
+                        "tertiary": "#655b67",
+                        "inverse-primary": "#36dec2",
+                        "on-error": "#ffffff",
+                        "secondary": "#596247",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#605763",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#eef5f7",
+                        "secondary-container": "#dde7c5",
+                        "outline": "#6b7a76",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f4fafd",
+                        "primary": "#006b5c",
+                        "on-tertiary-fixed-variant": "#4d444f",
+                        "on-background": "#161d1f",
+                        "surface-container-high": "#e2e9ec",
+                        "on-secondary-container": "#5f684d",
+                        "on-primary-container": "#006658",
+                        "secondary-fixed-dim": "#c1cbaa",
+                        "on-tertiary-fixed": "#201923",
+                        "outline-variant": "#bacac5",
+                        "on-primary-fixed-variant": "#005045",
+                        "inverse-surface": "#2b3234",
+                        "primary-container": "#49eace",
+                        "surface-container-highest": "#dde4e6",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#006b5c",
+                        "on-surface-variant": "#3b4a46",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#161d1f",
+                        "surface": "#f4fafd",
+                        "secondary-container": "#dde7c5",
+                        "primary-fixed-dim": "#36dec2",
+                        "primary-fixed": "#5efade",
+                        "on-primary-fixed": "#00201b",
+                        "tertiary-fixed": "#ecdeed",
+                        "on-secondary-fixed": "#161e09",
+                        "surface-variant": "#dde4e6",
+                        "surface-dim": "#d4dbdd",
+                        "background": "#f4fafd",
+                        "tertiary-container": "#dbcedd",
+                        "inverse-on-surface": "#ebf2f4",
+                        "on-primary": "#ffffff",
+                        "pale-yellow": "#fffbed"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "gutter": "24px",
+                        "lg": "48px",
+                        "xl": "80px",
+                        "sm": "12px",
+                        "xs": "4px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "64px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "label-sm": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "body-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background: linear-gradient(135deg, #e0fcf7 0%, #fffbed 50%, #fdf2f8 100%);
+            min-height: 100vh;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(73, 234, 206, 0.1);
+        }
+        .bed-option {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bed-option.selected {
+            border-color: #49eace;
+            background-color: rgba(73, 234, 206, 0.1);
+        }
+        .grab-button-active {
+            background-color: #49eace !important;
+            color: #000000 !important;
+            cursor: pointer;
+            box-shadow: 0 4px 14px 0 rgba(73, 234, 206, 0.39);
+        }
+        .grab-button-disabled {
+            background-color: #e2e9ec;
+            color: #6b7a76;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-desktop h-20 bg-surface/80 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-xl">
+<span class="font-headline-lg text-headline-lg font-black text-primary">SmartDorm</span>
+<nav class="hidden md:flex items-center gap-gutter">
+<a class="font-label-md text-label-md text-primary border-b-2 border-primary pb-1 transition-all duration-300" href="#">2024级新生第一批</a>
+
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary-fixed-variant hover:bg-surface-container-low/50 px-2 py-1 rounded transition-all duration-300" href="#">帮助</a>
+</nav>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="relative hidden lg:block">
+<input class="bg-surface-container-low border-none rounded-full px-6 py-2 w-64 text-on-surface focus:ring-2 focus:ring-primary-container transition-all" placeholder="搜索房间..." type="text">
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+</div>
+<button class="material-symbols-outlined text-on-surface p-2 hover:bg-surface-container-high rounded-full transition-colors active:scale-95">notifications</button>
+<button class="material-symbols-outlined text-on-surface p-2 hover:bg-surface-container-high rounded-full transition-colors active:scale-95">account_circle</button>
+</div>
+</header>
+<main class="pt-24 pb-20 px-margin-mobile md:px-margin-desktop max-w-[1440px] mx-auto">
+<!-- Header Section & Countdown -->
+<section class="mb-xl flex flex-col md:flex-row justify-between items-end gap-md">
+<div>
+
+<h1 class="font-headline-xl text-headline-xl text-on-surface mb-2">选宿舍 - 2024级新生第一批</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">名额有限，请在倒计时结束前锁定您的意向寝室。</p>
+</div>
+<div class="glass-card p-6 rounded-2xl flex flex-col items-center min-w-[280px]">
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-2">距离本轮抢订结束还剩</span>
+<div class="flex gap-4" id="countdown">
+<div class="flex flex-col items-center">
+<span class="font-headline-md text-headline-md bg-white w-12 h-12 flex items-center justify-center rounded-lg shadow-sm border border-outline-variant/30 text-primary" id="hours">01</span>
+<span class="font-label-sm text-label-sm mt-1">时</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-headline-md text-headline-md bg-white w-12 h-12 flex items-center justify-center rounded-lg shadow-sm border border-outline-variant/30 text-primary" id="minutes">57</span>
+<span class="font-label-sm text-label-sm mt-1">分</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-headline-md text-headline-md bg-white w-12 h-12 flex items-center justify-center rounded-lg shadow-sm border border-outline-variant/30 text-primary animate-pulse" id="seconds">16</span>
+<span class="font-label-sm text-label-sm mt-1">秒</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Filter Section -->
+<section class="glass-card p-4 rounded-2xl mb-gutter flex flex-wrap gap-4 items-center"><div class="flex flex-col gap-1 flex-1 min-w-[150px]"><label class="font-label-sm text-label-sm ml-2 text-on-surface-variant">空床位</label><select class="bg-pale-yellow border-none rounded-xl px-4 py-3 text-on-surface font-label-md focus:ring-2 focus:ring-primary transition-all"><option>1个</option><option>2个</option><option>3个</option><option>4个以上</option></select></div><div class="flex flex-col gap-1 flex-1 min-w-[150px]"></div><div class="flex flex-col gap-1 flex-1 min-w-[150px]"></div><div class="flex flex-col gap-1 flex-1 min-w-[150px]"></div><button class="bg-primary text-on-primary font-label-md px-8 h-[48px] rounded-xl self-end flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all"><span class="material-symbols-outlined">filter_list</span>应用筛选</button></section>
+<!-- Room Grid -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+<!-- Room Card 1 -->
+<div class="glass-card p-gutter rounded-3xl group flex flex-col border-2 border-transparent hover:border-primary-container transition-all" data-room-id="501">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">501 室</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Building A · 北侧景观</p>
+</div>
+<span class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full font-label-sm">四人间</span>
+</div>
+<div class="mb-gutter flex-1">
+<label class="font-label-sm text-on-surface-variant mb-2 block">选择床位：</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="bed-option available flex items-center justify-between px-3 py-2 border rounded-xl border-outline-variant bg-white/50 text-label-md hover:bg-primary-container/10" data-bed="A">
+<span class="">A号床</span>
+<span class="material-symbols-outlined text-[18px]">bed</span>
+</button>
+<button class="bed-option occupied flex items-center justify-between px-3 py-2 border rounded-xl border-transparent bg-surface-variant/50 text-label-md text-on-surface-variant cursor-not-allowed" disabled="">
+<span class="">B号床</span>
+<span class="font-label-sm">已占</span>
+</button>
+<button class="bed-option available flex items-center justify-between px-3 py-2 border rounded-xl border-outline-variant bg-white/50 text-label-md hover:bg-primary-container/10" data-bed="C">
+<span class="">C号床</span>
+<span class="material-symbols-outlined text-[18px]">bed</span>
+</button>
+<button class="bed-option occupied flex items-center justify-between px-3 py-2 border rounded-xl border-transparent bg-surface-variant/50 text-label-md text-on-surface-variant cursor-not-allowed" disabled="">
+<span class="">D号床</span>
+<span class="font-label-sm">已占</span>
+</button>
+</div>
+</div>
+<button class="w-full py-4 rounded-2xl font-bold font-label-md grab-button-disabled transition-all" disabled="">
+                立即抢订
+            </button>
+</div>
+<!-- Room Card 2 -->
+<div class="glass-card p-gutter rounded-3xl group flex flex-col border-2 border-transparent hover:border-primary-container transition-all" data-room-id="612">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">612 室</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Building A · 南侧景观</p>
+</div>
+<span class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full font-label-sm">四人间</span>
+</div>
+<div class="mb-gutter flex-1">
+<label class="font-label-sm text-on-surface-variant mb-2 block">选择床位：</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="bed-option occupied flex items-center justify-between px-3 py-2 border rounded-xl border-transparent bg-surface-variant/50 text-label-md text-on-surface-variant cursor-not-allowed" disabled="">
+<span class="">A号床</span>
+<span class="font-label-sm">已占</span>
+</button>
+<button class="bed-option occupied flex items-center justify-between px-3 py-2 border rounded-xl border-transparent bg-surface-variant/50 text-label-md text-on-surface-variant cursor-not-allowed" disabled="">
+<span class="">B号床</span>
+<span class="font-label-sm">已占</span>
+</button>
+<button class="bed-option available flex items-center justify-between px-3 py-2 border rounded-xl border-outline-variant bg-white/50 text-label-md hover:bg-primary-container/10" data-bed="C">
+<span class="">C号床</span>
+<span class="material-symbols-outlined text-[18px]">bed</span>
+</button>
+<button class="bed-option occupied flex items-center justify-between px-3 py-2 border rounded-xl border-transparent bg-surface-variant/50 text-label-md text-on-surface-variant cursor-not-allowed" disabled="">
+<span class="">D号床</span>
+<span class="font-label-sm">已占</span>
+</button>
+</div>
+</div>
+<button class="w-full py-4 rounded-2xl font-bold font-label-md grab-button-disabled transition-all" disabled="">
+                立即抢订
+            </button>
+</div>
+<!-- Room Card 3 -->
+<div class="glass-card p-gutter rounded-3xl group flex flex-col border-2 border-transparent hover:border-primary-container transition-all" data-room-id="808">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">808 室</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Building B · 高层</p>
+</div>
+<span class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full font-label-sm">双人间</span>
+</div>
+<div class="mb-gutter flex-1">
+<label class="font-label-sm text-on-surface-variant mb-2 block">选择床位：</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="bed-option available flex items-center justify-between px-3 py-2 border rounded-xl border-outline-variant bg-white/50 text-label-md hover:bg-primary-container/10" data-bed="A">
+<span class="">A号床</span>
+<span class="material-symbols-outlined text-[18px]">bed</span>
+</button>
+<button class="bed-option available flex items-center justify-between px-3 py-2 border rounded-xl border-outline-variant bg-white/50 text-label-md hover:bg-primary-container/10" data-bed="B">
+<span class="">B号床</span>
+<span class="material-symbols-outlined text-[18px]">bed</span>
+</button>
+</div>
+</div>
+<button class="w-full py-4 rounded-2xl font-bold font-label-md grab-button-disabled transition-all" disabled="">
+                立即抢订
+            </button>
+</div>
+<!-- Room Card 4 (Full) -->
+<div class="glass-card p-gutter rounded-3xl opacity-60 grayscale flex flex-col">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">403 室</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Building C · 低层</p>
+</div>
+<span class="bg-surface-variant text-on-surface-variant px-3 py-1 rounded-full font-label-sm">四人间</span>
+</div>
+<div class="mb-gutter flex-1">
+<label class="font-label-sm text-on-surface-variant mb-2 block">选择床位：</label>
+<div class="grid grid-cols-2 gap-2">
+<div class="px-3 py-2 border rounded-xl bg-surface-variant/50 text-label-md text-on-surface-variant flex justify-between items-center opacity-50">
+<span class="">A号床</span>
+<span class="font-label-sm">已占</span>
+</div>
+<div class="px-3 py-2 border rounded-xl bg-surface-variant/50 text-label-md text-on-surface-variant flex justify-between items-center opacity-50">
+<span class="">B号床</span>
+<span class="font-label-sm">已占</span>
+</div>
+<div class="px-3 py-2 border rounded-xl bg-surface-variant/50 text-label-md text-on-surface-variant flex justify-between items-center opacity-50">
+<span class="">C号床</span>
+<span class="font-label-sm">已占</span>
+</div>
+<div class="px-3 py-2 border rounded-xl bg-surface-variant/50 text-label-md text-on-surface-variant flex justify-between items-center opacity-50">
+<span class="">D号床</span>
+<span class="font-label-sm">已占</span>
+</div>
+</div>
+</div>
+<button class="w-full bg-surface-variant text-on-surface-variant font-label-md py-4 rounded-2xl cursor-not-allowed" disabled="">
+                已满额
+            </button>
+</div>
+<!-- Room Card 5 -->
+<div class="glass-card p-gutter rounded-3xl group flex flex-col border-2 border-transparent hover:border-primary-container transition-all" data-room-id="1205">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">1205 室</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Building B · 空中花园</p>
+</div>
+<span class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full font-label-sm">六人间</span>
+</div>
+<div class="mb-gutter flex-1">
+<label class="font-label-sm text-on-surface-variant mb-2 block">选择床位：</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="bed-option occupied flex items-center justify-between px-3 py-2 border rounded-xl border-transparent bg-surface-variant/50 text-label-md text-on-surface-variant cursor-not-allowed" disabled="">
+<span class="">A号床</span>
+<span class="font-label-sm">已占</span>
+</button>
+<button class="bed-option available flex items-center justify-between px-3 py-2 border rounded-xl border-outline-variant bg-white/50 text-label-md hover:bg-primary-container/10" data-bed="B">
+<span class="">B号床</span>
+<span class="material-symbols-outlined text-[18px]">bed</span>
+</button>
+<button class="bed-option available flex items-center justify-between px-3 py-2 border rounded-xl border-outline-variant bg-white/50 text-label-md hover:bg-primary-container/10" data-bed="C">
+<span class="">C号床</span>
+<span class="material-symbols-outlined text-[18px]">bed</span>
+</button>
+<button class="bed-option occupied flex items-center justify-between px-3 py-2 border rounded-xl border-transparent bg-surface-variant/50 text-label-md text-on-surface-variant cursor-not-allowed" disabled="">
+<span class="">D号床</span>
+<span class="font-label-sm">已占</span>
+</button>
+<button class="bed-option available flex items-center justify-between px-3 py-2 border rounded-xl border-outline-variant bg-white/50 text-label-md hover:bg-primary-container/10" data-bed="E">
+<span class="">E号床</span>
+<span class="material-symbols-outlined text-[18px]">bed</span>
+</button>
+<button class="bed-option occupied flex items-center justify-between px-3 py-2 border rounded-xl border-transparent bg-surface-variant/50 text-label-md text-on-surface-variant cursor-not-allowed" disabled="">
+<span class="">F号床</span>
+<span class="font-label-sm">已占</span>
+</button>
+</div>
+</div>
+<button class="w-full py-4 rounded-2xl font-bold font-label-md grab-button-disabled transition-all" disabled="">
+                立即抢订
+            </button>
+</div>
+<!-- Room Card 6 -->
+<div class="glass-card p-gutter rounded-3xl group flex flex-col border-2 border-transparent hover:border-primary-container transition-all" data-room-id="502">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">502 室</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Building A · 园林景观</p>
+</div>
+<span class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full font-label-sm">四人间</span>
+</div>
+<div class="mb-gutter flex-1">
+<label class="font-label-sm text-on-surface-variant mb-2 block">选择床位：</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="bed-option available flex items-center justify-between px-3 py-2 border rounded-xl border-outline-variant bg-white/50 text-label-md hover:bg-primary-container/10" data-bed="A">
+<span class="">A号床</span>
+<span class="material-symbols-outlined text-[18px]">bed</span>
+</button>
+<button class="bed-option available flex items-center justify-between px-3 py-2 border rounded-xl border-outline-variant bg-white/50 text-label-md hover:bg-primary-container/10" data-bed="B">
+<span class="">B号床</span>
+<span class="material-symbols-outlined text-[18px]">bed</span>
+</button>
+<button class="bed-option available flex items-center justify-between px-3 py-2 border rounded-xl border-outline-variant bg-white/50 text-label-md hover:bg-primary-container/10" data-bed="C">
+<span class="">C号床</span>
+<span class="material-symbols-outlined text-[18px]">bed</span>
+</button>
+<button class="bed-option occupied flex items-center justify-between px-3 py-2 border rounded-xl border-transparent bg-surface-variant/50 text-label-md text-on-surface-variant cursor-not-allowed" disabled="">
+<span class="">D号床</span>
+<span class="font-label-sm">已占</span>
+</button>
+</div>
+</div>
+<button class="w-full py-4 rounded-2xl font-bold font-label-md grab-button-disabled transition-all" disabled="">
+                立即抢订
+            </button>
+</div>
+<!-- Bento Layout Extension -->
+
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe h-16 md:hidden bg-surface-container-lowest/90 backdrop-blur-xl shadow-lg rounded-t-xl">
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-[10px]">首页</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full p-2 w-12 h-12 shadow-md">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">bolt</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined">event_seat</span>
+<span class="font-label-sm text-[10px]">状态</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-[10px]">个人中心</span>
+</button>
+</nav>
+<script>
+    // Countdown Timer Logic
+    function updateCountdown() {
+        const h = document.getElementById('hours');
+        const m = document.getElementById('minutes');
+        const s = document.getElementById('seconds');
+        
+        let seconds = parseInt(s.innerText);
+        let minutes = parseInt(m.innerText);
+        let hours = parseInt(h.innerText);
+
+        seconds--;
+        if (seconds < 0) {
+            seconds = 59;
+            minutes--;
+            if (minutes < 0) {
+                minutes = 59;
+                hours--;
+            }
+        }
+
+        s.innerText = seconds.toString().padStart(2, '0');
+        m.innerText = minutes.toString().padStart(2, '0');
+        h.innerText = hours.toString().padStart(2, '0');
+    }
+
+    setInterval(updateCountdown, 1000);
+
+    // Bed selection and reservation logic
+    document.querySelectorAll('.glass-card').forEach(card => {
+        const bedButtons = card.querySelectorAll('.bed-option.available');
+        const grabButton = card.querySelector('button:last-of-type');
+        
+        if (!grabButton || grabButton.innerText === '已满额') return;
+
+        bedButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove selected state from all beds in this card
+                bedButtons.forEach(b => {
+                    b.classList.remove('selected');
+                    const icon = b.querySelector('.material-symbols-outlined');
+                    if (icon) icon.innerText = 'bed';
+                });
+
+                // Add selected state to clicked bed
+                btn.classList.add('selected');
+                const icon = btn.querySelector('.material-symbols-outlined');
+                if (icon) icon.innerText = 'check_circle';
+
+                // Enable the grab button
+                grabButton.disabled = false;
+                grabButton.classList.remove('grab-button-disabled');
+                grabButton.classList.add('grab-button-active');
+            });
+        });
+
+        grabButton.addEventListener('click', () => {
+            if (grabButton.disabled) return;
+            
+            const roomName = card.querySelector('h3').innerText;
+            const selectedBed = card.querySelector('.bed-option.selected span').innerText;
+            
+            grabButton.innerText = '正在锁定...';
+            grabButton.disabled = true;
+            grabButton.classList.remove('grab-button-active');
+            grabButton.classList.add('grab-button-disabled');
+            
+            setTimeout(() => {
+                alert(`成功预约 ${roomName} ${selectedBed}！请在30分钟内完成选定确认。`);
+                grabButton.innerText = '已锁定 (已选)';
+                // Mark as officially "Selected" by user
+                const selectedBedBtn = card.querySelector('.bed-option.selected');
+                selectedBedBtn.classList.remove('selected', 'available');
+                selectedBedBtn.classList.add('occupied');
+                selectedBedBtn.querySelector('span:last-child').innerHTML = '已选';
+                selectedBedBtn.disabled = true;
+            }, 1000);
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+</body></html>

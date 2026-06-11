@@ -1,0 +1,406 @@
+<!DOCTYPE html><html lang="zh-Hans" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>我的宿舍 - SmartDorm</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#49eace",
+                        "secondary": "#596247",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#005045",
+                        "surface-variant": "#dde4e6",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#3b4a46",
+                        "surface-container": "#e8eff1",
+                        "tertiary": "#655b67",
+                        "on-background": "#161d1f",
+                        "surface": "#f4fafd",
+                        "surface-container-high": "#e2e9ec",
+                        "surface-container-highest": "#dde4e6",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed": "#00201b",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#dde7c5",
+                        "surface-dim": "#d4dbdd",
+                        "tertiary-fixed": "#ecdeed",
+                        "primary-fixed": "#5efade",
+                        "on-tertiary-fixed-variant": "#4d444f",
+                        "surface-tint": "#006b5c",
+                        "on-tertiary-fixed": "#201923",
+                        "surface-bright": "#f4fafd",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#36dec2",
+                        "outline-variant": "#bacac5",
+                        "surface-container-low": "#eef5f7",
+                        "on-primary-container": "#006658",
+                        "primary": "#49eace",
+                        "on-tertiary-container": "#605763",
+                        "on-secondary-fixed": "#161e09",
+                        "on-primary": "#003831",
+                        "tertiary-container": "#dbcedd",
+                        "on-surface": "#161d1f",
+                        "secondary-fixed": "#dde7c5",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#c1cbaa",
+                        "on-secondary-fixed-variant": "#414a31",
+                        "on-secondary": "#ffffff",
+                        "outline": "#6b7a76",
+                        "inverse-surface": "#2b3234",
+                        "inverse-primary": "#36dec2",
+                        "background": "#f4fafd",
+                        "on-secondary-container": "#5f684d",
+                        "inverse-on-surface": "#ebf2f4",
+                        "tertiary-fixed-dim": "#cfc2d1",
+                        "status-completed": "#00a08e",
+                        "status-error": "#ba1a1a",
+                        "status-pending": "#FBBC04"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "gutter": "24px",
+                        "lg": "48px",
+                        "margin-mobile": "16px",
+                        "xl": "80px",
+                        "sm": "12px",
+                        "xs": "4px",
+                        "md": "24px",
+                        "margin-desktop": "64px",
+                        "stack-lg": "24px",
+                        "container-margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "headline-xl": ["Manrope"],
+                        "label-sm": ["Manrope"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "headline-md": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav-item { font-variation-settings: 'FILL' 1; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #49eace30; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #49eace60; }
+        
+        .bg-gradient-macaron {
+            background: linear-gradient(180deg, #A7F3E7 0%, #F5FFDC 40%, #FEF0FF 100%);
+            background-attachment: fixed;
+        }
+
+        .mint-gradient {
+            background: linear-gradient(135deg, rgba(73, 234, 206, 0.15) 0%, rgba(255, 255, 255, 0.4) 100%);
+        }
+    </style>
+</head>
+<body class="bg-gradient-macaron text-on-surface min-h-screen flex flex-col font-body-md relative">
+<!-- Decorative Depth Elements to match login page -->
+<div class="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary-container/20 rounded-full blur-[100px] pointer-events-none z-0"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-surface-variant/20 rounded-full blur-[100px] pointer-events-none z-0"></div>
+<!-- Desktop Optimized Header -->
+<header class="fixed top-0 w-full z-50 bg-white/60 backdrop-blur-md border-b border-white/40 flex justify-between items-center h-16 px-6 md:px-container-margin-desktop">
+<div class="flex items-center gap-10">
+<div class="text-headline-md font-extrabold text-primary">SmartDorm</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="font-label-md text-label-md text-on-background bg-primary-container/20 px-4 py-1.5 rounded-full transition-all border-b-0" href="#">我的宿舍</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors pb-1" href="#">故障报修</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors pb-1" href="#">费用缴纳</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors pb-1" href="#">公告通知</a>
+</nav>
+</div>
+<div class="flex items-center gap-2">
+<button class="material-symbols-outlined text-on-surface-variant cursor-pointer active:opacity-80 p-2 hover:bg-primary-container/10 transition-colors rounded-full">search</button>
+<button class="material-symbols-outlined text-on-surface-variant cursor-pointer active:opacity-80 p-2 hover:bg-primary-container/10 transition-colors rounded-full">notifications</button>
+<div class="h-8 w-px bg-primary-container/20 mx-2"></div>
+<button class="flex items-center gap-2 pl-2 pr-4 py-1.5 hover:bg-primary-container/10 rounded-full transition-colors group">
+<img alt="User" class="w-8 h-8 rounded-full border-2 border-primary-container object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbyslLsMRvdDQq_i-6PIvqW1xXfMmd7WxPIeGnabDMXGzCuA9-O7FAym9RljAs_2k5b6WrIOb6YqK6q64e1Sq1my-_59ereVLVvaTLgug_Q_Sj-q1-0AvRjjMr2gNzpBQg7EudsswENo54KVSZdf4o9Qx6Z_90fK3dmzSm4sTVqqoRJ-q0QRfi5G3j0_x4vhAeJ1qx4A75Iutb4JgfvoC8EYh6Op38ZaV78Hk-dHWzNnpYZPoOJL0QTeX-6zRhL__e8MHGtX7yvg">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary">张伟</span>
+</button>
+</div>
+</header>
+<main class="relative z-10 max-w-[1440px] mx-auto w-full px-4 md:px-container-margin-desktop pt-24 pb-12 flex-grow">
+<!-- Hero Section -->
+<section class="mb-stack-lg">
+<div class="relative overflow-hidden rounded-3xl h-64 md:h-80 flex flex-col justify-end p-8 md:p-12 shadow-sm border border-white/40">
+<img alt="Dormitory Room" class="absolute inset-0 w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvub5epDD0W6jzLzcezGMTa9iGTYLyUSoTqCsMEHR_gRKJ-4ti08NPjhNFwJsWi4TSg7FByjTGKAGcy2H-TN3fa6usYF-05ZNqdYLL1ibSx-RP0eEQx-rhvt8uUhZ-U9_KJbhJE2YCnSVW-Ecihon--9Su1flYTgBzk46fs7ZVT8UOeO9DKEzCPWtXIN3zgZS8B69YLFBhPi1Bf0Zk4daqKfFVk_s0YboPxGXuZD2yKB9VKiVXkvfh0Hj5HSu4xJEWr-mo_jg9OQ">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+<div class="relative z-10 text-white flex flex-col md:flex-row md:items-end md:justify-between w-full">
+<div>
+<h1 class="font-headline-xl text-headline-xl mb-2 tracking-tight">北校区 3号楼</h1>
+<div class="flex items-center gap-6 opacity-90">
+<span class="font-body-lg text-body-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-[24px]">meeting_room</span> 502-A 室
+                        </span>
+<span class="font-body-lg text-body-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-[24px]">bed</span> 02号床位
+                        </span>
+</div>
+</div>
+<div class="mt-6 md:mt-0 flex gap-3">
+<button class="bg-white/10 backdrop-blur-md hover:bg-white/20 text-white px-6 py-2 rounded-xl font-label-md transition-all flex items-center gap-2 border border-white/20">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+                        修改个人资料
+                    </button>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left Column -->
+<div class="lg:col-span-8 space-y-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Score Card -->
+<div class="glass-card p-6 rounded-3xl shadow-sm flex flex-col justify-between hover:shadow-md hover:border-primary-container/40 transition-all group mint-gradient">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">宿舍评分</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">基于本月卫生与安全周检</p>
+</div>
+<span class="material-symbols-outlined text-primary text-[40px] group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+<div class="flex items-end gap-3 mb-6">
+<span class="text-[56px] font-bold leading-none text-on-surface tracking-tight">94</span>
+<div class="flex flex-col mb-1">
+<span class="font-label-md text-label-md text-status-completed">优秀</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">超过 85% 的宿舍</span>
+</div>
+</div>
+<button class="w-full py-4 bg-primary text-on-primary rounded-2xl font-label-md text-label-md hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-primary/20 bg-[#49EACE]" style="color: rgb(0, 0, 0);">查看详细自查报告</button>
+</div>
+<!-- Payment Status -->
+<div class="glass-card p-6 rounded-3xl shadow-sm flex flex-col justify-between hover:shadow-md hover:border-primary-container/40 transition-all group">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">住宿费缴纳</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">2023-2024 秋季学期</p>
+</div>
+<span class="material-symbols-outlined text-primary text-[40px] group-hover:rotate-12 transition-transform">payments</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="bg-primary-container/20 text-on-primary-container px-4 py-1.5 rounded-full font-label-md text-label-md font-bold uppercase tracking-wide">已缴纳</span>
+</div>
+<div class="mt-6 pt-6 border-t border-primary-container/10 flex justify-between items-center">
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface-variant">应缴合计</span>
+<span class="font-headline-md text-headline-md text-on-surface">¥ 1,200.00</span>
+</div>
+<button class="text-primary font-label-md hover:underline">查看流水</button>
+</div>
+</div>
+</div>
+<!-- Roommates -->
+<section class="glass-card p-8 rounded-3xl shadow-sm">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-headline-md text-headline-md flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[32px]">group</span>
+                        我的室友 (4)
+                    </h3>
+<button class="text-primary font-label-md hover:bg-primary-container/10 px-4 py-2 rounded-xl transition-colors">管理室友群组</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Roommate 1 (Self) -->
+<div class="flex items-center gap-5 p-5 rounded-2xl border-2 border-primary bg-primary-container/5 transition-all cursor-pointer">
+<img alt="Avatar" class="w-16 h-16 rounded-full object-cover shadow-sm ring-2 ring-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbyslLsMRvdDQq_i-6PIvqW1xXfMmd7WxPIeGnabDMXGzCuA9-O7FAym9RljAs_2k5b6WrIOb6YqK6q64e1Sq1my-_59ereVLVvaTLgug_Q_Sj-q1-0AvRjjMr2gNzpBQg7EudsswENo54KVSZdf4o9Qx6Z_90fK3dmzSm4sTVqqoRJ-q0QRfi5G3j0_x4vhAeJ1qx4A75Iutb4JgfvoC8EYh6Op38ZaV78Hk-dHWzNnpYZPoOJL0QTeX-6zRhL__e8MHGtX7yvg">
+<div class="overflow-hidden">
+<div class="flex items-center gap-2">
+<p class="font-label-md text-lg text-on-surface truncate">张伟</p>
+<span class="bg-primary text-on-primary text-[10px] px-2 py-0.5 rounded-full uppercase font-bold bg-[#49EACE] text-on-background text-black">我</span>
+</div>
+<p class="font-body-md text-on-surface-variant truncate">计算机科学与技术 · 2022级</p>
+</div>
+</div>
+<!-- Roommate 2 -->
+<div class="flex items-center gap-5 p-5 rounded-2xl border border-white/40 hover:border-primary hover:bg-white/60 transition-all cursor-pointer group">
+<img alt="Avatar" class="w-16 h-16 rounded-full object-cover shadow-sm group-hover:scale-105 transition-transform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAH5e4C8gYf40--3ApLuzKEZTf-p6wWWPHbSDCm4kbhj05nSXVNdtuFE5bjrdeXXGfrFED2EmEka4kZT0hBXRUnMS739u_eAtkbcJWegN_emYA2VEKAJD8an7yojLzc8FhO0-Q1jbIXr2rQQtOgr6PNeFoMaAbPoAvlqjExRWkVagCtmJUPxEXvnW_PEgjaotmqw5AtSmRhEbUsqX68Etq7dEIcuHHphT1iuQ5bUhd0UU0WEE60wIZ_cgo7vEZJSoifMB9GOp8b7Q">
+<div class="overflow-hidden">
+<p class="font-label-md text-lg text-on-surface truncate">李明</p>
+<p class="font-body-md text-on-surface-variant truncate">自动化 · 2022级</p>
+</div>
+</div>
+<!-- Roommate 3 -->
+<div class="flex items-center gap-5 p-5 rounded-2xl border border-white/40 hover:border-primary hover:bg-white/60 transition-all cursor-pointer group">
+<img alt="Avatar" class="w-16 h-16 rounded-full object-cover shadow-sm group-hover:scale-105 transition-transform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTm5Sk9ARTpp5s0xHxQPSx4Bh0953x7nB8RwxsD9Q7k9OD1LOFGoS8BEVUulTAqOqn3_9a6gmClWfBNA8lz1b8hwlB9I2bSQlyURp8QRlRpBHk-1YN_DBX6SVw0_6BNudb2ZhrOcG49QtRkYKUz1hi7-BGGscfJshWrM2JAhu5CMkCLsdffVRZix02Wi5_baNxJ3bONvM9y-mUYL1c77MyeIekT1RxnmS82Nk1_KQSueQlpaSUCGBx0fvb2cKLPN4Ovae0SsOBDw">
+<div class="overflow-hidden">
+<p class="font-label-md text-lg text-on-surface truncate">王小红</p>
+<p class="font-body-md text-on-surface-variant truncate">数字媒体艺术 · 2022级</p>
+</div>
+</div>
+<!-- Roommate 4 -->
+<div class="flex items-center gap-5 p-5 rounded-2xl border border-white/40 hover:border-primary hover:bg-white/60 transition-all cursor-pointer group">
+<img alt="Avatar" class="w-16 h-16 rounded-full object-cover shadow-sm group-hover:scale-105 transition-transform" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0_EK9SsDFP_SWZobyMpWArxj7idMqA0F2_G2PB87sdGm35kJ0AKByXVogQ_nWQprhrK8cmTRf3mD2ISXN_kef-LYgk6wxqlcDxNh561QJ3KUuOfi7CMI2Fye-FvupL5sG61RSsGnbIXK6KfMVz-iFjaqJu6Hhv8ybQ4rO8pyTjyl_2LueGR-NWixc-GtW13glph9_IQeoeMdu0GjGWbEouSOg_7iGoQKNXHbp-sH-Tk1X4NpsnJZe-qjNCMMyA-n1hc35Z7Rbkw">
+<div class="overflow-hidden">
+<p class="font-label-md text-lg text-on-surface truncate">赵强</p>
+<p class="font-body-md text-on-surface-variant truncate">电子信息工程 · 2022级</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column -->
+<aside class="lg:col-span-4 space-y-8">
+<section class="glass-card p-8 rounded-3xl shadow-sm h-full flex flex-col">
+<div class="flex items-center justify-between mb-8">
+<h3 class="font-headline-md text-headline-md flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[32px]">construction</span>
+                        设施状态
+                    </h3>
+<span class="text-on-surface-variant font-label-sm">最后同步: 10:30 AM</span>
+</div>
+<div class="space-y-4 flex-grow">
+<!-- Facility 1 -->
+<div class="flex items-center justify-between p-4 rounded-2xl bg-white/40 border border-white/50 hover:shadow-sm hover:border-primary transition-all">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-primary-container/10 flex items-center justify-center rounded-xl">
+<span class="material-symbols-outlined text-primary">ac_unit</span>
+</div>
+<span class="font-label-md text-on-surface">空调系统</span>
+</div>
+<span class="bg-status-completed/10 text-status-completed px-3 py-1 rounded-full font-label-sm font-bold">运行正常</span>
+</div>
+<!-- Facility 2 -->
+<div class="flex items-center justify-between p-4 rounded-2xl bg-white/40 border border-white/50 hover:shadow-sm hover:border-primary transition-all">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-primary-container/10 flex items-center justify-center rounded-xl">
+<span class="material-symbols-outlined text-primary">water_drop</span>
+</div>
+<span class="font-label-md text-on-surface">热水器</span>
+</div>
+<span class="bg-status-completed/10 text-status-completed px-3 py-1 rounded-full font-label-sm font-bold">运行正常</span>
+</div>
+<!-- Facility 3 -->
+<div class="flex items-center justify-between p-4 rounded-2xl bg-error/5 border border-error/10 shadow-sm transition-all">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-error/10 flex items-center justify-center rounded-xl">
+<span class="material-symbols-outlined text-error">lightbulb</span>
+</div>
+<span class="font-label-md text-on-surface">照明设施</span>
+</div>
+<span class="bg-error/10 text-error px-3 py-1 rounded-full font-label-sm font-bold">等待维修</span>
+</div>
+<!-- Facility 4 -->
+<div class="flex items-center justify-between p-4 rounded-2xl bg-white/40 border border-white/50 hover:shadow-sm hover:border-primary transition-all">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-primary-container/10 flex items-center justify-center rounded-xl">
+<span class="material-symbols-outlined text-primary">wifi</span>
+</div>
+<span class="font-label-md text-on-surface">校园网</span>
+</div>
+<span class="bg-status-completed/10 text-status-completed px-3 py-1 rounded-full font-label-sm font-bold">连接稳定</span>
+</div>
+</div>
+<button class="w-full mt-10 py-4 bg-primary text-on-primary rounded-2xl font-label-md text-label-md hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-lg shadow-primary/20 bg-[#49EACE]" style="color: rgb(0, 0, 0);">
+<span class="material-symbols-outlined">add_circle</span>
+                    提交报修申请
+                </button>
+</section>
+<section class="glass-card p-8 rounded-3xl shadow-sm mint-gradient">
+<h3 class="font-label-md text-label-md text-primary uppercase tracking-wider mb-6">快捷工具</h3>
+<div class="grid grid-cols-2 gap-4">
+<a class="flex flex-col items-center gap-3 p-4 rounded-2xl bg-white/60 border border-white/40 hover:bg-primary-container/10 hover:border-primary transition-all text-on-surface-variant group shadow-sm" href="#">
+<span class="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform text-primary">event_available</span>
+<span class="font-label-sm">宿舍预约</span>
+</a>
+<a class="flex flex-col items-center gap-3 p-4 rounded-2xl bg-white/60 border border-white/40 hover:bg-primary-container/10 hover:border-primary transition-all text-on-surface-variant group shadow-sm" href="#">
+<span class="material-symbols-outlined text-3xl group-hover:scale-110 transition-transform text-primary">policy</span>
+<span class="font-label-sm">管理规章</span>
+</a>
+</div>
+</section>
+</aside>
+</div>
+</main>
+<footer class="relative z-10 bg-white/40 backdrop-blur-md border-t border-white/40 py-10 mt-12 hidden md:block">
+<div class="max-w-7xl mx-auto px-container-margin-desktop flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex flex-col gap-2">
+<div class="text-headline-md font-extrabold text-primary">SmartDorm</div>
+<p class="text-body-sm text-on-surface-variant">© 2024 智慧宿舍管理系统 · 您的生活更简单</p>
+</div>
+<div class="flex gap-12">
+<div class="flex flex-col gap-3">
+<span class="font-label-md text-on-surface">关于系统</span>
+<a class="text-body-sm text-on-surface-variant hover:text-primary" href="#">服务协议</a>
+<a class="text-body-sm text-on-surface-variant hover:text-primary" href="#">隐私政策</a>
+</div>
+<div class="flex flex-col gap-3">
+<span class="font-label-md text-on-surface">联系我们</span>
+<a class="text-body-sm text-on-surface-variant hover:text-primary" href="#">后勤保障部</a>
+<a class="text-body-sm text-on-surface-variant hover:text-primary" href="#">在线客服</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- Mobile Navigation -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center h-16 px-2 pb-safe md:hidden bg-white/80 backdrop-blur-md shadow-lg rounded-t-3xl z-50 border-t border-white/40">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm">首页</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">construction</span>
+<span class="font-label-sm">故障报修</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-background rounded-2xl px-4 py-1.5 transition-all shadow-sm" href="#">
+<span class="material-symbols-outlined active-nav-item">meeting_room</span>
+<span class="font-label-sm">我的宿舍</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-sm">费用缴纳</span>
+</a>
+</nav>
+<script>
+    document.querySelectorAll('.hover\\:shadow-md').forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            item.classList.add('translate-y-[-2px]');
+        });
+        item.addEventListener('mouseleave', () => {
+            item.classList.remove('translate-y-[-2px]');
+        });
+    });
+</script>
+
+
+
+
+
+
+</body></html>

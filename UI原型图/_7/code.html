@@ -1,0 +1,516 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>通知公告管理 - 宿舍管家</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#605763",
+                    "surface-bright": "#f4fafd",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed": "#ecdeed",
+                    "outline-variant": "#bacac5",
+                    "secondary-fixed-dim": "#c1cbaa",
+                    "background": "#f4fafd",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#161e09",
+                    "on-secondary-container": "#5f684d",
+                    "primary-container": "#49eace",
+                    "on-background": "#161d1f",
+                    "surface-variant": "#dde4e6",
+                    "surface-dim": "#d4dbdd",
+                    "inverse-primary": "#36dec2",
+                    "on-surface": "#161d1f",
+                    "surface": "#f4fafd",
+                    "secondary": "#596247",
+                    "outline": "#6b7a76",
+                    "surface-tint": "#006b5c",
+                    "surface-container-highest": "#dde4e6",
+                    "error-container": "#ffdad6",
+                    "surface-container": "#e8eff1",
+                    "on-surface-variant": "#3b4a46",
+                    "secondary-container": "#dde7c5",
+                    "on-error-container": "#93000a",
+                    "primary-fixed": "#5efade",
+                    "on-secondary-fixed-variant": "#414a31",
+                    "on-tertiary-fixed-variant": "#4d444f",
+                    "tertiary-container": "#dbcedd",
+                    "on-primary-container": "#006658",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#00201b",
+                    "primary": "#006b5c",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#2b3234",
+                    "secondary-fixed": "#dde7c5",
+                    "on-tertiary-fixed": "#201923",
+                    "surface-container-low": "#eef5f7",
+                    "tertiary": "#655b67",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#36dec2",
+                    "inverse-on-surface": "#ebf2f4",
+                    "on-primary-fixed-variant": "#005045",
+                    "surface-container-high": "#e2e9ec",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#cfc2d1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "24px",
+                    "gutter": "24px",
+                    "base": "8px",
+                    "xs": "4px",
+                    "margin-desktop": "64px",
+                    "xl": "80px",
+                    "sm": "12px",
+                    "lg": "48px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Manrope"],
+                    "headline-lg-mobile": ["Manrope"],
+                    "headline-lg": ["Manrope"],
+                    "label-md": ["Manrope"],
+                    "headline-xl": ["Manrope"],
+                    "body-lg": ["Manrope"],
+                    "headline-md": ["Manrope"],
+                    "body-md": ["Manrope"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background: linear-gradient(135deg, #49EACE 0%, #F5FFDC 50%, #FEF0FF 100%);
+            min-height: 100vh;
+            color: #161D1F;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.03);
+        }
+        .sidebar-glass {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .header-glass {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #bacac5;
+            border-radius: 10px;
+        }
+        .input-brand {
+            background-color: #FFF9E6;
+            border: 1px solid transparent;
+            color: #161D1F;
+            transition: all 0.2s ease;
+        }
+        .input-brand:focus {
+            outline: none;
+            background-color: #ffffff;
+            border-color: #49EACE;
+            box-shadow: 0 0 0 4px rgba(73, 234, 206, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-body-md antialiased">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full z-40 sidebar-glass w-64 flex flex-col shadow-sm">
+<div class="p-8">
+<h1 class="text-headline-md font-headline-md font-extrabold text-black tracking-tight">宿舍管家</h1>
+<p class="text-label-sm text-black/50 mt-1 uppercase tracking-wider">Smart Campus CMS</p>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3.5 text-black/70 hover:text-black hover:bg-white/40 transition-all duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">控制台</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3.5 text-black/70 hover:text-black hover:bg-white/40 transition-all duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined">domain</span>
+<span class="font-label-md text-label-md">宿舍管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3.5 text-black/70 hover:text-black hover:bg-white/40 transition-all duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined">calendar_view_day</span>
+<span class="font-label-md text-label-md">批次管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3.5 text-black/70 hover:text-black hover:bg-white/40 transition-all duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined">build</span>
+<span class="font-label-md text-label-md">报修中心</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3.5 text-black font-bold bg-white/70 shadow-sm border border-white/50 transition-all duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">campaign</span>
+<span class="font-label-md text-label-md">通知公告</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3.5 text-black/70 hover:text-black hover:bg-white/40 transition-all duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-label-md">操作日志</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full h-20 px-8 header-glass fixed top-0 z-30 max-w-[calc(100%-16rem)]">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-black/40">search</span>
+<input class="w-full input-brand rounded-full pl-12 pr-6 py-2.5 text-label-md" placeholder="搜索公告标题或内容..." type="text">
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<button class="hover:bg-white/50 rounded-full p-2.5 transition-all relative">
+<span class="material-symbols-outlined text-black/80">notifications</span>
+<span class="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+</button>
+<button class="hover:bg-white/50 rounded-full p-2.5 transition-all">
+<span class="material-symbols-outlined text-black/80">settings</span>
+</button>
+</div>
+<div class="flex items-center gap-3 pl-4 border-l border-black/10">
+<div class="text-right">
+<p class="text-label-md font-bold text-black leading-none">管理员</p>
+<p class="text-[11px] text-black/50 mt-1 uppercase font-semibold">System Admin</p>
+</div>
+<img alt="管理员头像" class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVEgAgld07sxGFNgEEMxLiI70advG8jyHjO7C5WW_b4GLhCejvkHkrQ1vJ7LSMCdSgHyeX5x8itEB6RK2myype0GCsE7C3o0NKGK1fO94gGzIpi6jq2X7oASKnmIy97wJIOuyhAR67i-7ilu2YFVI_GpuSgvhee1i20a5cs-vTqwatgPECboGOYz_F56M-WXU21Y5IHHW1dEz_NGGdTei3IIZOPntrDbVem-GGRIr6Fa-e5sPFGedLy43rAvctt1OjuzLQBaaaRQ">
+</div>
+</div>
+</header>
+<!-- Page Canvas -->
+<div class="pt-32 px-10 pb-16">
+<div class="max-w-[1600px] mx-auto space-y-10">
+<!-- Page Title Section -->
+<div class="flex items-end justify-between">
+<div>
+<h2 class="text-headline-lg font-headline-lg text-black tracking-tight">通知公告管理</h2>
+<p class="text-body-md text-black/60 mt-2 max-w-2xl">管理并向学生推送最新的宿舍动态、安全提醒及规章制度，确保校园信息传递的高效与准确。</p>
+</div>
+</div>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-12 gap-8 items-start">
+<!-- Publish New Notice Form (35% width approximately) -->
+<div class="col-span-12 lg:col-span-4 xl:col-span-4">
+<section class="glass-card rounded-3xl p-8 sticky top-32">
+<div class="flex items-center gap-3 mb-8">
+<div class="p-2.5 bg-black rounded-xl text-white">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: &quot;FILL&quot; 1;">edit_square</span>
+</div>
+<h3 class="text-headline-md font-headline-md text-black">发布新公告</h3>
+</div>
+<form class="space-y-6">
+<div>
+<label class="block text-label-md font-bold mb-2.5 text-black/80">公告标题</label>
+<input class="w-full input-brand rounded-xl p-4 text-body-md" placeholder="输入简洁明了的标题" type="text">
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-label-md font-bold mb-2.5 text-black/80">发送范围</label>
+<div class="relative">
+<select class="w-full input-brand rounded-xl p-4 text-body-md appearance-none">
+<option>全体住户</option>
+<option>A栋宿舍楼</option>
+<option>B栋宿舍楼</option>
+<option>C栋宿舍楼</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-black/40">expand_more</span>
+</div>
+</div>
+<div>
+<label class="block text-label-md font-bold mb-2.5 text-black/80">公告类别</label>
+<div class="relative">
+<select class="w-full input-brand rounded-xl p-4 text-body-md appearance-none">
+<option>行政通知</option>
+<option>安全警示</option>
+<option>生活服务</option>
+<option>活动资讯</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-black/40">expand_more</span>
+</div>
+</div>
+</div>
+<div>
+<label class="block text-label-md font-bold mb-2.5 text-black/80">公告内容</label>
+<div class="bg-[#FFF9E6] rounded-xl border border-transparent focus-within:border-[#49EACE]/50 overflow-hidden transition-all">
+<div class="border-b border-black/5 p-2.5 flex gap-2.5 bg-white/30">
+<button class="p-1.5 hover:bg-white rounded-lg transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">format_bold</span></button>
+<button class="p-1.5 hover:bg-white rounded-lg transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">format_italic</span></button>
+<button class="p-1.5 hover:bg-white rounded-lg transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">format_list_bulleted</span></button>
+<button class="p-1.5 hover:bg-white rounded-lg transition-colors ml-auto" type="button"><span class="material-symbols-outlined text-[20px]">attach_file</span></button>
+</div>
+<textarea class="w-full bg-transparent border-none p-5 text-body-md focus:ring-0 resize-none text-black min-h-[220px]" placeholder="在此输入公告正文内容..."></textarea>
+</div>
+</div>
+<div class="flex items-center justify-between py-2 border-y border-black/5">
+<div class="flex items-center gap-3">
+<span class="text-label-md font-semibold text-black/70">是否置顶</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox">
+<div class="w-11 h-6 bg-black/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#49EACE]"></div>
+</label>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-label-md font-semibold text-black/70">立即发送</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-11 h-6 bg-black/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#49EACE]"></div>
+</label>
+</div>
+</div>
+<button class="w-full bg-[#49EACE] text-black font-bold py-4.5 rounded-2xl shadow-lg shadow-[#49EACE]/20 hover:shadow-[#49EACE]/40 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-3" type="submit">
+<span class="material-symbols-outlined font-bold">send</span>
+<span class="text-lg">立即发布公告</span>
+</button>
+</form>
+</section>
+</div>
+<!-- Sent Notices List (65% width approximately) -->
+<div class="col-span-12 lg:col-span-8 xl:col-span-8">
+<section class="glass-card rounded-3xl overflow-hidden flex flex-col h-full">
+<div class="p-8 border-b border-black/5 flex items-center justify-between bg-white/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-black/40">list_alt</span>
+<h3 class="text-headline-md font-headline-md text-black">已发公告列表</h3>
+</div>
+<div class="flex bg-black/5 p-1 rounded-xl">
+<button class="px-5 py-2 rounded-lg text-label-sm font-bold bg-black text-white shadow-sm transition-all">全部</button>
+<button class="px-5 py-2 rounded-lg text-label-sm font-bold text-black/60 hover:text-black hover:bg-white/40 transition-all">已发布</button>
+<button class="px-5 py-2 rounded-lg text-label-sm font-bold text-black/60 hover:text-black hover:bg-white/40 transition-all">草稿</button>
+</div>
+</div>
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-black/5">
+<th class="px-8 py-5 text-label-md font-bold text-black/50 border-b border-black/5">标题</th>
+<th class="px-8 py-5 text-label-md font-bold text-black/50 border-b border-black/5">范围 &amp; 类别</th>
+<th class="px-8 py-5 text-label-md font-bold text-black/50 border-b border-black/5">发布时间</th>
+<th class="px-8 py-5 text-label-md font-bold text-black/50 border-b border-black/5">状态</th>
+<th class="px-8 py-5 text-label-md font-bold text-black/50 border-b border-black/5 text-right">操作</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-black/5">
+<!-- Row 1 -->
+<tr class="hover:bg-white/50 transition-all group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-amber-500 text-[20px]" style="font-variation-settings: &quot;FILL&quot; 1;">keep</span>
+<span class="text-body-md font-bold text-black">关于冬季用电安全的紧急通知</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex flex-col gap-1">
+<span class="text-label-md font-bold text-black">全体住户</span>
+<span class="text-[10px] uppercase font-extrabold text-black/40 tracking-wider">安全警示</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="text-label-sm font-medium text-black/60">2023-11-20 14:30</span>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-[#49EACE]/20 text-[#006B5C] text-[11px] font-extrabold">
+<span class="w-1.5 h-1.5 rounded-full bg-[#006B5C] mr-1.5"></span>
+                                                已发布
+                                            </span>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+<button class="p-2.5 hover:bg-black/5 rounded-xl transition-colors text-black/60 hover:text-black" title="编辑"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2.5 hover:bg-black/5 rounded-xl transition-colors text-black/60 hover:text-black" title="撤回"><span class="material-symbols-outlined text-lg">undo</span></button>
+<button class="p-2.5 hover:bg-red-50 rounded-xl transition-colors text-red-500" title="删除"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-white/50 transition-all group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<span class="w-5 h-5"></span>
+<span class="text-body-md font-bold text-black">A栋供水管道例行检修公告</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex flex-col gap-1">
+<span class="text-label-md font-bold text-black">A栋宿舍楼</span>
+<span class="text-[10px] uppercase font-extrabold text-black/40 tracking-wider">生活服务</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="text-label-sm font-medium text-black/60">2023-11-19 09:15</span>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-[#49EACE]/20 text-[#006B5C] text-[11px] font-extrabold">
+<span class="w-1.5 h-1.5 rounded-full bg-[#006B5C] mr-1.5"></span>
+                                                已发布
+                                            </span>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+<button class="p-2.5 hover:bg-black/5 rounded-xl transition-colors text-black/60 hover:text-black" title="编辑"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2.5 hover:bg-black/5 rounded-xl transition-colors text-black/60 hover:text-black" title="撤回"><span class="material-symbols-outlined text-lg">undo</span></button>
+<button class="p-2.5 hover:bg-red-50 rounded-xl transition-colors text-red-500" title="删除"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-white/50 transition-all group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<span class="w-5 h-5"></span>
+<span class="text-body-md font-bold text-black">“文明寝室”评选活动细则</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex flex-col gap-1">
+<span class="text-label-md font-bold text-black">全体住户</span>
+<span class="text-[10px] uppercase font-extrabold text-black/40 tracking-wider">活动资讯</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="text-label-sm font-medium text-black/60">2023-11-18 16:45</span>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-black/5 text-black/40 text-[11px] font-extrabold">
+<span class="w-1.5 h-1.5 rounded-full bg-black/30 mr-1.5"></span>
+                                                已撤回
+                                            </span>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+<button class="p-2.5 hover:bg-black/5 rounded-xl transition-colors text-black/60 hover:text-black" title="编辑"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2.5 hover:bg-black/5 rounded-xl transition-colors text-black/60 hover:text-black" title="重新发布"><span class="material-symbols-outlined text-lg">publish</span></button>
+<button class="p-2.5 hover:bg-red-50 rounded-xl transition-colors text-red-500" title="删除"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-white/50 transition-all group">
+<td class="px-8 py-6">
+<div class="flex items-center gap-3">
+<span class="w-5 h-5"></span>
+<span class="text-body-md font-bold text-black">寒假留宿申请流程指引</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<div class="flex flex-col gap-1">
+<span class="text-label-md font-bold text-black">全体住户</span>
+<span class="text-[10px] uppercase font-extrabold text-black/40 tracking-wider">行政通知</span>
+</div>
+</td>
+<td class="px-8 py-6">
+<span class="text-label-sm font-medium text-black/40 italic">未发布</span>
+</td>
+<td class="px-8 py-6">
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-[11px] font-extrabold">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5"></span>
+                                                草稿
+                                            </span>
+</td>
+<td class="px-8 py-6 text-right">
+<div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+<button class="p-2.5 hover:bg-black/5 rounded-xl transition-colors text-black/60 hover:text-black" title="编辑"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-2.5 hover:bg-black/5 rounded-xl transition-colors text-black/60 hover:text-black" title="发布"><span class="material-symbols-outlined text-lg">send</span></button>
+<button class="p-2.5 hover:bg-red-50 rounded-xl transition-colors text-red-500" title="删除"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-8 mt-auto border-t border-black/5 flex items-center justify-between bg-white/20">
+<span class="text-label-sm font-bold text-black/40 uppercase tracking-wider">Page 1 of 4 <span class="mx-2">·</span> 28 TOTAL RECORDS</span>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white transition-all text-black/40 hover:text-black"><span class="material-symbols-outlined text-[20px]">chevron_left</span></button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl bg-black text-white text-label-sm font-bold shadow-md">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white text-black/60 hover:text-black text-label-sm font-bold transition-all">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white text-black/60 hover:text-black text-label-sm font-bold transition-all">3</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white transition-all text-black/40 hover:text-black"><span class="material-symbols-outlined text-[20px]">chevron_right</span></button>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+    // Micro-interactions and local state management
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalContent = btn.innerHTML;
+            
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> <span class="text-lg">正在发布...</span>';
+            btn.classList.add('opacity-80');
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> <span class="text-lg">发布成功</span>';
+                btn.classList.remove('bg-[#49EACE]', 'text-black');
+                btn.classList.add('bg-green-500', 'text-white');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalContent;
+                    btn.classList.add('bg-[#49EACE]', 'text-black');
+                    btn.classList.remove('bg-green-500', 'text-white', 'opacity-80');
+                    btn.disabled = false;
+                    form.reset();
+                }, 2000);
+            }, 1500);
+        });
+    });
+
+    // Toggle interaction refinement
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('mousedown', function() {
+            this.classList.add('scale-95');
+        });
+        btn.addEventListener('mouseup', function() {
+            this.classList.remove('scale-95');
+        });
+        btn.addEventListener('mouseleave', function() {
+            this.classList.remove('scale-95');
+        });
+    });
+</script>
+</body></html>

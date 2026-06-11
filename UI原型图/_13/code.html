@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>个人中心 - SmartDorm</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#c1cbaa",
+                        "on-primary": "#ffffff",
+                        "secondary": "#596247",
+                        "on-background": "#161d1f",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#5efade",
+                        "surface-bright": "#f4fafd",
+                        "surface-container-high": "#e2e9ec",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#605763",
+                        "tertiary": "#655b67",
+                        "on-tertiary-fixed": "#201923",
+                        "surface-tint": "#006b5c",
+                        "outline-variant": "#bacac5",
+                        "on-primary-container": "#006658",
+                        "inverse-on-surface": "#ebf2f4",
+                        "surface-dim": "#d4dbdd",
+                        "tertiary-fixed-dim": "#cfc2d1",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#6b7a76",
+                        "on-secondary-container": "#5f684d",
+                        "on-primary-fixed": "#00201b",
+                        "surface-container": "#e8eff1",
+                        "inverse-primary": "#36dec2",
+                        "primary-fixed-dim": "#36dec2",
+                        "surface-container-low": "#eef5f7",
+                        "secondary-container": "#dde7c5",
+                        "on-surface-variant": "#3b4a46",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#dde4e6",
+                        "on-secondary-fixed-variant": "#414a31",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#dde4e6",
+                        "primary": "#006b5c",
+                        "surface": "#f4fafd",
+                        "on-primary-fixed-variant": "#005045",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ecdeed",
+                        "inverse-surface": "#2b3234",
+                        "primary-container": "#49eace",
+                        "tertiary-container": "#dbcedd",
+                        "on-surface": "#161d1f",
+                        "on-secondary-fixed": "#161e09",
+                        "secondary-fixed": "#dde7c5",
+                        "on-tertiary-fixed-variant": "#4d444f",
+                        "background": "#f4fafd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "xl": "80px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "margin-desktop": "64px",
+                        "lg": "48px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Manrope"],
+                        "body-md": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "label-sm": ["Manrope"],
+                        "label-md": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "headline-xl": ["Manrope"],
+                        "headline-md": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background: linear-gradient(135deg, #f4fafd 0%, #e0f7f3 30%, #fff9e6 70%, #fdecf2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(73, 234, 206, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(73, 234, 206, 0.05);
+        }
+        .custom-input {
+            background-color: #FFF9E6 !important;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .custom-input:focus {
+            border-color: #49EACE !important;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(73, 234, 206, 0.1);
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+<!-- TopNavBar -->
+<header class="w-full sticky top-0 z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md shadow-sm dark:shadow-none">
+<div class="flex justify-between items-center h-16 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">
+                SmartDorm
+            </div>
+<nav class="hidden md:flex items-center gap-lg">
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-outline hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">首页</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-outline hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">选宿历史</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-outline hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">帮助</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="p-base rounded-lg hover:bg-primary-container/10 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-primary" data-icon="person">person</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow px-margin-mobile md:px-margin-desktop py-lg max-w-7xl mx-auto w-full">
+<!-- Profile Hero Card -->
+<div class="glass-card rounded-xl p-md md:p-lg mb-gutter relative overflow-hidden">
+<!-- Decorative Gradient Blob -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary-container/20 rounded-full blur-3xl"></div>
+<div class="flex flex-col md:flex-row gap-lg items-start md:items-center">
+<!-- Avatar Section -->
+<div class="relative group">
+<div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-surface-container-high flex items-center justify-center border-4 border-white overflow-hidden shadow-lg">
+<span class="material-symbols-outlined text-outline text-[80px]" data-icon="person">person</span>
+</div>
+<button class="absolute bottom-1 right-1 bg-primary text-on-primary p-2 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-transform" title="更新头像">
+<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+</button>
+</div>
+<!-- Basic Info -->
+<div class="flex-grow space-y-sm">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">张小明</h1>
+<p class="font-body-md text-on-surface-variant">学号: 2024****001</p>
+</div>
+<button class="bg-[#49EACE] text-on-primary-fixed font-label-md text-label-md px-lg py-sm rounded-lg flex items-center gap-sm hover:brightness-105 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined" data-icon="edit_square">edit_square</span>
+                            编辑资料
+                        </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm mt-md">
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-primary" data-icon="apartment">apartment</span>
+<span class="font-body-md">宿舍: <span class="text-on-surface font-semibold">南区1号楼 301</span></span>
+</div>
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-primary" data-icon="smartphone">smartphone</span>
+<span class="font-body-md">手机: <span class="text-on-surface font-semibold">188****5678</span></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Details Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+<!-- Contact Info -->
+<section class="glass-card rounded-xl p-md space-y-md">
+<div class="flex items-center gap-sm border-b border-outline-variant/30 pb-sm">
+<span class="material-symbols-outlined text-primary" data-icon="contact_mail">contact_mail</span>
+<h2 class="font-headline-md text-headline-md">联系信息</h2>
+</div>
+<div class="space-y-md">
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-xs">电子邮箱</label>
+<input class="custom-input w-full rounded-lg px-md py-sm font-body-md text-on-surface" readonly="" type="email" value="zhang.xiaoming@university.edu"/>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-xs">紧急联系人</label>
+<input class="custom-input w-full rounded-lg px-md py-sm font-body-md text-on-surface" readonly="" type="text" value="张大明 (父亲) - 139****1234"/>
+</div>
+</div>
+</section>
+<!-- Academic Info -->
+<section class="glass-card rounded-xl p-md space-y-md">
+<div class="flex items-center gap-sm border-b border-outline-variant/30 pb-sm">
+<span class="material-symbols-outlined text-primary" data-icon="school">school</span>
+<h2 class="font-headline-md text-headline-md">学业信息</h2>
+</div>
+<div class="space-y-md">
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-xs">所属学院</label>
+<input class="custom-input w-full rounded-lg px-md py-sm font-body-md text-on-surface" readonly="" type="text" value="计算机科学与技术学院"/>
+</div>
+<div>
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-xs">专业名称</label>
+<input class="custom-input w-full rounded-lg px-md py-sm font-body-md text-on-surface" readonly="" type="text" value="软件工程"/>
+</div>
+</div>
+</section>
+<!-- Dormitory Status (Bento Style) -->
+<section class="glass-card rounded-xl p-md lg:col-span-2 flex flex-col md:flex-row items-center justify-between gap-md border-l-4 border-primary">
+<div class="flex items-center gap-lg">
+<div class="w-16 h-16 bg-primary-container/30 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-headline-lg" data-icon="bed" style="font-variation-settings: 'FILL' 1;">bed</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md">当前入住状态</h3>
+<p class="font-body-md text-on-surface-variant">2024 秋季学期</p>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="text-right">
+<span class="inline-block px-md py-xs bg-secondary-container text-on-secondary-fixed-variant rounded-full font-label-md text-label-md mb-xs">
+                            已分配
+                        </span>
+<p class="font-headline-md text-headline-md text-primary">南区1号楼 301</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[48px]" data-icon="chevron_right">chevron_right</span>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full mt-auto py-lg bg-surface-container-low dark:bg-surface-container-lowest border-t border-outline-variant/30 dark:border-outline/20">
+<div class="flex flex-col md:flex-row justify-between items-center gap-md px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto">
+<div class="text-center md:text-left">
+<div class="font-headline-md text-headline-md font-bold text-primary mb-xs">SmartDorm</div>
+<p class="font-body-md text-body-md text-on-surface-variant">© 2024 智慧宿舍管理系统。通过现代技术提升学生生活品质。</p>
+</div>
+<div class="flex gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-secondary hover:underline transition-colors" href="#">隐私政策</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-secondary hover:underline transition-colors" href="#">服务协议</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-secondary hover:underline transition-colors" href="#">联系支持</a>
+</div>
+</div>
+</footer>
+<script>
+        // Simple hover interaction for cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+                card.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body></html>

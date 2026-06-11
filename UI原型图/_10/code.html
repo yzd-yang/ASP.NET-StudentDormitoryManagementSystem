@@ -1,0 +1,596 @@
+<!DOCTYPE html><html class="light" lang="zh-CN" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SmartDorm - 报修管理</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#49EACE",
+                    "primary-container": "#E0F9F4",
+                    "on-primary-container": "#005045",
+                    "secondary": "#596247",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#005045",
+                    "surface-variant": "#E8F5F2",
+                    "on-error-container": "#93000a",
+                    "on-surface-variant": "#3b4a46",
+                    "surface-container": "#F2F9F7",
+                    "tertiary": "#655b67",
+                    "on-background": "#161d1f",
+                    "surface": "#F7FCFB",
+                    "surface-container-high": "#EBF7F4",
+                    "surface-container-highest": "#E2F2EF",
+                    "error": "#FF6B6B",
+                    "on-primary-fixed": "#00201b",
+                    "error-container": "#FFE5E5",
+                    "secondary-container": "#F5FFDC",
+                    "surface-dim": "#D9E5E2",
+                    "tertiary-fixed": "#ecdeed",
+                    "primary-fixed": "#49EACE",
+                    "on-tertiary-fixed-variant": "#4d444f",
+                    "surface-tint": "#49EACE",
+                    "on-tertiary-fixed": "#201923",
+                    "surface-bright": "#F7FCFB",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed-dim": "#36dec2",
+                    "outline-variant": "#D0E1DD",
+                    "surface-container-low": "#F4FBF9",
+                    "on-primary-container": "#006658",
+                    "on-tertiary-container": "#605763",
+                    "on-secondary-fixed": "#161e09",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#dbcedd",
+                    "on-surface": "#1A2523",
+                    "secondary-fixed": "#F5FFDC",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed-dim": "#c1cbaa",
+                    "on-secondary-fixed-variant": "#414a31",
+                    "on-secondary": "#ffffff",
+                    "outline": "#8BA19C",
+                    "inverse-surface": "#2b3234",
+                    "inverse-primary": "#36dec2",
+                    "background": "#F7FCFB",
+                    "on-secondary-container": "#5f684d",
+                    "inverse-on-surface": "#ebf2f4",
+                    "tertiary-fixed-dim": "#cfc2d1",
+                    "status-error": "#FF6B6B",
+                    "status-pending": "#FFB84D",
+                    "status-processing": "#49EACE",
+                    "status-completed": "#81C784"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "gutter": "24px",
+                    "lg": "48px",
+                    "margin-mobile": "16px",
+                    "xl": "80px",
+                    "sm": "12px",
+                    "xs": "4px",
+                    "md": "24px",
+                    "margin-desktop": "64px",
+                    "stack-lg": "24px",
+                    "stack-md": "16px",
+                    "stack-sm": "8px",
+                    "container-margin-desktop": "32px",
+                    "container-margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Manrope"],
+                    "label-md": ["Manrope"],
+                    "headline-xl": ["Manrope"],
+                    "label-sm": ["Manrope"],
+                    "headline-lg-mobile": ["Manrope"],
+                    "body-lg": ["Manrope"],
+                    "body-md": ["Manrope"],
+                    "headline-md": ["Manrope"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; height: 100vh; overflow: hidden; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Macaron Gradient Background from Login Page */
+        .bg-gradient-macaron {
+            background: linear-gradient(180deg, #A7F3E7 0%, #F5FFDC 40%, #FEF0FF 100%);
+            background-attachment: fixed;
+        }
+        
+        .mint-glow { box-shadow: 0 4px 14px 0 rgba(73, 234, 234, 0.3); }
+        .pastel-mint-soft { background: linear-gradient(135deg, rgba(73, 234, 206, 0.08) 0%, rgba(245, 255, 220, 0.1) 100%); }
+        
+        /* Glass effect for main containers to let gradient through */
+        .glass-container {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Sidebar active states and hover styling */
+        .nav-item-active {
+            background: #49EACE !important;
+            color: #005045 !important;
+            box-shadow: 0 4px 12px rgba(73, 234, 234, 0.25);
+        }
+        .nav-item-active .material-symbols-outlined {
+            color: #005045 !important;
+        }
+        .nav-item-hover:hover {
+            background: rgba(73, 234, 234, 0.15);
+            color: #006658;
+        }
+    </style>
+</head>
+<body class="text-on-surface flex flex-col bg-gradient-macaron">
+<!-- Top Navigation Bar -->
+<header class="flex-none w-full z-50 bg-white/80 backdrop-blur-md border-b border-outline-variant/20 flex justify-between items-center h-16 px-4 md:px-container-margin-desktop">
+<div class="flex items-center gap-4">
+<span class="text-headline-md font-extrabold text-primary tracking-tight">SmartDorm</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex relative">
+<input class="bg-white/50 border border-outline-variant/30 rounded-full px-10 py-2 text-label-md w-80 transition-all focus:ring-2 focus:ring-primary/50 focus:w-96 focus:outline-none focus:bg-white" placeholder="搜索报修单..." type="text">
+<span class="material-symbols-outlined absolute left-3 top-2 text-on-surface-variant">search</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary cursor-pointer active:opacity-80 p-2 hover:bg-primary-container/50 transition-colors rounded-full">notifications</button>
+<div class="h-8 w-[1px] bg-outline-variant/50"></div>
+<div class="flex items-center gap-2 cursor-pointer hover:bg-primary-container/50 px-2 py-1 rounded-lg transition-colors">
+<span class="material-symbols-outlined text-primary">account_circle</span>
+<span class="text-label-md font-semibold hidden lg:block">系统管理员</span>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- Side Navigation Bar -->
+<aside class="w-[260px] bg-white/60 backdrop-blur-md border-r border-outline-variant/20 flex flex-col py-stack-lg px-4 hidden md:flex">
+<div class="mb-stack-lg px-2">
+<h2 class="text-[10px] text-on-surface-variant/60 uppercase tracking-[2.5px] font-extrabold">管理控制台</h2>
+</div>
+<nav class="flex-1 flex flex-col gap-1.5">
+<a class="rounded-xl flex items-center gap-3 px-4 py-3 transition-all active:scale-95 nav-item-hover text-on-surface-variant font-semibold" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-label-md">仪表盘&nbsp;</span>
+</a>
+
+<a class="rounded-xl flex items-center gap-3 px-4 py-3 transition-all active:scale-95 nav-item-hover text-on-surface-variant font-semibold" href="#">
+<span class="material-symbols-outlined">bed</span>
+<span class="text-label-md">宿舍分配</span>
+</a>
+<a class="rounded-xl flex items-center gap-3 px-4 py-3 transition-all active:scale-95 nav-item-hover text-on-surface-variant font-semibold" href="#">
+<span class="material-symbols-outlined">layers</span>
+<span class="text-label-md">批次管理</span>
+</a><a class="bg-primary text-black rounded-xl flex items-center gap-3 px-4 py-3 transition-all active:scale-95 shadow-lg mint-glow nav-item-active text-on-primary-container font-bold" href="#">
+<span class="material-symbols-outlined">build</span>
+<span class="text-label-md">报修管理</span>
+</a>
+<a class="rounded-xl flex items-center gap-3 px-4 py-3 transition-all active:scale-95 nav-item-hover text-on-surface-variant font-semibold" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="text-label-md">通知公告</span>
+</a>
+<a class="rounded-xl flex items-center gap-3 px-4 py-3 transition-all active:scale-95 nav-item-hover text-on-surface-variant font-semibold" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-label-md">系统设置</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-1 border-t border-outline-variant/30 pt-4">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-primary-container/30 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-label-md">帮助中心</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-error hover:bg-error-container/20 rounded-xl transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-label-md">退出登录</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto scrollbar-hide">
+<div class="max-w-[1600px] mx-auto p-4 md:p-container-margin-desktop flex flex-col gap-8 h-full">
+<!-- Page Header -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+<div>
+<h1 class="text-headline-lg font-bold text-on-surface">报修请求管理</h1>
+<p class="text-body-md text-on-surface-variant mt-1">实时监控和处理校园宿舍的维修服务申请。</p>
+</div>
+<div class="flex flex-wrap gap-3">
+<button class="flex items-center gap-2 px-4 py-2.5 border border-outline-variant/30 rounded-xl bg-white/60 hover:bg-white transition-colors text-label-md font-semibold text-on-surface">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+                        筛选条件
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2.5 border border-outline-variant/30 rounded-xl bg-white/60 hover:bg-white transition-colors text-label-md font-semibold text-on-surface">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                        导出报表
+                    </button>
+<button class="flex items-center gap-2 px-6 py-2.5 bg-primary text-on-primary rounded-xl hover:brightness-105 transition-all text-label-md font-bold shadow-lg mint-glow text-black">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                        新建报修单
+                    </button>
+</div>
+</div><div class="glass-container p-4 rounded-xl shadow-sm flex flex-wrap gap-6 items-end border border-white/40">
+  <div class="flex flex-col gap-2">
+    <label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">状态</label>
+    <select class="bg-[#FFF9E6] border border-outline-variant/30 rounded-lg px-4 py-2 text-label-md focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none min-w-[160px]">
+      <option>全部</option>
+      <option>待处理</option>
+      <option>处理中</option>
+      <option>已完成</option>
+      <option>紧急</option>
+    </select>
+  </div>
+  <div class="flex flex-col gap-2">
+    <label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">宿舍楼</label>
+    <select class="bg-[#FFF9E6] border border-outline-variant/30 rounded-lg px-4 py-2 text-label-md focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none min-w-[160px]">
+      <option>全部</option>
+      <option>A楼</option>
+      <option>B楼</option>
+      <option>C楼</option>
+      <option>D楼</option>
+    </select>
+  </div>
+  <div class="flex flex-col gap-2">
+    <label class="text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">报修类型</label>
+    <select class="bg-[#FFF9E6] border border-outline-variant/30 rounded-lg px-4 py-2 text-label-md focus:ring-2 focus:ring-primary/50 focus:border-primary focus:outline-none min-w-[160px]">
+      <option>全部</option>
+      <option>电力故障</option>
+      <option>供水维修</option>
+      <option>家具维修</option>
+      <option>空调清洗</option>
+    </select>
+  </div>
+  <button class="ml-auto flex items-center gap-2 px-6 py-2 bg-primary/10 text-primary border border-primary/30 rounded-lg hover:bg-primary/20 transition-colors text-label-md font-bold">
+    <span class="material-symbols-outlined text-[18px]">refresh</span>
+    重置筛选
+  </button>
+</div>
+<!-- Dashboard Stats Summary -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-gutter">
+<div class="glass-container p-6 rounded-2xl shadow-sm flex flex-col gap-2 hover:border-primary/40 transition-all relative overflow-hidden group">
+<div class="absolute inset-0 pastel-mint-soft opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10">
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-on-surface-variant uppercase font-bold tracking-wider">待处理工单</span>
+<span class="material-symbols-outlined text-status-pending bg-secondary-container/50 p-2 rounded-xl">pending_actions</span>
+</div>
+<span class="text-[32px] font-bold text-on-surface">12</span>
+<span class="text-label-sm text-error flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+                            较昨日增加 25%
+                        </span>
+</div>
+</div>
+<div class="glass-container p-6 rounded-2xl shadow-sm flex flex-col gap-2 hover:border-primary/40 transition-all relative overflow-hidden group">
+<div class="absolute inset-0 pastel-mint-soft opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10">
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-on-surface-variant uppercase font-bold tracking-wider">处理中工单</span>
+<span class="material-symbols-outlined text-primary bg-primary-container/50 p-2 rounded-xl">engineering</span>
+</div>
+<span class="text-[32px] font-bold text-on-surface">08</span>
+<span class="text-label-sm text-status-completed flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span>
+                            平均用时 4.2h
+                        </span>
+</div>
+</div>
+<div class="glass-container p-6 rounded-2xl shadow-sm flex flex-col gap-2 hover:border-primary/40 transition-all relative overflow-hidden group">
+<div class="absolute inset-0 pastel-mint-soft opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10">
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-on-surface-variant uppercase font-bold tracking-wider">紧急报修项目</span>
+<span class="material-symbols-outlined text-error bg-error-container/50 p-2 rounded-xl">priority_high</span>
+</div>
+<span class="text-[32px] font-bold text-on-surface">03</span>
+<span class="text-label-sm text-on-surface-variant font-medium">需要立即分配技工</span>
+</div>
+</div>
+<div class="glass-container p-6 rounded-2xl shadow-sm flex flex-col gap-2 hover:border-primary/40 transition-all relative overflow-hidden group">
+<div class="absolute inset-0 pastel-mint-soft opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10">
+<div class="flex items-center justify-between">
+<span class="text-label-sm text-on-surface-variant uppercase font-bold tracking-wider">今日已完成</span>
+<span class="material-symbols-outlined text-status-completed bg-primary-container/50 p-2 rounded-xl">task_alt</span>
+</div>
+<span class="text-[32px] font-bold text-on-surface">24</span>
+<span class="text-label-sm text-status-completed font-medium">达标率 98%</span>
+</div>
+</div>
+</div>
+<!-- Maintenance Table Card -->
+<div class="glass-container rounded-2xl shadow-sm flex flex-col flex-1 min-h-0 border border-white/40">
+<div class="overflow-x-auto flex-1 scrollbar-hide">
+<table class="w-full text-left border-collapse table-fixed min-w-[1000px]">
+<thead class="bg-white/40 sticky top-0 z-10 backdrop-blur-md">
+<tr>
+<th class="px-6 py-4 text-label-sm font-bold text-on-surface-variant uppercase tracking-wider w-[120px]">工单ID</th>
+<th class="px-6 py-4 text-label-sm font-bold text-on-surface-variant uppercase tracking-wider w-[160px]">报修类型</th>
+<th class="px-6 py-4 text-label-sm font-bold text-on-surface-variant uppercase tracking-wider w-[200px]">宿舍位置</th>
+<th class="px-6 py-4 text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">描述简述</th>
+<th class="px-6 py-4 text-label-sm font-bold text-on-surface-variant uppercase tracking-wider w-[160px]">报修时间</th>
+<th class="px-6 py-4 text-label-sm font-bold text-on-surface-variant uppercase tracking-wider w-[140px]">状态</th>
+<th class="px-6 py-4 text-label-sm font-bold text-on-surface-variant uppercase tracking-wider w-[80px]"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20 overflow-y-auto">
+<!-- Row 1: Urgent -->
+<tr class="hover:bg-primary-container/20 transition-colors group cursor-pointer" onclick="openDetailView('REQ-2023-001')">
+<td class="px-6 py-5 text-label-md text-on-surface">#2023-001</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[18px]">bolt</span>
+<span class="text-label-md font-medium">电力故障</span>
+</div>
+</td>
+<td class="px-6 py-5 text-label-md text-on-surface">B楼 402室 (床位 A)</td>
+<td class="px-6 py-5 text-label-md text-on-surface-variant truncate">插座冒火花，无法通电。塑料外壳有轻微熔化迹象。</td>
+<td class="px-6 py-5 text-label-md text-on-surface-variant">今日 09:12</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full bg-error-container text-error text-[10px] font-bold uppercase tracking-tight">紧急处理</span>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">chevron_right</span>
+</td>
+</tr>
+<!-- Row 2: Pending -->
+<tr class="hover:bg-primary-container/20 transition-colors group cursor-pointer" onclick="openDetailView('REQ-2023-002')">
+<td class="px-6 py-5 text-label-md text-on-surface">#2023-002</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">water_drop</span>
+<span class="text-label-md font-medium">供水维修</span>
+</div>
+</td>
+<td class="px-6 py-5 text-label-md text-on-surface">C楼 105室</td>
+<td class="px-6 py-5 text-label-md text-on-surface-variant truncate">洗手池水龙头漏水，关不严实，持续滴水。</td>
+<td class="px-6 py-5 text-label-md text-on-surface-variant">昨日 16:45</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-tight">待分配</span>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">chevron_right</span>
+</td>
+</tr>
+<!-- Row 3: Processing -->
+<tr class="hover:bg-primary-container/20 transition-colors group cursor-pointer" onclick="openDetailView('REQ-2023-003')">
+<td class="px-6 py-5 text-label-md text-on-surface">#2023-003</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">home_repair_service</span>
+<span class="text-label-md font-medium">家具维修</span>
+</div>
+</td>
+<td class="px-6 py-5 text-label-md text-on-surface">A楼 612室 (床位 B)</td>
+<td class="px-6 py-5 text-label-md text-on-surface-variant truncate">书桌中间抽屉滑道变形损坏，无法正常拉出。</td>
+<td class="px-6 py-5 text-label-md text-on-surface-variant">2023/10/24</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full bg-primary-container text-on-primary-container text-[10px] font-bold uppercase tracking-tight">维修中</span>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">chevron_right</span>
+</td>
+</tr>
+<!-- Row 4: Completed -->
+<tr class="hover:bg-primary-container/20 transition-colors group opacity-60 cursor-pointer">
+<td class="px-6 py-5 text-label-md text-on-surface">#2022-894</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">event</span>
+<span class="text-label-md font-medium">空调清洗</span>
+</div>
+</td>
+<td class="px-6 py-5 text-label-md text-on-surface">D楼 201室</td>
+<td class="px-6 py-5 text-label-md text-on-surface-variant truncate">空调制冷时有异味，申请深度清洗滤网及散热片。</td>
+<td class="px-6 py-5 text-label-md text-on-surface-variant">2023/10/20</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full bg-surface-container-highest/60 text-on-surface-variant text-[10px] font-bold uppercase tracking-tight">已完成</span>
+</td>
+<td class="px-6 py-5 text-right">
+<span class="material-symbols-outlined text-status-completed">check_circle</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-6 py-4 bg-white/40 border-t border-outline-variant/20 flex items-center justify-between">
+<span class="text-label-sm text-on-surface-variant font-medium">显示 1-4 条，共 142 条工单数据</span>
+<div class="flex items-center gap-4">
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant/30 rounded-lg bg-white/60 hover:bg-primary/10 hover:border-primary transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center border border-primary rounded-lg bg-primary text-on-primary font-bold text-xs text-black">1</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant/30 rounded-lg bg-white/60 hover:bg-primary/10 hover:border-primary transition-colors text-xs font-medium">2</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant/30 rounded-lg bg-white/60 hover:bg-primary/10 hover:border-primary transition-colors text-xs font-medium">3</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant/30 rounded-lg bg-white/60 hover:bg-primary/10 hover:border-primary transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Detail View Side Panel (Overlay) -->
+<div class="fixed inset-0 z-[60] bg-on-background/20 transition-opacity duration-300 backdrop-blur-sm opacity-0 hidden" id="detailOverlay" onclick="closeDetailView()"></div>
+<div class="fixed top-0 right-0 h-full w-full md:w-[520px] bg-white/90 backdrop-blur-xl z-[70] shadow-2xl transform transition-transform duration-300 ease-in-out border-l border-white/40 overflow-y-auto scrollbar-hide flex flex-col translate-x-full" id="detailPanel">
+<!-- Panel Header -->
+<div class="p-6 border-b border-outline-variant/20 flex items-center justify-between sticky top-0 bg-white/80 z-10">
+<div>
+<h3 class="text-headline-md font-bold text-on-surface">工单详情</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-label-sm text-primary font-bold tracking-wider">REQ-2023-001</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="text-label-sm text-on-surface-variant">由 张伟 提交</span>
+</div>
+</div>
+<button class="material-symbols-outlined p-2 hover:bg-primary-container/50 rounded-full transition-colors" onclick="closeDetailView()">close</button>
+</div>
+<!-- Panel Content -->
+<div class="flex-1 p-6 space-y-8">
+<!-- Image Section -->
+<div class="space-y-3">
+<h4 class="text-label-md font-bold text-on-surface">现场照片</h4>
+<div class="relative rounded-2xl overflow-hidden aspect-video group bg-surface-container-low border border-outline-variant/20 shadow-inner">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzUX7xcoibe63IPTwpcVL317IbQRgFXT9oAE1hCDfTO7ywpPoh3sVeNFRWB-oCImBLrfa19XPz_kGnsJuKm8Yq_Ge85LSAfoDEr7fgjXBKC9nMvfdh1JTEY6k7mMLfvfLzr3eP_ejlxHEW3pgEBUVXAUJ2yA1-KBkv6rlz7tzTDMIGP2rtduI3t_GA2eXZf7SzzVVjnjGSpWjxnRQw7TBivTvotuKvguuPehnOgLhH-niLzjBgCK6Q8k7P49eBHNCkrvfCyQb37w">
+<div class="absolute inset-0 bg-on-background/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-white text-on-surface px-4 py-2 rounded-xl text-label-md font-bold flex items-center gap-2 shadow-lg">
+<span class="material-symbols-outlined text-[20px]">zoom_in</span>查看原图
+                    </button>
+</div>
+</div>
+</div>
+<!-- Basic Info Grid -->
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white/50 border border-white/40 p-4 rounded-2xl">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest mb-1">学生姓名</p>
+<p class="font-bold text-body-md">张伟</p>
+</div>
+<div class="bg-white/50 border border-white/40 p-4 rounded-2xl">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest mb-1">学号</p>
+<p class="font-bold text-body-md">20210934</p>
+</div>
+<div class="bg-white/50 border border-white/40 p-4 rounded-2xl">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest mb-1">联系电话</p>
+<p class="font-bold text-body-md text-primary">138-xxxx-5678</p>
+</div>
+<div class="bg-white/50 border border-white/40 p-4 rounded-2xl">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest mb-1">报修分类</p>
+<span class="px-2 py-0.5 rounded-md bg-error-container text-error text-[10px] font-bold">电力设备类</span>
+</div>
+</div>
+<!-- Description -->
+<div class="space-y-2">
+<h4 class="text-label-md font-bold text-on-surface">报修描述</h4>
+<div class="p-4 border border-outline-variant/20 rounded-2xl bg-white/40">
+<p class="text-body-md text-on-surface-variant leading-relaxed">
+                    今天早上在使用电脑充电器时，插座突然发出滋滋声并伴随明显火花。现在该插座已完全断电，且塑料外壳有明显的烧焦熔化痕迹，散发异味。考虑到整个寝室的用电安全，请务必尽快派专业电工师傅到场处理，以免发生次生灾害。
+                </p>
+</div>
+</div>
+<!-- Assignment Section -->
+<div class="space-y-3">
+<h4 class="text-label-md font-bold text-on-surface">派工处理</h4>
+<div class="space-y-3 bg-primary/5 p-4 rounded-2xl border border-primary/20">
+<select class="w-full bg-white/80 border border-outline-variant/30 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-primary/50 focus:border-primary text-label-md focus:outline-none">
+<option value="">点击选择维修技工...</option>
+<option value="1">老王 (电工组 - 5工单进行中)</option>
+<option value="2">陈师傅 (后勤保障 - 目前空闲)</option>
+<option value="3">刘师傅 (电工组 - 1工单进行中)</option>
+</select>
+<button class="flex items-center gap-2 px-6 py-2.5 bg-primary text-on-primary rounded-xl hover:brightness-105 transition-all text-label-md font-bold shadow-md mint-glow text-black">
+                    立即确认指派
+                </button>
+</div>
+</div>
+<!-- Internal Notes -->
+<div class="space-y-2">
+<h4 class="text-label-md font-bold text-on-surface">内部管理备注</h4>
+<textarea class="w-full bg-white/80 border border-outline-variant/30 rounded-2xl px-4 py-3 h-28 focus:ring-2 focus:ring-primary/50 focus:border-primary text-label-md resize-none focus:outline-none" placeholder="此处输入仅管理员可见的工单跟踪记录或特别注意事项..."></textarea>
+</div>
+</div>
+<!-- Panel Footer Actions -->
+<div class="p-6 border-t border-outline-variant/20 grid grid-cols-2 gap-4 bg-white/40">
+<button class="flex items-center justify-center gap-2 px-4 py-3 border border-error text-error rounded-xl hover:bg-error-container/50 font-bold transition-all">
+<span class="material-symbols-outlined text-[20px]">cancel</span>
+            驳回申请
+        </button>
+<button class="flex items-center justify-center gap-2 px-4 py-3 bg-status-completed text-white rounded-xl hover:brightness-105 font-bold transition-all shadow-lg text-black">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+            确认完成
+        </button>
+</div>
+</div>
+<!-- Mobile Navigation (Hidden on Desktop) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center h-16 px-2 pb-safe md:hidden bg-white/80 backdrop-blur-md z-50 rounded-t-2xl shadow-lg border-t border-outline-variant/20">
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-label-sm">首页</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary text-on-primary-container rounded-full px-5 py-2 -translate-y-2 shadow-lg mint-glow" href="#">
+<span class="material-symbols-outlined">build</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="text-label-sm">缴费</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-label-sm">我的</span>
+</a>
+</nav>
+<script>
+    function openDetailView(requestId) {
+        const panel = document.getElementById('detailPanel');
+        const overlay = document.getElementById('detailOverlay');
+        
+        overlay.classList.remove('hidden');
+        setTimeout(() => {
+            overlay.classList.remove('opacity-0');
+            panel.classList.remove('translate-x-full');
+        }, 10);
+    }
+
+    function closeDetailView() {
+        const panel = document.getElementById('detailPanel');
+        const overlay = document.getElementById('detailOverlay');
+        
+        panel.classList.add('translate-x-full');
+        overlay.classList.add('opacity-0');
+        
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+        }, 300);
+    }
+
+    // Handle sidebar navigation clicks for interactive demo feel
+    document.querySelectorAll('aside nav a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('aside nav a').forEach(l => {
+                l.classList.remove('nav-item-active', 'text-on-primary-container', 'font-bold');
+                l.classList.add('nav-item-hover', 'text-on-surface-variant', 'font-semibold');
+            });
+            
+            this.classList.remove('nav-item-hover', 'text-on-surface-variant', 'font-semibold');
+            this.classList.add('nav-item-active', 'text-on-primary-container', 'font-bold');
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+</body></html>
