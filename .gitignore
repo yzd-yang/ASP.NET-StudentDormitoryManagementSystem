@@ -1,0 +1,22 @@
+﻿# NuGet Packages
+packages/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Bb]in/[Dd]ebug/
+[Bb]in/[Rr]elease/
+obj/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
