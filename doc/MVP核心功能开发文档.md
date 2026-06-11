@@ -1,4 +1,4 @@
-# 智慧宿舍（SmartDorm）— MVP 核心功能开发文档
+﻿# 智慧宿舍（SmartDorm）— MVP 核心功能开发文档
 
 ---
 
@@ -8,11 +8,11 @@
 
 ### MVP 核心功能
 
-| 模块 | 功能 | 优先级 |
-|------|------|--------|
-| 认证 | 登录、注册、验证码 | P0 |
-| 学生端 | 查看宿舍信息、故障报修 | P0 |
-| 管理端 | 宿舍分配、报修处理、楼宇房间管理 | P0 |
+| 模块 | 功能 | 优先级 | 状态 |
+|------|------|--------|------|
+| 认证 | 登录、注册、验证码 | P0 | 已完成 |
+| 学生端 | 查看宿舍信息、故障报修 | P0 | 进行中 |
+| 管理端 | 宿舍分配、报修处理、楼宇房间管理 | P0 | 进行中 |
 
 ### 非 MVP 功能（后续迭代）
 
@@ -32,51 +32,57 @@
 | 后端框架 | ASP.NET Web Forms 4.8 |
 | 编程语言 | C# |
 | 数据库 | MySQL 8.0 |
-| 数据访问 | ADO.NET + MySql.Data |
+| 数据访问 | ADO.NET + MySql.Data 6.10.9 |
 | 前端 | HTML + CSS + JavaScript + ASP.NET 服务器控件 |
 | Web 服务器 | IIS / Visual Studio IIS Express |
 
 ---
 
-## 三、MVP 目录结构
+## 三、项目目录结构
 
 ```
 SmartDorm/
 ├── App_Code/
 │   ├── DBHelper.cs              # 数据库访问封装
-│   ├── StudentBLL.cs            # 学生业务逻辑
+│   ├── UserBLL.cs               # 用户业务逻辑（登录、注册）
 │   ├── DormBLL.cs               # 宿舍业务逻辑
 │   └── RepairBLL.cs             # 报修业务逻辑
 ├── admin/
 │   ├── login.aspx               # 管理端登录
-│   ├── MasterPage.master        # 管理端母版页
-│   ├── allocation.aspx          # 宿舍分配管理
-│   ├── repair.aspx              # 报修管理
-│   └── building.aspx            # 楼宇房间管理
+│   ├── MasterPage.master        # 管理端母版页（左侧边栏）
+│   ├── dashboard.aspx           # 控制台/仪表盘
+│   ├── allocation.aspx          # 宿舍分配管理（待开发）
+│   ├── repair.aspx              # 报修管理（待开发）
+│   └── building.aspx            # 楼宇房间管理（待开发）
 ├── student/
-│   ├── MasterPage.master        # 学生端母版页
+│   ├── MasterPage.master        # 学生端母版页（底部Tab导航）
 │   ├── home.aspx                # 我的宿舍/首页
-│   ├── repair.aspx              # 故障报修
-│   └── profile.aspx             # 个人中心
+│   ├── repair.aspx              # 故障报修（待开发）
+│   └── profile.aspx             # 个人中心（待开发）
 ├── Bin/
-│   └── MySql.Data.dll           # MySQL驱动
+│   └── MySql.Data.dll           # MySQL驱动（v6.10.9）
 ├── css/
-│   └── style.css                # 全局样式
+│   ├── style.css                # 全局样式
+│   ├── student.css              # 学生端样式
+│   └── admin.css                # 管理端样式
 ├── js/
 │   └── common.js                # 公共脚本
 ├── Uploads/
 │   ├── avatars/                 # 头像
 │   └── repair/                  # 报修照片
+├── sql/
+│   ├── create_tables.sql        # 建表脚本（11张表）
+│   └── init_data.sql            # 测试数据
 ├── login.aspx                   # 公共登录页
 ├── register.aspx                # 注册页
 ├── checkcode.aspx               # 验证码
 ├── web.config                   # 配置文件
-└── database.sql                 # 数据库建表脚本
+└── Default.aspx                 # 默认页（跳转登录）
 ```
 
 ---
 
-## 四、数据库设计（MVP 精简版）
+## 四、数据库设计
 
 ### 4.1 连接配置
 
@@ -89,7 +95,7 @@ SmartDorm/
 </connectionStrings>
 ```
 
-### 4.2 数据表
+### 4.2 数据表（共11张）
 
 #### 学生表（Students）
 
@@ -107,6 +113,7 @@ SmartDorm/
 | ClassName | VARCHAR(50) | DEFAULT NULL | 班级 |
 | Email | VARCHAR(100) | DEFAULT NULL | 邮箱 |
 | EmergencyContact | VARCHAR(50) | DEFAULT NULL | 紧急联系人 |
+| EmergencyRelation | VARCHAR(20) | DEFAULT NULL | 关系 |
 | EmergencyPhone | VARCHAR(11) | DEFAULT NULL | 紧急联系人电话 |
 | Status | TINYINT | DEFAULT 1 | 1正常 0禁用 |
 | CreateTime | DATETIME | DEFAULT CURRENT_TIMESTAMP | 注册时间 |
@@ -173,222 +180,177 @@ SmartDorm/
 | Photos | VARCHAR(1000) | DEFAULT NULL | 照片路径JSON |
 | ExpectTime | DATETIME | DEFAULT NULL | 期望上门时间 |
 | ContactPhone | VARCHAR(11) | NOT NULL | 联系电话 |
-| Status | TINYINT | DEFAULT 1 | 1待分配 2维修中 3已完成 4已驳回 |
+| Status | TINYINT | DEFAULT 1 | 1待分配 2维修中 3紧急处理 4已完成 5已驳回 |
 | AssignAdminId | INT | FK → Admins.Id, NULL | 指派技工 |
+| InternalNote | TEXT | DEFAULT NULL | 内部备注 |
 | RejectReason | VARCHAR(500) | DEFAULT NULL | 驳回原因 |
 | CreateTime | DATETIME | DEFAULT CURRENT_TIMESTAMP | 报修时间 |
 | CompleteTime | DATETIME | DEFAULT NULL | 完成时间 |
 
+#### 通知公告表（Notices）
+
+| 字段 | 类型 | 约束 | 说明 |
+|------|------|------|------|
+| Id | INT | PK, AUTO_INCREMENT | 主键 |
+| Title | VARCHAR(100) | NOT NULL | 标题 |
+| Content | TEXT | NOT NULL | 内容（富文本） |
+| Scope | TINYINT | DEFAULT 0 | 0全体 1A栋 2B栋 3C栋 |
+| Category | TINYINT | NOT NULL | 1行政通知 2安全警示 3生活服务 4活动资讯 |
+| IsTop | TINYINT | DEFAULT 0 | 0否 1是 |
+| Status | TINYINT | DEFAULT 0 | 0草稿 1已发布 2已撤回 |
+| PublishTime | DATETIME | DEFAULT NULL | 发布时间 |
+| AdminId | INT | FK → Admins.Id | 发布人 |
+| CreateTime | DATETIME | DEFAULT CURRENT_TIMESTAMP | 创建时间 |
+
+#### 选宿批次表（SelectionBatches）
+
+| 字段 | 类型 | 约束 | 说明 |
+|------|------|------|------|
+| Id | INT | PK, AUTO_INCREMENT | 主键 |
+| BatchName | VARCHAR(100) | NOT NULL | 批次名称 |
+| StartTime | DATETIME | NOT NULL | 开始时间 |
+| EndTime | DATETIME | NOT NULL | 截止时间 |
+| CollegeLimit | VARCHAR(500) | DEFAULT NULL | 学院限定JSON |
+| MajorLimit | VARCHAR(500) | DEFAULT NULL | 专业限定JSON |
+| GradeLimit | VARCHAR(20) | DEFAULT NULL | 年级限定 |
+| Status | TINYINT | DEFAULT 0 | 0待开始 1进行中 2已结束 3已暂停 |
+| AdminId | INT | FK → Admins.Id | 创建人 |
+| CreateTime | DATETIME | DEFAULT CURRENT_TIMESTAMP | 创建时间 |
+
+#### 批次房间关联表（BatchRooms）
+
+| 字段 | 类型 | 约束 | 说明 |
+|------|------|------|------|
+| Id | INT | PK, AUTO_INCREMENT | 主键 |
+| BatchId | INT | FK → SelectionBatches.Id | 批次ID |
+| RoomId | INT | FK → Rooms.Id | 房间ID |
+
+#### 设施状态表（FacilityStatus）
+
+| 字段 | 类型 | 约束 | 说明 |
+|------|------|------|------|
+| Id | INT | PK, AUTO_INCREMENT | 主键 |
+| RoomId | INT | FK → Rooms.Id | 房间ID |
+| FacilityType | TINYINT | NOT NULL | 1空调 2热水器 3照明 4网络 |
+| Status | TINYINT | DEFAULT 1 | 1正常 2报修中 3故障 |
+| UpdateTime | DATETIME | DEFAULT CURRENT_TIMESTAMP | 更新时间 |
+
+#### 院系专业表（Departments）
+
+| 字段 | 类型 | 约束 | 说明 |
+|------|------|------|------|
+| Id | INT | PK, AUTO_INCREMENT | 主键 |
+| CollegeName | VARCHAR(100) | NOT NULL | 学院名称 |
+| MajorName | VARCHAR(100) | NOT NULL | 专业名称 |
+| SortOrder | INT | DEFAULT 0 | 排序号 |
+
 ---
 
-## 五、MVP 功能设计
+## 五、已完成功能
 
 ### 5.1 登录注册模块
 
-#### 5.1.1 登录页
+#### 登录页（login.aspx）
+- 学号/工号 + 密码 + 验证码
+- 数据库验证，区分学生/管理员角色
+- 登录成功后跳转对应首页
 
-- **路径**：`/login.aspx`
-- **字段**：学号/工号 + 密码 + 验证码
-- **逻辑**：
-  1. 验证验证码
-  2. 先查 Students 表，匹配则跳转学生端
-  3. 再查 Admins 表，匹配则跳转管理端
-  4. 都不匹配提示错误
-- **Session**：
-  - 学生：`Session["UserId"]`, `Session["UserNo"]`, `Session["Role"]="student"`
-  - 管理员：`Session["AdminId"]`, `Session["AdminNo"]`, `Session["Role"]="admin"`
+#### 注册页（register.aspx）
+- 学生注册：学号、手机号、密码
+- 学号唯一性校验
+- 密码MD5加密存储
 
-#### 5.1.2 注册页
+#### 验证码（checkcode.aspx）
+- GDI+ 生成4位随机字符图片
+- Session存储验证码
 
-- **路径**：`/register.aspx`
-- **字段**：学号/工号、手机号、密码、确认密码
-- **校验**：学号/工号唯一、手机号格式、密码强度（8-20位）
+### 5.2 学生端
 
-#### 5.1.3 验证码
+#### 学生首页（student/home.aspx）
+- 显示宿舍信息卡片（校区、楼栋、房间号、床位号）
+- 显示室友列表
+- 显示设施状态
 
-- **路径**：`/checkcode.aspx`
-- **实现**：GDI+ 生成4位随机字符图片，存 `Session["CheckCode"]`
+### 5.3 管理端
 
----
+#### 管理端母版页（admin/MasterPage.master）
+- 左侧边栏导航
+- 用户下拉菜单
+- 导航分组和徽章
 
-### 5.2 学生端模块
-
-#### 5.2.1 我的宿舍首页
-
-- **路径**：`/student/home.aspx`
-- **功能**：
-  - 宿舍信息卡片（校区、楼栋、房间号、床位号）
-  - 室友列表（头像、姓名、学院）
-  - 快捷入口：报修、个人中心
-- **数据查询**：
-  ```sql
-  SELECT b.Campus, bd.Name AS BuildingName, r.RoomNo, bed.BedNo
-  FROM Beds bed
-  JOIN Rooms r ON bed.RoomId = r.Id
-  JOIN Buildings bd ON r.BuildingId = bd.Id
-  WHERE bed.StudentId = @StudentId
-  ```
-
-#### 5.2.2 故障报修
-
-- **路径**：`/student/repair.aspx`
-- **Tab 切换**：提交申请 / 我的报修
-
-**提交申请表单**：
-
-| 字段 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| 报修类型 | 单选 | 是 | 水电/家具家电/网络/其他 |
-| 详细描述 | 文本域 | 是 | 10-500字 |
-| 期望上门时间 | 日期时间 | 是 | — |
-| 联系电话 | 文本 | 是 | 11位手机号 |
-| 现场照片 | 文件上传 | 否 | 最多3张，jpg/png，5MB |
-
-**我的报修列表**：
-- 显示：工单编号、报修类型、提交时间、状态标签
-- 支持按状态筛选
-- 点击查看详情
-
-#### 5.2.3 个人中心
-
-- **路径**：`/student/profile.aspx`
-- **功能**：查看/编辑个人信息（邮箱、紧急联系人）
-- **只读字段**：学号、姓名、学院、专业、年级
+#### 仪表盘（admin/dashboard.aspx）
+- 统计卡片（总房间、在宿学生、空余床位、待处理报修）
+- 快捷操作入口
 
 ---
 
-### 5.3 管理端模块
+## 六、业务逻辑层（BLL）
 
-#### 5.3.1 宿舍分配管理
-
-- **路径**：`/admin/allocation.aspx`
-- **筛选**：楼栋下拉、房间号搜索
-- **房间卡片**：显示房间号、入住状态（满员/空余X张/全空置）、已入住/总床位
-- **分配操作**：
-  1. 点击房间卡片展开床位
-  2. 点击空床位弹出分配弹窗
-  3. 搜索学生（学号/姓名模糊搜索）
-  4. 确认分配
-- **退宿操作**：点击已分配床位 → 确认退宿 → 清空 StudentId
-
-#### 5.3.2 报修管理
-
-- **路径**：`/admin/repair.aspx`
-- **统计**：待处理数量、处理中数量
-- **筛选**：状态、楼栋、报修类型
-- **工单列表**：工单ID、类型、宿舍位置、描述、报修时间、状态
-- **详情面板**：点击工单展开
-  - 现场照片（可放大）
-  - 学生信息（姓名、学号、电话）
-  - 报修描述
-  - 指派技工（下拉选择管理员）
-  - 操作按钮：确认完成 / 驳回（需填原因）
-
-**状态流转**：
-```
-待分配 → 维修中 → 已完成
-待分配 → 驳回
-```
-
-#### 5.3.3 楼宇房间管理
-
-- **路径**：`/admin/building.aspx`
-- **楼宇列表**：名称、楼层数、每层房间数、操作（编辑/删除）
-- **新增楼宇**：名称、楼层数、每层房间数、校区
-- **批量生成房间**：
-  1. 选择楼宇
-  2. 输入楼层数、每层房间数
-  3. 选择房间类型（双人间/四人间/六人间）
-  4. 预览 → 确认批量创建（同时生成对应床位）
-
----
-
-## 六、数据访问层（DBHelper）
+### 6.1 DBHelper.cs
 
 ```csharp
-using System;
-using System.Data;
-using System.Configuration;
-using MySql.Data.MySqlClient;
-
+// 数据库访问封装
 public class DBHelper
 {
-    private static string connStr = ConfigurationManager.ConnectionStrings["MySQLConnectionString"].ConnectionString;
-
     public static MySqlConnection GetConnection()
-    {
-        return new MySqlConnection(connStr);
-    }
-
     public static int ExecuteNonQuery(string sql, params MySqlParameter[] parameters)
-    {
-        using (MySqlConnection conn = GetConnection())
-        {
-            conn.Open();
-            MySqlCommand cmd = new MySqlCommand(sql, conn);
-            if (parameters != null) cmd.Parameters.AddRange(parameters);
-            return cmd.ExecuteNonQuery();
-        }
-    }
-
     public static object ExecuteScalar(string sql, params MySqlParameter[] parameters)
-    {
-        using (MySqlConnection conn = GetConnection())
-        {
-            conn.Open();
-            MySqlCommand cmd = new MySqlCommand(sql, conn);
-            if (parameters != null) cmd.Parameters.AddRange(parameters);
-            return cmd.ExecuteScalar();
-        }
-    }
-
     public static DataTable GetDataTable(string sql, params MySqlParameter[] parameters)
-    {
-        using (MySqlConnection conn = GetConnection())
-        {
-            conn.Open();
-            MySqlCommand cmd = new MySqlCommand(sql, conn);
-            if (parameters != null) cmd.Parameters.AddRange(parameters);
-            MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            adapter.Fill(dt);
-            return dt;
-        }
-    }
-
     public static MySqlDataReader GetReader(string sql, params MySqlParameter[] parameters)
-    {
-        MySqlConnection conn = GetConnection();
-        conn.Open();
-        MySqlCommand cmd = new MySqlCommand(sql, conn);
-        if (parameters != null) cmd.Parameters.AddRange(parameters);
-        return cmd.ExecuteReader(CommandBehavior.CloseConnection);
-    }
+    public static bool ExecuteTransaction(string[] sqls, MySqlParameter[][] parameters)
+}
+```
 
-    public static bool ExecuteTransaction(params (string sql, MySqlParameter[] param)[] commands)
-    {
-        using (MySqlConnection conn = GetConnection())
-        {
-            conn.Open();
-            MySqlTransaction transaction = conn.BeginTransaction();
-            try
-            {
-                foreach (var (sql, param) in commands)
-                {
-                    MySqlCommand cmd = new MySqlCommand(sql, conn, transaction);
-                    if (param != null) cmd.Parameters.AddRange(param);
-                    cmd.ExecuteNonQuery();
-                }
-                transaction.Commit();
-                return true;
-            }
-            catch
-            {
-                transaction.Rollback();
-                return false;
-            }
-        }
-    }
+### 6.2 UserBLL.cs
+
+```csharp
+// 用户业务逻辑
+public class UserBLL
+{
+    public static string GetMD5(string input)
+    public static DataTable Login(string userNo, string password)
+    public static bool RegisterStudent(string studentNo, string name, string phone, string password)
+    public static DataTable GetStudentById(int studentId)
+    public static bool UpdateStudentInfo(int studentId, string email, string emergencyContact, string emergencyPhone)
+    public static DataTable GetAdminById(int adminId)
+}
+```
+
+### 6.3 DormBLL.cs
+
+```csharp
+// 宿舍业务逻辑
+public class DormBLL
+{
+    public static DataTable GetStudentDormInfo(int studentId)
+    public static DataTable GetRoommates(int studentId)
+    public static DataTable GetBuildings()
+    public static DataTable GetRoomsByBuilding(int buildingId)
+    public static DataTable GetRoomBeds(int roomId)
+    public static bool AllocateBed(int bedId, int studentId)
+    public static bool ReleaseBed(int bedId)
+    public static DataTable SearchStudents(string keyword)
+    public static int GetTotalRooms()
+    public static int GetTotalStudents()
+    public static int GetAvailableBeds()
+}
+```
+
+### 6.4 RepairBLL.cs
+
+```csharp
+// 报修业务逻辑
+public class RepairBLL
+{
+    public static string GenerateOrderNo()
+    public static bool CreateRepairOrder(int studentId, int roomId, int repairType, string description, string expectTime, string contactPhone)
+    public static DataTable GetStudentRepairOrders(int studentId, int status = 0)
+    public static DataTable GetAllRepairOrders(int status = 0)
+    public static bool AssignRepairOrder(int orderId, int adminId)
+    public static bool CompleteRepairOrder(int orderId)
+    public static bool RejectRepairOrder(int orderId, string reason)
+    public static int GetPendingRepairCount()
+    public static int GetProcessingRepairCount()
 }
 ```
 
@@ -407,28 +369,40 @@ public class DBHelper
 
 ---
 
-## 八、页面鉴权示例
+## 八、页面鉴权
 
-### 学生端页面基类
+### 学生端母版页
 
 ```csharp
 // student/MasterPage.master.cs
 protected void Page_Load(object sender, EventArgs e)
 {
-    if (Session["UserId"] == null || Session["Role"]?.ToString() != "student")
+    if (Session["UserId"] == null)
+    {
+        Response.Redirect("/login.aspx");
+        return;
+    }
+    string role = Session["Role"] != null ? Session["Role"].ToString() : "";
+    if (role != "student")
     {
         Response.Redirect("/login.aspx");
     }
 }
 ```
 
-### 管理端页面基类
+### 管理端母版页
 
 ```csharp
 // admin/MasterPage.master.cs
 protected void Page_Load(object sender, EventArgs e)
 {
-    if (Session["AdminId"] == null || Session["Role"]?.ToString() != "admin")
+    if (Session["AdminId"] == null)
+    {
+        Response.Redirect("/admin/login.aspx");
+        return;
+    }
+    string role = Session["Role"] != null ? Session["Role"].ToString() : "";
+    if (role != "admin")
     {
         Response.Redirect("/admin/login.aspx");
     }
@@ -437,42 +411,57 @@ protected void Page_Load(object sender, EventArgs e)
 
 ---
 
-## 九、MVP 开发计划
+## 九、开发进度
 
-| 阶段 | 内容 | 预计周期 |
-|------|------|----------|
-| 第一阶段 | 数据库建表脚本、web.config、DBHelper | 2天 |
-| 第二阶段 | 登录、注册、验证码 | 2天 |
-| 第三阶段 | 学生端母版页、首页（宿舍信息展示） | 2天 |
-| 第四阶段 | 学生端故障报修（提交+列表） | 2天 |
-| 第五阶段 | 学生端个人中心 | 1天 |
-| 第六阶段 | 管理端母版页、楼宇房间管理 | 2天 |
-| 第七阶段 | 管理端宿舍分配（分配+退宿） | 2天 |
-| 第八阶段 | 管理端报修管理（派工+完成+驳回） | 2天 |
-| 第九阶段 | 联调测试、Bug修复 | 3天 |
-
-**总计约 18 天**
+| 阶段 | 内容 | 状态 |
+|------|------|------|
+| 第一阶段 | 数据库建表脚本、web.config、DBHelper | 已完成 |
+| 第二阶段 | 登录、注册、验证码 | 已完成 |
+| 第三阶段 | 学生端母版页、首页（宿舍信息展示） | 已完成 |
+| 第四阶段 | 学生端故障报修（提交+列表） | 待开发 |
+| 第五阶段 | 学生端个人中心 | 待开发 |
+| 第六阶段 | 管理端母版页、仪表盘 | 已完成 |
+| 第七阶段 | 管理端宿舍分配（分配+退宿） | 待开发 |
+| 第八阶段 | 管理端报修管理（派工+完成+驳回） | 待开发 |
+| 第九阶段 | 管理端楼宇房间管理 | 待开发 |
 
 ---
 
-## 十、后续迭代计划
+## 十、测试账号
 
-MVP 完成后，按优先级迭代：
+| 角色 | 账号 | 密码 | 说明 |
+|------|------|------|------|
+| 学生 | 2023010001 | 123456 | 张小明，已分配A-101 |
+| 学生 | 2023010003 | 123456 | 王小强，已分配A-101 |
+| 学生 | 2023010006 | 123456 | 陈小红，已分配A-102 |
+| 管理员 | admin001 | 123456 | 超级管理员 |
+| 管理员 | admin002 | 123456 | 宿管 |
+| 管理员 | admin004 | 123456 | 后勤 |
+
+---
+
+## 十一、后续迭代计划
 
 | 迭代 | 功能 | 优先级 |
 |------|------|--------|
-| V1.1 | 选宿批次、抢宿舍（含并发控制） | P1 |
-| V1.2 | 通知公告管理 | P1 |
-| V1.3 | 仪表盘统计（ECharts 图表） | P2 |
-| V1.4 | 费用缴纳 | P2 |
-| V1.5 | 系统管理（管理员账号、院系专业） | P2 |
+| V1.1 | 学生端故障报修、个人中心 | P0 |
+| V1.2 | 管理端宿舍分配、报修管理 | P0 |
+| V1.3 | 管理端楼宇房间管理 | P0 |
+| V1.4 | 选宿批次、抢宿舍（含并发控制） | P1 |
+| V1.5 | 通知公告管理 | P1 |
+| V1.6 | 仪表盘统计（ECharts 图表） | P2 |
+| V1.7 | 费用缴纳 | P2 |
+| V1.8 | 系统管理（管理员账号、院系专业） | P2 |
 
 ---
 
-## 十一、注意事项
+## 十二、注意事项
 
 - `.aspx` 和 `.aspx.cs` 是配对文件，改逻辑必须同时理解两者
 - `App_Code/` 下的类自动参与编译，新增文件无需手动引用
 - 学生端母版页提供底部Tab导航，管理端母版页提供左侧边栏导航
 - 图片上传路径：头像 `Uploads/avatars/`，报修照片 `Uploads/repair/`
 - 所有数据库操作必须使用参数化查询
+- MySql.Data.dll 版本为 6.10.9，兼容 .NET Framework 4.0
+- C# 代码中不要使用 `?.` 空条件运算符（.NET 4.0 不支持）
+- 中文字符串使用 Unicode 转义序列避免编码问题
