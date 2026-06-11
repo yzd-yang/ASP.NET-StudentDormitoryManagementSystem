@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using MySql.Data.MySqlClient;
 
@@ -7,7 +7,7 @@ public class DormBLL
     public static DataTable GetStudentDormInfo(int studentId)
     {
         string sql = @"SELECT s.Name as StudentName, s.StudentNo, s.College, s.Major, s.Grade,
-                       b.Campus, bd.Name as BuildingName, r.RoomNo, r.RoomType, bed.BedNo
+                       bd.Campus, bd.Name as BuildingName, r.RoomNo, r.RoomType, bed.BedNo
                        FROM Students s
                        LEFT JOIN Beds bed ON s.Id = bed.StudentId
                        LEFT JOIN Rooms r ON bed.RoomId = r.Id
