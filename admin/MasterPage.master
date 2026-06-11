@@ -12,9 +12,10 @@
     <link href="/css/admin.css" rel="stylesheet" />
     <asp:ContentPlaceHolder ID="head" runat="server" />
 </head>
-<body>
+<body class="admin-body">
     <form id="form1" runat="server">
 
+        <!-- 顶部导航栏 -->
         <header class="admin-header glass-strong">
             <div class="admin-header-inner">
                 <div class="admin-header-left">
@@ -24,11 +25,11 @@
                     <span class="admin-header-brand">SmartDorm</span>
                 </div>
                 <div class="admin-header-right">
-                    <button type="button" class="admin-header-btn">
+                    <button type="button" class="admin-header-btn" title="通知">
                         <span class="material-symbols-outlined">notifications</span>
                         <span class="admin-header-badge"></span>
                     </button>
-                    <div class="admin-header-user">
+                    <div class="admin-header-user" onclick="toggleUserMenu()">
                         <div class="admin-header-avatar">
                             <span class="material-symbols-outlined">person</span>
                         </div>
@@ -36,11 +37,29 @@
                             <span class="admin-header-user-name"><%= Session["AdminName"] ?? "管理员" %></span>
                             <span class="admin-header-user-role"><%= Session["AdminRoleName"] ?? "系统管理员" %></span>
                         </div>
+                        <span class="material-symbols-outlined admin-header-user-arrow">expand_more</span>
                     </div>
                 </div>
             </div>
+            <!-- 用户下拉菜单 -->
+            <div id="userDropdown" class="admin-user-dropdown">
+                <a href="#" class="admin-user-dropdown-item">
+                    <span class="material-symbols-outlined">person</span>
+                    <span>个人资料</span>
+                </a>
+                <a href="#" class="admin-user-dropdown-item">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span>账号设置</span>
+                </a>
+                <div class="admin-user-dropdown-divider"></div>
+                <asp:LinkButton ID="btnLogoutTop" runat="server" OnClick="btnLogout_Click" CssClass="admin-user-dropdown-item admin-user-dropdown-logout">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span>退出登录</span>
+                </asp:LinkButton>
+            </div>
         </header>
 
+        <!-- 侧边栏导航 -->
         <aside id="sidebar" class="admin-sidebar glass">
             <div class="admin-sidebar-brand">
                 <div class="admin-sidebar-brand-icon">
@@ -53,51 +72,85 @@
             </div>
 
             <nav class="admin-nav">
-                <a href="/admin/dashboard.aspx" class="admin-nav-item <%= IsActive("dashboard") %>">
-                    <span class="material-symbols-outlined">dashboard</span>
-                    <span class="admin-nav-label">仪表盘</span>
-                </a>
-                <a href="/admin/allocation.aspx" class="admin-nav-item <%= IsActive("allocation") %>">
-                    <span class="material-symbols-outlined">bed</span>
-                    <span class="admin-nav-label">宿舍分配</span>
-                </a>
-                <a href="/admin/repair.aspx" class="admin-nav-item <%= IsActive("repair") %>">
-                    <span class="material-symbols-outlined">build</span>
-                    <span class="admin-nav-label">报修管理</span>
-                </a>
-                <a href="/admin/notice.aspx" class="admin-nav-item <%= IsActive("notice") %>">
-                    <span class="material-symbols-outlined">campaign</span>
-                    <span class="admin-nav-label">通知公告</span>
-                </a>
-                <a href="/admin/building.aspx" class="admin-nav-item <%= IsActive("building") %>">
-                    <span class="material-symbols-outlined">meeting_room</span>
-                    <span class="admin-nav-label">楼宇管理</span>
-                </a>
+                <div class="admin-nav-group">
+                    <div class="admin-nav-group-title">主要功能</div>
+                    <a href="/admin/dashboard.aspx" class="admin-nav-item <%= IsActive("dashboard") %>">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <span class="admin-nav-label">仪表盘</span>
+                    </a>
+                    <a href="/admin/allocation.aspx" class="admin-nav-item <%= IsActive("allocation") %>">
+                        <span class="material-symbols-outlined">bed</span>
+                        <span class="admin-nav-label">宿舍分配</span>
+                    </a>
+                    <a href="/admin/repair.aspx" class="admin-nav-item <%= IsActive("repair") %>">
+                        <span class="material-symbols-outlined">build</span>
+                        <span class="admin-nav-label">报修管理</span>
+                        <span class="admin-nav-badge">3</span>
+                    </a>
+                </div>
+
+                <div class="admin-nav-group">
+                    <div class="admin-nav-group-title">系统管理</div>
+                    <a href="/admin/notice.aspx" class="admin-nav-item <%= IsActive("notice") %>">
+                        <span class="material-symbols-outlined">campaign</span>
+                        <span class="admin-nav-label">通知公告</span>
+                    </a>
+                    <a href="/admin/building.aspx" class="admin-nav-item <%= IsActive("building") %>">
+                        <span class="material-symbols-outlined">meeting_room</span>
+                        <span class="admin-nav-label">楼宇管理</span>
+                    </a>
+                </div>
             </nav>
 
             <div class="admin-sidebar-footer">
-                <asp:LinkButton ID="btnLogout" runat="server" OnClick="btnLogout_Click" class="admin-nav-item admin-nav-logout">
+                <div class="admin-sidebar-user">
+                    <div class="admin-sidebar-user-avatar">
+                        <span class="material-symbols-outlined">person</span>
+                    </div>
+                    <div class="admin-sidebar-user-info">
+                        <div class="admin-sidebar-user-name"><%= Session["AdminName"] ?? "管理员" %></div>
+                        <div class="admin-sidebar-user-role"><%= Session["AdminRoleName"] ?? "系统管理员" %></div>
+                    </div>
+                </div>
+                <asp:LinkButton ID="btnLogout" runat="server" OnClick="btnLogout_Click" CssClass="admin-sidebar-logout" ToolTip="退出登录">
                     <span class="material-symbols-outlined">logout</span>
-                    <span class="admin-nav-label">退出登录</span>
                 </asp:LinkButton>
             </div>
         </aside>
 
+        <!-- 侧边栏遮罩（移动端） -->
         <div id="sidebarOverlay" class="admin-sidebar-overlay" onclick="toggleSidebar()"></div>
 
+        <!-- 主内容区域 -->
         <main class="admin-main">
             <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
         </main>
 
     </form>
 
-    <script>
+    <script type="text/javascript">
+        // 切换侧边栏（移动端）
         function toggleSidebar() {
             var sidebar = document.getElementById('sidebar');
             var overlay = document.getElementById('sidebarOverlay');
             sidebar.classList.toggle('open');
             overlay.classList.toggle('show');
         }
+
+        // 切换用户下拉菜单
+        function toggleUserMenu() {
+            var dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // 点击其他地方关闭下拉菜单
+        document.addEventListener('click', function(e) {
+            var user = document.querySelector('.admin-header-user');
+            var dropdown = document.getElementById('userDropdown');
+            if (!user.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
     </script>
 </body>
 </html>
