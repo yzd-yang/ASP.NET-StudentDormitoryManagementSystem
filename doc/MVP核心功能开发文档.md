@@ -185,10 +185,12 @@ SmartDorm/
 - 快捷操作面板（含待处理工单数、空余床位数）
 
 #### 宿舍分配管理（admin/allocation.aspx）✅
-- 筛选栏（楼栋、房间号）
-- 操作按钮（批量导入、导出表格、集中退宿）
-- 房间卡片网格（满员、空余、空置三种状态）
-- 床位分配操作
+- 筛选栏（楼栋下拉、房间号搜索）- 动态数据
+- 房间卡片网格（满员、空余、空置三种状态）- 动态数据
+- 床位显示（已入住学生信息、空床位可分配）
+- 分配床位：搜索学生 → 选择 → 确认分配
+- 退宿操作：确认后移除学生床位
+- 分页功能
 
 #### 报修管理（admin/repair.aspx）✅
 - 统计卡片（待处理、处理中、紧急、今日已完成）
@@ -264,6 +266,9 @@ public class DormBLL
     public static int GetAvailableBeds()
     public static DataTable GetBuildingOccupancy()    // 获取各楼宇入住率数据
     public static int GetTotalBeds()                  // 获取总床位数
+    public static DataTable GetAllRooms(...)           // 获取所有房间（支持筛选分页）
+    public static int GetRoomCount(...)                // 获取房间数量（支持筛选）
+    public static int GetTotalRoomCount()              // 获取总房间数
 }
 ```
 
