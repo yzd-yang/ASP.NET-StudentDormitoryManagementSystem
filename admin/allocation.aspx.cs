@@ -57,23 +57,23 @@ public partial class admin_allocation : System.Web.UI.Page
         {
             rptRooms.DataSource = dt;
             rptRooms.DataBind();
-            pnlEmpty.Visible = false;
+            rptRooms.Visible = true;
+            pnlNoRooms.Visible = false;
         }
         else
         {
             rptRooms.Visible = false;
-            pnlEmpty.Visible = true;
+            pnlNoRooms.Visible = true;
         }
 
         litStats.Text = totalRooms + " 房间 / " + totalBeds + " 床位";
 
-        // 分页信息
+        // 分页
         int totalPages = (int)Math.Ceiling((double)totalRooms / PageSize);
         int start = (CurrentPage - 1) * PageSize + 1;
         int end = Math.Min(CurrentPage * PageSize, totalRooms);
         litPageInfo.Text = "显示 " + start + " 到 " + end + " / 共 " + totalRooms + " 个房间";
 
-        // 分页按钮
         btnPrev.Enabled = CurrentPage > 1;
         btnPrev.Style["opacity"] = CurrentPage > 1 ? "1" : "0.4";
 
@@ -142,19 +142,20 @@ public partial class admin_allocation : System.Web.UI.Page
         {
             int bedId = Convert.ToInt32(e.CommandArgument);
             hfBedId.Value = bedId.ToString();
-            litModalTitle.Text = "床位 " + GetBedName(bedId);
+            litModalTitle.Text = GetBedName(bedId);
             txtSearchStudent.Text = "";
             rptStudents.DataSource = null;
             rptStudents.DataBind();
-            pnlNoStudent.Visible = true;
-            allocateModal.Attributes["class"] = "modal-overlay show";
+            pnlAllocateModal.Style["display"] = "flex";
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "showModal", "showAllocateModal();", true);
         }
         else if (e.CommandName == "Release")
         {
             int bedId = Convert.ToInt32(e.CommandArgument);
-            hfReleaseBedId.Value = bedId.ToString();
-            litReleaseInfo.Text = "床位: " + GetBedName(bedId);
-            releaseModal.Attributes["class"] = "modal-overlay show";
+            if (DormBLL.ReleaseBed(bedId))
+            {
+                LoadRooms();
+            }
         }
     }
 
@@ -195,7 +196,8 @@ public partial class admin_allocation : System.Web.UI.Page
             pnlNoStudent.Visible = true;
         }
 
-        allocateModal.Attributes["class"] = "modal-overlay show";
+        pnlAllocateModal.Style["display"] = "flex";
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "showModal", "showAllocateModal();", true);
     }
 
     protected void rptStudents_ItemCommand(object source, RepeaterCommandEventArgs e)
@@ -207,21 +209,15 @@ public partial class admin_allocation : System.Web.UI.Page
 
             if (DormBLL.AllocateBed(bedId, studentId))
             {
-                allocateModal.Attributes["class"] = "modal-overlay";
+                pnlAllocateModal.Style["display"] = "none";
                 LoadRooms();
             }
         }
     }
 
-    protected void btnConfirmRelease_Click(object sender, EventArgs e)
+    protected void btnCloseModal_Click(object sender, EventArgs e)
     {
-        int bedId = Convert.ToInt32(hfReleaseBedId.Value);
-
-        if (DormBLL.ReleaseBed(bedId))
-        {
-            releaseModal.Attributes["class"] = "modal-overlay";
-            LoadRooms();
-        }
+        pnlAllocateModal.Style["display"] = "none";
     }
 
     protected string GetRoomType(object roomType)
@@ -254,53 +250,12 @@ public partial class admin_allocation : System.Web.UI.Page
         return "空余 " + (t - o);
     }
 
-    protected string GetOccupiedBedHtml(object name, object studentNo, object bedId)
-    {
-        string n = name != null ? name.ToString() : "";
-        string s = studentNo != null ? studentNo.ToString() : "";
-        string id = bedId.ToString();
-        return "<div class='bed-item'><div class='bed-left'><div class='bed-avatar'><span class='material-symbols-outlined'>person</span></div><div><div class='bed-name'>" + n + "</div><div class='bed-info'>" + s + "</div></div></div><button class='release-btn' type='submit' name='ReleaseBtn' value='" + id + "' onclick=\"return confirm('确定要退宿吗？');\">退宿</button></div>";
-    }
-
-    protected string GetEmptyBedHtml(object bedNo, object bedId)
-    {
-        string bn = bedNo.ToString();
-        string id = bedId.ToString();
-        return "<button class='bed-empty' type='submit' name='AllocateBtn' value='" + id + "'><span class='material-symbols-outlined'>add_circle</span> 分配床位 " + bn + "</button>";
-    }
-
     protected override void RaisePostBackEvent(IPostBackEventHandler sourceControl, string eventArgument)
     {
-        // 处理分页按钮点击
         if (!string.IsNullOrEmpty(Request.Form["PageBtn"]))
         {
             CurrentPage = Convert.ToInt32(Request.Form["PageBtn"]);
             LoadRooms();
-            return;
-        }
-
-        // 处理分配床位按钮点击
-        if (!string.IsNullOrEmpty(Request.Form["AllocateBtn"]))
-        {
-            int bedId = Convert.ToInt32(Request.Form["AllocateBtn"]);
-            hfBedId.Value = bedId.ToString();
-            litModalTitle.Text = "床位 " + GetBedName(bedId);
-            txtSearchStudent.Text = "";
-            rptStudents.DataSource = null;
-            rptStudents.DataBind();
-            pnlNoStudent.Visible = true;
-            allocateModal.Attributes["class"] = "modal-overlay show";
-            return;
-        }
-
-        // 处理退宿按钮点击
-        if (!string.IsNullOrEmpty(Request.Form["ReleaseBtn"]))
-        {
-            int bedId = Convert.ToInt32(Request.Form["ReleaseBtn"]);
-            if (DormBLL.ReleaseBed(bedId))
-            {
-                LoadRooms();
-            }
             return;
         }
 

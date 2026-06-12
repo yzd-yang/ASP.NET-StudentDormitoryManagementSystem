@@ -40,20 +40,21 @@
             display:flex; align-items:center; justify-content:space-between; padding:12px 14px;
             background:rgba(255,255,255,0.4); border-radius:12px; margin-bottom:8px; transition:all 0.2s;
         }
-        .bed-item:hover { border-color:rgba(73,234,206,0.3); background:rgba(255,255,255,0.6); }
+        .bed-item:hover { background:rgba(255,255,255,0.6); }
         .bed-left { display:flex; align-items:center; gap:10px; }
         .bed-avatar { width:36px; height:36px; border-radius:50%; background:rgba(73,234,206,0.12); display:flex; align-items:center; justify-content:center; }
         .bed-avatar .material-symbols-outlined { font-size:18px; color:var(--primary); }
         .bed-name { font-size:14px; font-weight:700; color:var(--on-surface); }
         .bed-info { font-size:12px; color:var(--on-surface-variant); }
-        .bed-status { font-size:12px; font-weight:700; color:var(--primary); }
-        .bed-empty {
+        .bed-empty-btn {
             display:flex; align-items:center; justify-content:center; gap:8px; padding:14px;
             border:2px dashed rgba(73,234,206,0.3); border-radius:14px; color:var(--on-surface-variant);
             cursor:pointer; transition:all 0.2s; margin-bottom:8px; background:transparent; width:100%; font-family:inherit; font-size:14px;
+            text-decoration:none; font-weight:600;
         }
-        .bed-empty:hover { border-color:var(--primary); color:var(--primary); background:rgba(73,234,206,0.04); }
-        .bed-empty .material-symbols-outlined { color:var(--primary); font-size:20px; }
+        .bed-empty-btn:hover { border-color:var(--primary); color:var(--primary); background:rgba(73,234,206,0.04); }
+        .release-btn { font-size:11px; color:var(--error); cursor:pointer; background:none; border:none; font-family:inherit; font-weight:600; padding:4px 8px; border-radius:6px; }
+        .release-btn:hover { background:rgba(186,26,26,0.08); }
 
         .pagination-bar { display:flex; justify-content:space-between; align-items:center; margin-top:24px; padding-top:20px; border-top:1px solid rgba(73,234,206,0.12); }
         .pagination-info { font-size:13px; color:var(--on-surface-variant); }
@@ -62,7 +63,6 @@
         .page-btn.active { background:var(--primary); color:var(--on-primary); }
         .page-btn:hover:not(.active) { background:rgba(73,234,206,0.1); }
 
-        /* 分配弹窗 */
         .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
         .modal-overlay.show { display:flex; }
         .modal-card { background:#fff; border-radius:24px; max-width:500px; width:90%; max-height:85vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.2); }
@@ -70,25 +70,22 @@
         .modal-header h3 { font-size:18px; font-weight:700; color:var(--on-surface); }
         .modal-close { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border:none; background:rgba(0,0,0,0.05); border-radius:50%; cursor:pointer; color:var(--on-surface-variant); }
         .modal-body { padding:24px; }
-        .modal-search { width:100%; padding:14px 14px 14px 44px; border:1px solid var(--outline-variant); border-radius:14px; background:#FFF9E6; font-family:inherit; font-size:15px; outline:none; transition:all 0.2s; }
+        .modal-search { width:100%; padding:14px 14px 14px 44px; border:1px solid var(--outline-variant); border-radius:14px; background:#FFF9E6; font-family:inherit; font-size:15px; outline:none; transition:all 0.2s; box-sizing:border-box; }
         .modal-search:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(73,234,206,0.12); }
         .modal-search-wrap { position:relative; margin-bottom:16px; }
         .modal-search-wrap .material-symbols-outlined { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--primary); font-size:20px; }
-        .student-item { display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:12px; cursor:pointer; transition:all 0.2s; margin-bottom:8px; border:1px solid rgba(0,0,0,0.05); }
+        .student-item { display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:12px; transition:all 0.2s; margin-bottom:8px; border:1px solid rgba(0,0,0,0.05); }
         .student-item:hover { background:rgba(73,234,206,0.08); border-color:var(--primary); }
         .student-left { display:flex; align-items:center; gap:12px; }
         .student-avatar { width:40px; height:40px; border-radius:50%; background:rgba(73,234,206,0.15); display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--primary); font-size:16px; }
         .student-name { font-size:14px; font-weight:700; color:var(--on-surface); }
         .student-detail { font-size:12px; color:var(--on-surface-variant); }
+        .student-select-btn { padding:8px 16px; background:var(--primary); color:var(--on-primary); border:none; border-radius:10px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; }
         .modal-footer { padding:16px 24px; border-top:1px solid rgba(0,0,0,0.05); display:flex; justify-content:flex-end; gap:12px; }
-        .modal-cancel { padding:12px 24px; border:2px solid var(--outline-variant); background:transparent; border-radius:14px; font-size:14px; font-weight:700; cursor:pointer; color:var(--on-surface-variant); font-family:inherit; }
-        .modal-confirm { padding:12px 24px; background:var(--primary); color:var(--on-primary); border:none; border-radius:14px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; box-shadow:0 4px 12px rgba(73,234,206,0.3); }
+        .modal-cancel-btn { padding:12px 24px; border:2px solid var(--outline-variant); background:transparent; border-radius:14px; font-size:14px; font-weight:700; cursor:pointer; color:var(--on-surface-variant); font-family:inherit; }
 
         .empty-msg { text-align:center; padding:40px; color:var(--on-surface-variant); }
         .empty-msg .material-symbols-outlined { font-size:48px; opacity:0.3; display:block; margin-bottom:8px; }
-
-        .release-btn { font-size:11px; color:var(--error); cursor:pointer; background:none; border:none; font-family:inherit; font-weight:600; padding:4px 8px; border-radius:6px; }
-        .release-btn:hover { background:rgba(186,26,26,0.08); }
     </style>
 </asp:Content>
 
@@ -130,7 +127,24 @@
                     </div>
                     <asp:Repeater ID="rptBeds" runat="server" OnItemCommand="rptBeds_ItemCommand">
                         <ItemTemplate>
-                            <%# Convert.ToInt32(Eval("Status")) == 1 ? GetOccupiedBedHtml(Eval("StudentName"), Eval("StudentNo"), Eval("Id")) : GetEmptyBedHtml(Eval("BedNo"), Eval("Id")) %>
+                            <asp:Panel ID="pnlOccupied" runat="server" Visible='<%# Convert.ToInt32(Eval("Status")) == 1 %>'>
+                                <div class="bed-item">
+                                    <div class="bed-left">
+                                        <div class="bed-avatar"><span class="material-symbols-outlined">person</span></div>
+                                        <div>
+                                            <div class="bed-name"><%# Eval("StudentName") %></div>
+                                            <div class="bed-info"><%# Eval("StudentNo") %></div>
+                                        </div>
+                                    </div>
+                                    <asp:LinkButton ID="btnRelease" runat="server" CommandName="Release" CommandArgument='<%# Eval("Id") %>' CssClass="release-btn" OnClientClick="return confirm('确定要退宿吗？');">退宿</asp:LinkButton>
+                                </div>
+                            </asp:Panel>
+                            <asp:Panel ID="pnlEmpty" runat="server" Visible='<%# Convert.ToInt32(Eval("Status")) == 0 %>'>
+                                <asp:LinkButton ID="btnAllocate" runat="server" CommandName="Allocate" CommandArgument='<%# Eval("Id") %>' CssClass="bed-empty-btn">
+                                    <span class="material-symbols-outlined" style="font-size:20px; color:var(--primary);">add_circle</span>
+                                    分配床位 <%# Eval("BedNo") %>
+                                </asp:LinkButton>
+                            </asp:Panel>
                         </ItemTemplate>
                     </asp:Repeater>
                 </div>
@@ -138,7 +152,7 @@
         </asp:Repeater>
     </div>
 
-    <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
+    <asp:Panel ID="pnlNoRooms" runat="server" Visible="false">
         <div class="empty-msg">
             <span class="material-symbols-outlined">meeting_room</span>
             <p>暂无房间数据</p>
@@ -157,11 +171,11 @@
     </div>
 
     <!-- 分配弹窗 -->
-    <div class="modal-overlay" id="allocateModal" runat="server">
+    <asp:Panel ID="pnlAllocateModal" runat="server" CssClass="modal-overlay" Style="display:none;">
         <div class="modal-card">
             <div class="modal-header">
                 <h3>床位分配 - <asp:Literal ID="litModalTitle" runat="server" /></h3>
-                <button class="modal-close" type="button" onclick="closeModal()"><span class="material-symbols-outlined">close</span></button>
+                <asp:Button ID="btnCloseModal" runat="server" CssClass="modal-close" Text="X" OnClick="btnCloseModal_Click" />
             </div>
             <div class="modal-body">
                 <asp:HiddenField ID="hfBedId" runat="server" />
@@ -180,11 +194,11 @@
                                         <div class="student-detail"><%# Eval("StudentNo") %> · <%# Eval("College") %> · <%# Eval("Major") %></div>
                                     </div>
                                 </div>
-                                <asp:LinkButton ID="btnSelect" runat="server" CommandName="Select" CommandArgument='<%# Eval("Id") %>' CssClass="modal-confirm" style="padding:8px 16px; font-size:13px;">选择</asp:LinkButton>
+                                <asp:LinkButton ID="btnSelectStudent" runat="server" CommandName="Select" CommandArgument='<%# Eval("Id") %>' CssClass="student-select-btn">选择</asp:LinkButton>
                             </div>
                         </ItemTemplate>
                     </asp:Repeater>
-                    <asp:Panel ID="pnlNoStudent" runat="server" Visible="false">
+                    <asp:Panel ID="pnlNoStudent" runat="server" Visible="true">
                         <div style="text-align:center; padding:20px; color:var(--on-surface-variant);">
                             <p>请输入学号或姓名搜索学生</p>
                         </div>
@@ -192,47 +206,20 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="modal-cancel" type="button" onclick="closeModal()">取消</button>
+                <asp:Button ID="btnCancel" runat="server" CssClass="modal-cancel-btn" Text="取消" OnClick="btnCloseModal_Click" />
             </div>
         </div>
-    </div>
-
-    <!-- 退宿确认弹窗 -->
-    <div class="modal-overlay" id="releaseModal" runat="server">
-        <div class="modal-card" style="max-width:400px;">
-            <div class="modal-header">
-                <h3>确认退宿</h3>
-                <button class="modal-close" type="button" onclick="closeReleaseModal()"><span class="material-symbols-outlined">close</span></button>
-            </div>
-            <div class="modal-body">
-                <p style="color:var(--on-surface-variant); margin-bottom:16px;">确定要将该学生从床位移除吗？此操作不可撤销。</p>
-                <asp:HiddenField ID="hfReleaseBedId" runat="server" />
-                <p style="font-weight:700; color:var(--on-surface);">
-                    <asp:Literal ID="litReleaseInfo" runat="server" />
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-cancel" type="button" onclick="closeReleaseModal()">取消</button>
-                <asp:Button ID="btnConfirmRelease" runat="server" CssClass="modal-confirm" Text="确认退宿" style="background:var(--error);" OnClick="btnConfirmRelease_Click" />
-            </div>
-        </div>
-    </div>
+    </asp:Panel>
 
     <script type="text/javascript">
-        function openModal() {
-            document.getElementById('<%= allocateModal.ClientID %>').classList.add('show');
+        function showAllocateModal() {
+            var modal = document.getElementById('<%= pnlAllocateModal.ClientID %>');
+            modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
         }
-        function closeModal() {
-            document.getElementById('<%= allocateModal.ClientID %>').classList.remove('show');
-            document.body.style.overflow = '';
-        }
-        function openReleaseModal() {
-            document.getElementById('<%= releaseModal.ClientID %>').classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeReleaseModal() {
-            document.getElementById('<%= releaseModal.ClientID %>').classList.remove('show');
+        function hideAllocateModal() {
+            var modal = document.getElementById('<%= pnlAllocateModal.ClientID %>');
+            modal.style.display = 'none';
             document.body.style.overflow = '';
         }
     </script>
