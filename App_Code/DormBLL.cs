@@ -94,12 +94,91 @@ public class DormBLL
 
     public static DataTable SearchStudents(string keyword)
     {
-        string sql = @"SELECT Id, StudentNo, Name, College, Major, Grade 
+        string sql = @"SELECT Id, StudentNo, Name, College, Major, Grade, ClassName
                        FROM Students 
                        WHERE (StudentNo LIKE @Keyword OR Name LIKE @Keyword) AND Status=1
                        LIMIT 20";
         MySqlParameter[] parameters = new MySqlParameter[] { new MySqlParameter("@Keyword", "%" + keyword + "%") };
         return DBHelper.GetDataTable(sql, parameters);
+    }
+
+    public static DataTable SearchStudents(string keyword, string college, string major, string grade, string className)
+    {
+        string sql = @"SELECT Id, StudentNo, Name, College, Major, Grade, ClassName
+                       FROM Students 
+                       WHERE Status=1";
+
+        if (!string.IsNullOrEmpty(keyword))
+        {
+            sql += " AND (StudentNo LIKE @Keyword OR Name LIKE @Keyword)";
+        }
+        if (!string.IsNullOrEmpty(college))
+        {
+            sql += " AND College=@College";
+        }
+        if (!string.IsNullOrEmpty(major))
+        {
+            sql += " AND Major=@Major";
+        }
+        if (!string.IsNullOrEmpty(grade))
+        {
+            sql += " AND Grade=@Grade";
+        }
+        if (!string.IsNullOrEmpty(className))
+        {
+            sql += " AND ClassName=@ClassName";
+        }
+
+        sql += " ORDER BY StudentNo LIMIT 30";
+
+        var paramList = new System.Collections.Generic.List<MySqlParameter>();
+        if (!string.IsNullOrEmpty(keyword))
+            paramList.Add(new MySqlParameter("@Keyword", "%" + keyword + "%"));
+        if (!string.IsNullOrEmpty(college))
+            paramList.Add(new MySqlParameter("@College", college));
+        if (!string.IsNullOrEmpty(major))
+            paramList.Add(new MySqlParameter("@Major", major));
+        if (!string.IsNullOrEmpty(grade))
+            paramList.Add(new MySqlParameter("@Grade", grade));
+        if (!string.IsNullOrEmpty(className))
+            paramList.Add(new MySqlParameter("@ClassName", className));
+
+        return DBHelper.GetDataTable(sql, paramList.ToArray());
+    }
+
+    public static DataTable GetColleges()
+    {
+        string sql = "SELECT DISTINCT CollegeName FROM Departments ORDER BY CollegeName";
+        return DBHelper.GetDataTable(sql);
+    }
+
+    public static DataTable GetMajorsByCollege(string college)
+    {
+        string sql = "SELECT DISTINCT MajorName FROM Departments WHERE CollegeName=@College ORDER BY MajorName";
+        MySqlParameter[] parameters = new MySqlParameter[] { new MySqlParameter("@College", college) };
+        return DBHelper.GetDataTable(sql, parameters);
+    }
+
+    public static DataTable GetGrades()
+    {
+        string sql = "SELECT DISTINCT Grade FROM Students WHERE Grade IS NOT NULL ORDER BY Grade DESC";
+        return DBHelper.GetDataTable(sql);
+    }
+
+    public static DataTable GetClasses(string college, string major, string grade)
+    {
+        string sql = "SELECT DISTINCT ClassName FROM Students WHERE ClassName IS NOT NULL";
+        if (!string.IsNullOrEmpty(college)) sql += " AND College=@College";
+        if (!string.IsNullOrEmpty(major)) sql += " AND Major=@Major";
+        if (!string.IsNullOrEmpty(grade)) sql += " AND Grade=@Grade";
+        sql += " ORDER BY ClassName";
+
+        var paramList = new System.Collections.Generic.List<MySqlParameter>();
+        if (!string.IsNullOrEmpty(college)) paramList.Add(new MySqlParameter("@College", college));
+        if (!string.IsNullOrEmpty(major)) paramList.Add(new MySqlParameter("@Major", major));
+        if (!string.IsNullOrEmpty(grade)) paramList.Add(new MySqlParameter("@Grade", grade));
+
+        return DBHelper.GetDataTable(sql, paramList.ToArray());
     }
 
     public static int GetTotalRooms()

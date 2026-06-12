@@ -26,6 +26,8 @@ public partial class admin_allocation : System.Web.UI.Page
         {
             LoadBuildings();
             LoadRooms();
+            LoadFilterColleges();
+            LoadFilterGrades();
         }
     }
 
@@ -35,6 +37,57 @@ public partial class admin_allocation : System.Web.UI.Page
         foreach (DataRow row in dt.Rows)
         {
             ddlBuilding.Items.Add(new ListItem(row["Name"].ToString() + " (" + row["Campus"] + ")", row["Id"].ToString()));
+        }
+    }
+
+    private void LoadFilterColleges()
+    {
+        ddlCollege.Items.Clear();
+        ddlCollege.Items.Add(new ListItem("全部学院", ""));
+        DataTable dt = DormBLL.GetColleges();
+        foreach (DataRow row in dt.Rows)
+        {
+            ddlCollege.Items.Add(new ListItem(row["CollegeName"].ToString(), row["CollegeName"].ToString()));
+        }
+    }
+
+    private void LoadFilterMajors()
+    {
+        ddlMajor.Items.Clear();
+        ddlMajor.Items.Add(new ListItem("全部专业", ""));
+        string college = ddlCollege.SelectedValue;
+        if (!string.IsNullOrEmpty(college))
+        {
+            DataTable dt = DormBLL.GetMajorsByCollege(college);
+            foreach (DataRow row in dt.Rows)
+            {
+                ddlMajor.Items.Add(new ListItem(row["MajorName"].ToString(), row["MajorName"].ToString()));
+            }
+        }
+    }
+
+    private void LoadFilterGrades()
+    {
+        ddlGrade.Items.Clear();
+        ddlGrade.Items.Add(new ListItem("全部年级", ""));
+        DataTable dt = DormBLL.GetGrades();
+        foreach (DataRow row in dt.Rows)
+        {
+            ddlGrade.Items.Add(new ListItem(row["Grade"].ToString(), row["Grade"].ToString()));
+        }
+    }
+
+    private void LoadFilterClasses()
+    {
+        ddlClass.Items.Clear();
+        ddlClass.Items.Add(new ListItem("全部班级", ""));
+        string college = ddlCollege.SelectedValue;
+        string major = ddlMajor.SelectedValue;
+        string grade = ddlGrade.SelectedValue;
+        DataTable dt = DormBLL.GetClasses(college, major, grade);
+        foreach (DataRow row in dt.Rows)
+        {
+            ddlClass.Items.Add(new ListItem(row["ClassName"].ToString(), row["ClassName"].ToString()));
         }
     }
 
@@ -144,10 +197,14 @@ public partial class admin_allocation : System.Web.UI.Page
             hfBedId.Value = bedId.ToString();
             litModalTitle.Text = GetBedName(bedId);
             txtSearchStudent.Text = "";
+            ddlCollege.SelectedIndex = 0;
+            LoadFilterMajors();
+            ddlGrade.SelectedIndex = 0;
+            LoadFilterClasses();
             rptStudents.DataSource = null;
             rptStudents.DataBind();
+            pnlNoStudent.Visible = true;
             pnlAllocateModal.Style["display"] = "flex";
-            Page.ClientScript.RegisterStartupScript(this.GetType(), "showModal", "showAllocateModal();", true);
         }
         else if (e.CommandName == "Release")
         {
@@ -170,24 +227,39 @@ public partial class admin_allocation : System.Web.UI.Page
         return bedId.ToString();
     }
 
-    protected void txtSearchStudent_TextChanged(object sender, EventArgs e)
+    protected void ddlCollege_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        LoadFilterMajors();
+        LoadFilterClasses();
+        pnlAllocateModal.Style["display"] = "flex";
+    }
+
+    protected void ddlMajor_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        LoadFilterClasses();
+        pnlAllocateModal.Style["display"] = "flex";
+    }
+
+    protected void ddlGrade_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        LoadFilterClasses();
+        pnlAllocateModal.Style["display"] = "flex";
+    }
+
+    protected void btnSearchStudent_Click(object sender, EventArgs e)
     {
         string keyword = txtSearchStudent.Text.Trim();
-        if (!string.IsNullOrEmpty(keyword))
+        string college = ddlCollege.SelectedValue;
+        string major = ddlMajor.SelectedValue;
+        string grade = ddlGrade.SelectedValue;
+        string className = ddlClass.SelectedValue;
+
+        DataTable dt = DormBLL.SearchStudents(keyword, college, major, grade, className);
+        if (dt.Rows.Count > 0)
         {
-            DataTable dt = DormBLL.SearchStudents(keyword);
-            if (dt.Rows.Count > 0)
-            {
-                rptStudents.DataSource = dt;
-                rptStudents.DataBind();
-                pnlNoStudent.Visible = false;
-            }
-            else
-            {
-                rptStudents.DataSource = null;
-                rptStudents.DataBind();
-                pnlNoStudent.Visible = true;
-            }
+            rptStudents.DataSource = dt;
+            rptStudents.DataBind();
+            pnlNoStudent.Visible = false;
         }
         else
         {
@@ -197,7 +269,6 @@ public partial class admin_allocation : System.Web.UI.Page
         }
 
         pnlAllocateModal.Style["display"] = "flex";
-        Page.ClientScript.RegisterStartupScript(this.GetType(), "showModal", "showAllocateModal();", true);
     }
 
     protected void rptStudents_ItemCommand(object source, RepeaterCommandEventArgs e)

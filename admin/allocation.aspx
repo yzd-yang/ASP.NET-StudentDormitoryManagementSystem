@@ -84,6 +84,12 @@
         .modal-footer { padding:16px 24px; border-top:1px solid rgba(0,0,0,0.05); display:flex; justify-content:flex-end; gap:12px; }
         .modal-cancel-btn { padding:12px 24px; border:2px solid var(--outline-variant); background:transparent; border-radius:14px; font-size:14px; font-weight:700; cursor:pointer; color:var(--on-surface-variant); font-family:inherit; }
 
+        .modal-filter-select {
+            width:100%; padding:10px 12px; border:1px solid var(--outline-variant); border-radius:10px;
+            background:#FFF9E6; font-family:inherit; font-size:13px; color:var(--on-surface); outline:none; cursor:pointer;
+        }
+        .modal-filter-select:focus { border-color:var(--primary); box-shadow:0 0 0 2px rgba(73,234,206,0.12); }
+
         .empty-msg { text-align:center; padding:40px; color:var(--on-surface-variant); }
         .empty-msg .material-symbols-outlined { font-size:48px; opacity:0.3; display:block; margin-bottom:8px; }
     </style>
@@ -172,17 +178,50 @@
 
     <!-- 分配弹窗 -->
     <asp:Panel ID="pnlAllocateModal" runat="server" CssClass="modal-overlay" Style="display:none;">
-        <div class="modal-card">
+        <div class="modal-card" style="max-width:560px;">
             <div class="modal-header">
                 <h3>床位分配 - <asp:Literal ID="litModalTitle" runat="server" /></h3>
                 <asp:Button ID="btnCloseModal" runat="server" CssClass="modal-close" Text="X" OnClick="btnCloseModal_Click" />
             </div>
             <div class="modal-body">
                 <asp:HiddenField ID="hfBedId" runat="server" />
+                
+                <!-- 筛选条件 -->
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+                    <div>
+                        <label style="font-size:12px; font-weight:700; color:var(--on-surface-variant); display:block; margin-bottom:4px;">学院</label>
+                        <asp:DropDownList ID="ddlCollege" runat="server" CssClass="modal-filter-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCollege_SelectedIndexChanged">
+                            <asp:ListItem Value="" Text="全部学院" />
+                        </asp:DropDownList>
+                    </div>
+                    <div>
+                        <label style="font-size:12px; font-weight:700; color:var(--on-surface-variant); display:block; margin-bottom:4px;">专业</label>
+                        <asp:DropDownList ID="ddlMajor" runat="server" CssClass="modal-filter-select" AutoPostBack="true" OnSelectedIndexChanged="ddlMajor_SelectedIndexChanged">
+                            <asp:ListItem Value="" Text="全部专业" />
+                        </asp:DropDownList>
+                    </div>
+                    <div>
+                        <label style="font-size:12px; font-weight:700; color:var(--on-surface-variant); display:block; margin-bottom:4px;">年级</label>
+                        <asp:DropDownList ID="ddlGrade" runat="server" CssClass="modal-filter-select" AutoPostBack="true" OnSelectedIndexChanged="ddlGrade_SelectedIndexChanged">
+                            <asp:ListItem Value="" Text="全部年级" />
+                        </asp:DropDownList>
+                    </div>
+                    <div>
+                        <label style="font-size:12px; font-weight:700; color:var(--on-surface-variant); display:block; margin-bottom:4px;">班级</label>
+                        <asp:DropDownList ID="ddlClass" runat="server" CssClass="modal-filter-select">
+                            <asp:ListItem Value="" Text="全部班级" />
+                        </asp:DropDownList>
+                    </div>
+                </div>
+
+                <!-- 搜索框 -->
                 <div class="modal-search-wrap">
                     <span class="material-symbols-outlined">search</span>
-                    <asp:TextBox ID="txtSearchStudent" runat="server" CssClass="modal-search" placeholder="输入学号或姓名搜索..." AutoPostBack="true" OnTextChanged="txtSearchStudent_TextChanged" />
+                    <asp:TextBox ID="txtSearchStudent" runat="server" CssClass="modal-search" placeholder="输入学号或姓名搜索..." />
                 </div>
+                
+                <asp:Button ID="btnSearchStudent" runat="server" Text="搜索" CssClass="alloc-filter-btn" style="width:100%; margin-bottom:14px; justify-content:center;" OnClick="btnSearchStudent_Click" />
+                
                 <div style="max-height:300px; overflow-y:auto;">
                     <asp:Repeater ID="rptStudents" runat="server" OnItemCommand="rptStudents_ItemCommand">
                         <ItemTemplate>
@@ -191,7 +230,7 @@
                                     <div class="student-avatar"><%# Eval("Name").ToString().Substring(0, 1) %></div>
                                     <div>
                                         <div class="student-name"><%# Eval("Name") %></div>
-                                        <div class="student-detail"><%# Eval("StudentNo") %> · <%# Eval("College") %> · <%# Eval("Major") %></div>
+                                        <div class="student-detail"><%# Eval("StudentNo") %> · <%# Eval("College") %> · <%# Eval("Major") %> · <%# Eval("Grade") %> <%# Eval("ClassName") %></div>
                                     </div>
                                 </div>
                                 <asp:Panel ID="pnlHasBed" runat="server" Visible='<%# HasStudentBed(Eval("Id")) %>'>
@@ -205,7 +244,7 @@
                     </asp:Repeater>
                     <asp:Panel ID="pnlNoStudent" runat="server" Visible="true">
                         <div style="text-align:center; padding:20px; color:var(--on-surface-variant);">
-                            <p>请输入学号或姓名搜索学生</p>
+                            <p>请输入条件搜索学生</p>
                         </div>
                     </asp:Panel>
                 </div>
