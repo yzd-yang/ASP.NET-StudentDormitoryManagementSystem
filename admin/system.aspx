@@ -234,7 +234,7 @@
         <div class="sys-card">
             <div class="sys-card-title">院系结构</div>
             <div class="dept-tree">
-                <asp:Repeater ID="rptDepts" runat="server" OnItemDataBound="rptDepts_ItemDataBound" OnItemCommand="rptDepts_ItemCommand">
+                <asp:Repeater ID="rptDepts" runat="server" OnItemDataBound="rptDepts_ItemDataBound">
                     <ItemTemplate>
                         <div class="dept-group">
                             <button type="button" class="dept-header" onclick="toggleDept(this)">
