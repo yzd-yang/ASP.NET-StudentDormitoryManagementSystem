@@ -14,6 +14,13 @@ public partial class admin_system : System.Web.UI.Page
             return;
         }
 
+        // 只有超级管理员(Role=1)才能访问系统管理
+        if (Session["AdminRole"] == null || Session["AdminRole"].ToString() != "1")
+        {
+            Response.Redirect("/admin/dashboard.aspx");
+            return;
+        }
+
         if (!IsPostBack)
         {
             LoadAdmins();

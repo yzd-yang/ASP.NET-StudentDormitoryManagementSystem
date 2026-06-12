@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Web;
 using System.Web.UI;
@@ -66,11 +66,13 @@ public partial class login : System.Web.UI.Page
         {
             DataTable adminInfo = UserBLL.GetAdminById(userId);
             string roleName = adminInfo.Rows.Count > 0 ? adminInfo.Rows[0]["RoleName"].ToString() : "\u7BA1\u7406\u5458";
+            string adminRole = adminInfo.Rows.Count > 0 ? adminInfo.Rows[0]["Role"].ToString() : "2";
 
             Session["AdminId"] = userId;
             Session["AdminNo"] = userNo;
             Session["AdminName"] = name;
             Session["AdminRoleName"] = roleName;
+            Session["AdminRole"] = adminRole;
             Session["Role"] = "admin";
             Response.Redirect("/admin/dashboard.aspx");
         }

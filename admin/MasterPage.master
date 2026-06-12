@@ -99,10 +99,12 @@
                         <span class="material-symbols-outlined">groups</span>
                         <span class="admin-nav-label">选宿批次</span>
                     </a>
+                    <% if (Session["AdminRole"] != null && Session["AdminRole"].ToString() == "1") { %>
                     <a href="/admin/system.aspx" class="admin-nav-item <%= IsActive("system") %>">
                         <span class="material-symbols-outlined">settings</span>
                         <span class="admin-nav-label">系统管理</span>
                     </a>
+                    <% } %>
                 </div>
             </nav>
 
