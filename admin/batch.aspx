@@ -69,6 +69,14 @@
         .empty-msg { text-align:center; padding:40px; color:var(--on-surface-variant); }
         .empty-msg .material-symbols-outlined { font-size:48px; opacity:0.3; display:block; margin-bottom:8px; }
 
+        .room-grid-select { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+        .room-btn {
+            padding:10px; border:none; border-radius:10px; background:#FFF9E6; color:var(--on-surface-variant);
+            font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; font-family:inherit; text-align:center; text-decoration:none; display:block;
+        }
+        .room-btn:hover { background:rgba(73,234,206,0.2); }
+        .room-btn.selected { background:var(--primary); color:var(--on-primary); font-weight:700; box-shadow:0 2px 8px rgba(73,234,206,0.3); }
+
         .toast { position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px); z-index:9999; padding:14px 28px; border-radius:14px; font-size:15px; font-weight:700; box-shadow:0 8px 24px rgba(0,0,0,0.15); transition:transform 0.3s ease; display:flex; align-items:center; gap:10px; }
         .toast.show { transform:translateX(-50%) translateY(0); }
         .toast.success { background:var(--primary); color:var(--on-primary); }
@@ -231,27 +239,36 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>选择房间（可选）</label>
-                    <asp:Panel ID="pnlRoomSelect" runat="server" Visible="false">
-                        <div style="display:flex; gap:10px; margin-bottom:10px;">
-                            <asp:DropDownList ID="ddlModalBuilding" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlModalBuilding_SelectedIndexChanged">
-                                <asp:ListItem Value="0" Text="选择楼栋" />
-                            </asp:DropDownList>
-                            <asp:DropDownList ID="ddlModalFloor" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlModalFloor_SelectedIndexChanged">
-                                <asp:ListItem Value="0" Text="全部楼层" />
-                            </asp:DropDownList>
-                        </div>
-                        <div class="room-select">
-                            <asp:Repeater ID="rptModalRooms" runat="server">
+                    <label>宿舍范围</label>
+                    <div style="display:flex; gap:12px; margin-bottom:12px;">
+                        <asp:DropDownList ID="ddlModalBuilding" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlModalBuilding_SelectedIndexChanged">
+                            <asp:ListItem Value="0" Text="选择楼栋" />
+                        </asp:DropDownList>
+                        <asp:DropDownList ID="ddlModalFloor" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlModalFloor_SelectedIndexChanged">
+                            <asp:ListItem Value="0" Text="全部楼层" />
+                        </asp:DropDownList>
+                    </div>
+                    <div style="background:var(--surface-container-low); border-radius:14px; padding:14px; border:1px solid rgba(0,0,0,0.04);">
+                        <p style="font-size:12px; color:var(--on-surface-variant); margin-bottom:10px;">点击宿舍号可添加/移除宿舍范围</p>
+                        <div class="room-grid-select">
+                            <asp:Repeater ID="rptModalRooms" runat="server" OnItemCommand="rptModalRooms_ItemCommand">
                                 <ItemTemplate>
-                                    <label class="room-check">
-                                        <input type="checkbox" name="SelectedRooms" value='<%# Eval("Id") %>' <%# IsRoomSelected(Eval("Id")) ? "checked" : "" %> />
-                                        <span><%# Eval("RoomNo") %> - <%# Eval("Floor") %>层 - 可用<%# Eval("AvailableBeds") %>床位</span>
-                                    </label>
+                                    <asp:LinkButton ID="btnToggleRoom" runat="server" CommandName="ToggleRoom" CommandArgument='<%# Eval("Id") %>' 
+                                        CssClass='<%# IsRoomSelected(Eval("Id")) ? "room-btn selected" : "room-btn" %>'>
+                                        <%# Eval("RoomNo").ToString().Split('-')[1] %>
+                                    </asp:LinkButton>
                                 </ItemTemplate>
                             </asp:Repeater>
                         </div>
-                    </asp:Panel>
+                    </div>
+                    <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;">
+                        <span style="font-size:12px; color:var(--on-surface-variant);">已选范围:</span>
+                        <asp:Repeater ID="rptSelectedRooms" runat="server">
+                            <ItemTemplate>
+                                <span style="background:rgba(73,234,206,0.15); color:var(--primary); padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;"><%# Eval("BuildingName") %> <%# Eval("RoomNo") %></span>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">

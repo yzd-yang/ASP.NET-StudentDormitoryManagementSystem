@@ -136,11 +136,14 @@ public partial class admin_batch : System.Web.UI.Page
                 ddlModalFloor.Items.Add(new ListItem(row["Floor"].ToString() + "层", row["Floor"].ToString()));
             }
             LoadModalRooms(buildingId, 0);
-            pnlRoomSelect.Visible = true;
+            LoadSelectedRooms();
         }
         else
         {
-            pnlRoomSelect.Visible = false;
+            rptModalRooms.DataSource = null;
+            rptModalRooms.DataBind();
+            rptSelectedRooms.DataSource = null;
+            rptSelectedRooms.DataBind();
         }
         pnlBatchModal.Style["display"] = "flex";
     }
@@ -160,17 +163,78 @@ public partial class admin_batch : System.Web.UI.Page
         rptModalRooms.DataBind();
     }
 
+    private void LoadSelectedRooms()
+    {
+        string selectedIds = ViewState["SelectedRoomIds"] as string ?? "";
+        if (string.IsNullOrEmpty(selectedIds))
+        {
+            rptSelectedRooms.DataSource = null;
+            rptSelectedRooms.DataBind();
+            return;
+        }
+
+        DataTable dt = new DataTable();
+        dt.Columns.Add("BuildingName", typeof(string));
+        dt.Columns.Add("RoomNo", typeof(string));
+
+        string[] ids = selectedIds.Split(',');
+        foreach (string id in ids)
+        {
+            int roomId;
+            if (int.TryParse(id.Trim(), out roomId))
+            {
+                DataTable roomInfo = DBHelper.GetDataTable(
+                    "SELECT r.RoomNo, b.Name as BuildingName FROM Rooms r JOIN Buildings b ON r.BuildingId=b.Id WHERE r.Id=@Id",
+                    new MySql.Data.MySqlClient.MySqlParameter("@Id", roomId));
+                if (roomInfo.Rows.Count > 0)
+                {
+                    dt.Rows.Add(roomInfo.Rows[0]["BuildingName"], roomInfo.Rows[0]["RoomNo"]);
+                }
+            }
+        }
+        rptSelectedRooms.DataSource = dt;
+        rptSelectedRooms.DataBind();
+    }
+
+    protected void rptModalRooms_ItemCommand(object source, RepeaterCommandEventArgs e)
+    {
+        if (e.CommandName == "ToggleRoom")
+        {
+            int roomId = Convert.ToInt32(e.CommandArgument);
+            string selectedIds = ViewState["SelectedRoomIds"] as string ?? "";
+            string[] ids = string.IsNullOrEmpty(selectedIds) ? new string[0] : selectedIds.Split(',');
+
+            System.Collections.Generic.List<string> list = new System.Collections.Generic.List<string>(ids);
+            string roomIdStr = roomId.ToString();
+
+            if (list.Contains(roomIdStr))
+            {
+                list.Remove(roomIdStr);
+            }
+            else
+            {
+                list.Add(roomIdStr);
+            }
+
+            ViewState["SelectedRoomIds"] = string.Join(",", list);
+
+            // 重新加载房间列表和已选房间
+            int buildingId = Convert.ToInt32(ddlModalBuilding.SelectedValue);
+            int floor = Convert.ToInt32(ddlModalFloor.SelectedValue);
+            if (buildingId > 0)
+            {
+                LoadModalRooms(buildingId, floor);
+            }
+            LoadSelectedRooms();
+            pnlBatchModal.Style["display"] = "flex";
+        }
+    }
+
     protected bool IsRoomSelected(object roomId)
     {
-        if (string.IsNullOrEmpty(hfBatchId.Value)) return false;
-        int batchId = Convert.ToInt32(hfBatchId.Value);
-        DataTable dt = BatchBLL.GetBatchRooms(batchId);
-        foreach (DataRow row in dt.Rows)
-        {
-            if (Convert.ToInt32(row["Id"]) == Convert.ToInt32(roomId))
-                return true;
-        }
-        return false;
+        string selectedIds = ViewState["SelectedRoomIds"] as string ?? "";
+        if (string.IsNullOrEmpty(selectedIds)) return false;
+        return selectedIds.Split(',').Contains(roomId.ToString());
     }
 
     protected void btnSaveBatch_Click(object sender, EventArgs e)
@@ -199,7 +263,19 @@ public partial class admin_batch : System.Web.UI.Page
         }
 
         // 获取选中的房间
-        int[] roomIds = GetSelectedRoomIds();
+        string selectedIds = ViewState["SelectedRoomIds"] as string ?? "";
+        int[] roomIds = new int[0];
+        if (!string.IsNullOrEmpty(selectedIds))
+        {
+            var list = new System.Collections.Generic.List<int>();
+            foreach (string id in selectedIds.Split(','))
+            {
+                int roomId;
+                if (int.TryParse(id.Trim(), out roomId))
+                    list.Add(roomId);
+            }
+            roomIds = list.ToArray();
+        }
 
         if (!string.IsNullOrEmpty(hfBatchId.Value))
         {
@@ -229,31 +305,6 @@ public partial class admin_batch : System.Web.UI.Page
         }
     }
 
-    private int[] GetSelectedRoomIds()
-    {
-        var selectedRooms = new System.Collections.Generic.List<int>();
-        foreach (string key in Request.Form.AllKeys)
-        {
-            if (key != null && key.StartsWith("SelectedRooms"))
-            {
-                string val = Request.Form[key];
-                if (!string.IsNullOrEmpty(val))
-                {
-                    string[] ids = val.Split(',');
-                    foreach (string id in ids)
-                    {
-                        int roomId;
-                        if (int.TryParse(id.Trim(), out roomId))
-                        {
-                            selectedRooms.Add(roomId);
-                        }
-                    }
-                }
-            }
-        }
-        return selectedRooms.ToArray();
-    }
-
     protected void btnCloseModal_Click(object sender, EventArgs e)
     {
         pnlBatchModal.Style["display"] = "none";
@@ -265,7 +316,8 @@ public partial class admin_batch : System.Web.UI.Page
         ddlCollegeLimit.SelectedIndex = 0;
         ddlMajorLimit.SelectedIndex = 0;
         ddlBatchStatusEdit.SelectedIndex = 0;
-        pnlRoomSelect.Visible = false;
+        ViewState["SelectedRoomIds"] = "";
+        ddlModalBuilding.SelectedIndex = 0;
     }
 
     protected string GetStatusClass(object status)
