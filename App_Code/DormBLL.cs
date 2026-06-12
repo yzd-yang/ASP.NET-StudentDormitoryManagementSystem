@@ -123,4 +123,109 @@ public class DormBLL
         object result = DBHelper.ExecuteScalar(sql);
         return result != null ? Convert.ToInt32(result) : 0;
     }
+
+    public static DataTable GetAllRooms(int buildingId = 0, string roomNo = "", int pageIndex = 1, int pageSize = 12)
+    {
+        string sql = @"SELECT r.*, b.Name as BuildingName, b.Campus,
+                       (SELECT COUNT(*) FROM Beds WHERE RoomId=r.Id AND Status=1) as OccupiedBeds,
+                       (SELECT COUNT(*) FROM Beds WHERE RoomId=r.Id) as TotalBeds
+                       FROM Rooms r
+                       JOIN Buildings b ON r.BuildingId = b.Id
+                       WHERE r.Status=1";
+
+        if (buildingId > 0)
+        {
+            sql += " AND r.BuildingId=@BuildingId";
+        }
+        if (!string.IsNullOrEmpty(roomNo))
+        {
+            sql += " AND r.RoomNo LIKE @RoomNo";
+        }
+
+        sql += " ORDER BY b.Name, r.RoomNo LIMIT @Offset, @PageSize";
+
+        int offset = (pageIndex - 1) * pageSize;
+
+        MySqlParameter[] parameters;
+        if (buildingId > 0 && !string.IsNullOrEmpty(roomNo))
+        {
+            parameters = new MySqlParameter[]
+            {
+                new MySqlParameter("@BuildingId", buildingId),
+                new MySqlParameter("@RoomNo", "%" + roomNo + "%"),
+                new MySqlParameter("@Offset", offset),
+                new MySqlParameter("@PageSize", pageSize)
+            };
+        }
+        else if (buildingId > 0)
+        {
+            parameters = new MySqlParameter[]
+            {
+                new MySqlParameter("@BuildingId", buildingId),
+                new MySqlParameter("@Offset", offset),
+                new MySqlParameter("@PageSize", pageSize)
+            };
+        }
+        else if (!string.IsNullOrEmpty(roomNo))
+        {
+            parameters = new MySqlParameter[]
+            {
+                new MySqlParameter("@RoomNo", "%" + roomNo + "%"),
+                new MySqlParameter("@Offset", offset),
+                new MySqlParameter("@PageSize", pageSize)
+            };
+        }
+        else
+        {
+            parameters = new MySqlParameter[]
+            {
+                new MySqlParameter("@Offset", offset),
+                new MySqlParameter("@PageSize", pageSize)
+            };
+        }
+
+        return DBHelper.GetDataTable(sql, parameters);
+    }
+
+    public static int GetRoomCount(int buildingId = 0, string roomNo = "")
+    {
+        string sql = "SELECT COUNT(*) FROM Rooms r WHERE r.Status=1";
+
+        if (buildingId > 0)
+        {
+            sql += " AND r.BuildingId=@BuildingId";
+        }
+        if (!string.IsNullOrEmpty(roomNo))
+        {
+            sql += " AND r.RoomNo LIKE @RoomNo";
+        }
+
+        MySqlParameter[] parameters = null;
+        if (buildingId > 0 && !string.IsNullOrEmpty(roomNo))
+        {
+            parameters = new MySqlParameter[]
+            {
+                new MySqlParameter("@BuildingId", buildingId),
+                new MySqlParameter("@RoomNo", "%" + roomNo + "%")
+            };
+        }
+        else if (buildingId > 0)
+        {
+            parameters = new MySqlParameter[] { new MySqlParameter("@BuildingId", buildingId) };
+        }
+        else if (!string.IsNullOrEmpty(roomNo))
+        {
+            parameters = new MySqlParameter[] { new MySqlParameter("@RoomNo", "%" + roomNo + "%") };
+        }
+
+        object result = DBHelper.ExecuteScalar(sql, parameters);
+        return result != null ? Convert.ToInt32(result) : 0;
+    }
+
+    public static int GetTotalRoomCount()
+    {
+        string sql = "SELECT COUNT(*) FROM Rooms WHERE Status=1";
+        object result = DBHelper.ExecuteScalar(sql);
+        return result != null ? Convert.ToInt32(result) : 0;
+    }
 }
