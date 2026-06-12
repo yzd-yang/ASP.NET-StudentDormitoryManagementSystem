@@ -234,7 +234,13 @@ public partial class admin_batch : System.Web.UI.Page
     {
         string selectedIds = ViewState["SelectedRoomIds"] as string ?? "";
         if (string.IsNullOrEmpty(selectedIds)) return false;
-        return selectedIds.Split(',').Contains(roomId.ToString());
+        string[] ids = selectedIds.Split(',');
+        string rid = roomId.ToString();
+        for (int i = 0; i < ids.Length; i++)
+        {
+            if (ids[i] == rid) return true;
+        }
+        return false;
     }
 
     protected void btnSaveBatch_Click(object sender, EventArgs e)
