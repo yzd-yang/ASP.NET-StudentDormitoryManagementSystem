@@ -3,7 +3,6 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="title" runat="server">控制台 - SmartDorm</asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="head" runat="server" />
-
 <asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
     <div class="page-header">
@@ -41,7 +40,7 @@
             <div class="stat-card-label">空余床位</div>
             <div class="stat-card-value"><asp:Literal ID="litAvailableBeds" runat="server" Text="0" /></div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card stat-card-warning">
             <div class="stat-card-icon orange">
                 <span class="material-symbols-outlined">build</span>
             </div>

@@ -1,4 +1,4 @@
-﻿/* ========== Admin Body ========== */
+/* ========== Admin Body ========== */
 .admin-body {
     background: linear-gradient(180deg, #A7F3E7 0%, #F5FFDC 40%, #FEF0FF 100%);
     background-attachment: fixed;
@@ -452,10 +452,10 @@
 
 /* 统计卡片 */
 .stat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    display: flex;
     gap: 16px;
     margin-bottom: 24px;
+    flex-wrap: wrap;
 }
 
 .stat-card {
