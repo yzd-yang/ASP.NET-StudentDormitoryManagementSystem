@@ -63,8 +63,8 @@
 
 /* 主内容区域 */
 .student-main {
-    padding-top: 72px;
-    padding-bottom: 80px;
+    padding-top: 80px;
+    padding-bottom: 40px;
     min-height: 100vh;
     max-width: 1440px;
     margin: 0 auto;

@@ -79,26 +79,6 @@
             <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
         </main>
 
-        <!-- Mobile Navigation -->
-        <nav class="student-tabbar glass-strong">
-            <a href="/student/home.aspx" class="student-tab-item <%= IsActive("home") %>">
-                <span class="material-symbols-outlined">home</span>
-                <span class="student-tab-label">首页</span>
-            </a>
-            <a href="/student/repair.aspx" class="student-tab-item <%= IsActive("repair") %>">
-                <span class="material-symbols-outlined">build</span>
-                <span class="student-tab-label">故障报修</span>
-            </a>
-            <a href="/student/batch.aspx" class="student-tab-item <%= IsActive("batch") %>">
-                <span class="material-symbols-outlined">event_seat</span>
-                <span class="student-tab-label">选宿</span>
-            </a>
-            <a href="/student/profile.aspx" class="student-tab-item <%= IsActive("profile") %>">
-                <span class="material-symbols-outlined">person</span>
-                <span class="student-tab-label">我的</span>
-            </a>
-        </nav>
-
     </form>
 </body>
 </html>
