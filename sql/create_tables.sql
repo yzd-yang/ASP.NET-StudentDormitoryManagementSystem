@@ -1,7 +1,9 @@
-﻿-- =============================================
+-- =============================================
 -- 智慧宿舍管理系统 完整数据库建表脚本
 -- 数据库: MySQL 8.0
 -- 字符集: utf8mb4
+-- 版本: 2.0
+-- 更新日期: 2026-06-12
 -- =============================================
 
 -- 创建数据库
@@ -189,6 +191,22 @@ CREATE TABLE Departments (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='院系专业表';
 
 -- =============================================
+-- 12. 宿舍评分表（可选，页面使用静态数据）
+-- =============================================
+DROP TABLE IF EXISTS DormScores;
+CREATE TABLE DormScores (
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    RoomId INT NOT NULL COMMENT '房间ID',
+    Score INT NOT NULL COMMENT '评分(0-100)',
+    WeekStart DATE NOT NULL COMMENT '评分周期开始日期',
+    CleanScore INT DEFAULT NULL COMMENT '卫生分(0-50)',
+    SafetyScore INT DEFAULT NULL COMMENT '安全分(0-50)',
+    Remark VARCHAR(200) DEFAULT NULL COMMENT '备注',
+    CreateTime DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    FOREIGN KEY (RoomId) REFERENCES Rooms(Id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='宿舍评分表';
+
+-- =============================================
 -- 创建索引
 -- =============================================
 CREATE INDEX idx_students_college ON Students(College);
@@ -207,3 +225,5 @@ CREATE INDEX idx_notices_publish ON Notices(PublishTime);
 CREATE INDEX idx_batches_status ON SelectionBatches(Status);
 CREATE INDEX idx_facility_room ON FacilityStatus(RoomId);
 CREATE INDEX idx_departments_college ON Departments(CollegeName);
+CREATE INDEX idx_scores_room ON DormScores(RoomId);
+CREATE INDEX idx_scores_week ON DormScores(WeekStart);
