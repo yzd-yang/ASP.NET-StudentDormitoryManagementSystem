@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/admin/MasterPage.master" AutoEventWireup="true" CodeFile="batch.aspx.cs" Inherits="admin_batch" ResponseEncoding="utf-8" %>
+<%@ Page Language="C#" MasterPageFile="~/admin/MasterPage.master" AutoEventWireup="true" CodeFile="batch.aspx.cs" Inherits="admin_batch" ResponseEncoding="utf-8" MaintainScrollPositionOnPostBack="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="title" runat="server">选宿批次管理 - SmartDorm</asp:Content>
 

@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/admin/MasterPage.master" AutoEventWireup="true" CodeFile="system.aspx.cs" Inherits="admin_system" ResponseEncoding="utf-8" %>
+<%@ Page Language="C#" MasterPageFile="~/admin/MasterPage.master" AutoEventWireup="true" CodeFile="system.aspx.cs" Inherits="admin_system" ResponseEncoding="utf-8" MaintainScrollPositionOnPostBack="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="title" runat="server">系统管理 - SmartDorm</asp:Content>
 

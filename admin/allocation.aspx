@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/admin/MasterPage.master" AutoEventWireup="true" CodeFile="allocation.aspx.cs" Inherits="admin_allocation" ResponseEncoding="utf-8" %>
+<%@ Page Language="C#" MasterPageFile="~/admin/MasterPage.master" AutoEventWireup="true" CodeFile="allocation.aspx.cs" Inherits="admin_allocation" ResponseEncoding="utf-8" MaintainScrollPositionOnPostBack="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="title" runat="server">宿舍分配管理 - SmartDorm</asp:Content>
 

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/admin/MasterPage.master" AutoEventWireup="true" CodeFile="repair.aspx.cs" Inherits="admin_repair" ResponseEncoding="utf-8" %>
+<%@ Page Language="C#" MasterPageFile="~/admin/MasterPage.master" AutoEventWireup="true" CodeFile="repair.aspx.cs" Inherits="admin_repair" ResponseEncoding="utf-8" MaintainScrollPositionOnPostBack="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="title" runat="server">报修管理 - SmartDorm</asp:Content>
 
