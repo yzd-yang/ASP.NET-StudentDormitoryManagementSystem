@@ -114,14 +114,38 @@
 
     <div class="alloc-filter">
         <div class="alloc-filter-field">
-            <span class="alloc-filter-label">宿舍楼号:</span>
+            <span class="alloc-filter-label">楼栋:</span>
             <asp:DropDownList ID="ddlBuilding" runat="server" CssClass="alloc-filter-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBuilding_SelectedIndexChanged">
                 <asp:ListItem Value="0" Text="全部楼栋" />
             </asp:DropDownList>
         </div>
         <div class="alloc-filter-field">
+            <span class="alloc-filter-label">楼层:</span>
+            <asp:DropDownList ID="ddlFloor" runat="server" CssClass="alloc-filter-select">
+                <asp:ListItem Value="0" Text="全部楼层" />
+            </asp:DropDownList>
+        </div>
+        <div class="alloc-filter-field">
+            <span class="alloc-filter-label">类型:</span>
+            <asp:DropDownList ID="ddlRoomType" runat="server" CssClass="alloc-filter-select">
+                <asp:ListItem Value="0" Text="全部类型" />
+                <asp:ListItem Value="1" Text="双人间" />
+                <asp:ListItem Value="2" Text="四人间" />
+                <asp:ListItem Value="3" Text="六人间" />
+            </asp:DropDownList>
+        </div>
+        <div class="alloc-filter-field">
+            <span class="alloc-filter-label">状态:</span>
+            <asp:DropDownList ID="ddlStatus" runat="server" CssClass="alloc-filter-select">
+                <asp:ListItem Value="" Text="全部状态" />
+                <asp:ListItem Value="empty" Text="全空置" />
+                <asp:ListItem Value="partial" Text="有空余" />
+                <asp:ListItem Value="full" Text="已满员" />
+            </asp:DropDownList>
+        </div>
+        <div class="alloc-filter-field">
             <span class="alloc-filter-label">房间号:</span>
-            <asp:TextBox ID="txtRoomNo" runat="server" CssClass="alloc-filter-input" placeholder="输入房间号..." style="width:120px;" />
+            <asp:TextBox ID="txtRoomNo" runat="server" CssClass="alloc-filter-input" placeholder="搜索..." style="width:80px;" />
         </div>
         <asp:Button ID="btnSearch" runat="server" CssClass="alloc-filter-btn" Text="筛选" OnClick="btnSearch_Click" />
         <span class="alloc-stats">

@@ -25,6 +25,7 @@ public partial class admin_allocation : System.Web.UI.Page
         if (!IsPostBack)
         {
             LoadBuildings();
+            LoadFloors();
             LoadRooms();
             LoadFilterColleges();
             LoadFilterGrades();
@@ -37,6 +38,17 @@ public partial class admin_allocation : System.Web.UI.Page
         foreach (DataRow row in dt.Rows)
         {
             ddlBuilding.Items.Add(new ListItem(row["Name"].ToString() + " (" + row["Campus"] + ")", row["Id"].ToString()));
+        }
+    }
+
+    private void LoadFloors()
+    {
+        ddlFloor.Items.Clear();
+        ddlFloor.Items.Add(new ListItem("全部楼层", "0"));
+        DataTable dt = DormBLL.GetAllFloors();
+        foreach (DataRow row in dt.Rows)
+        {
+            ddlFloor.Items.Add(new ListItem(row["Floor"].ToString() + "层", row["Floor"].ToString()));
         }
     }
 
@@ -95,14 +107,25 @@ public partial class admin_allocation : System.Web.UI.Page
     {
         int buildingId = 0;
         string roomNo = txtRoomNo.Text.Trim();
+        int floor = 0;
+        int roomType = 0;
+        string status = ddlStatus.SelectedValue;
 
         if (ddlBuilding.SelectedValue != "0")
         {
             buildingId = Convert.ToInt32(ddlBuilding.SelectedValue);
         }
+        if (ddlFloor.SelectedValue != "0")
+        {
+            floor = Convert.ToInt32(ddlFloor.SelectedValue);
+        }
+        if (ddlRoomType.SelectedValue != "0")
+        {
+            roomType = Convert.ToInt32(ddlRoomType.SelectedValue);
+        }
 
-        DataTable dt = DormBLL.GetAllRooms(buildingId, roomNo, CurrentPage, PageSize);
-        int totalRooms = DormBLL.GetRoomCount(buildingId, roomNo);
+        DataTable dt = DormBLL.GetAllRooms(buildingId, roomNo, floor, roomType, status, CurrentPage, PageSize);
+        int totalRooms = DormBLL.GetRoomCount(buildingId, roomNo, floor, roomType, status);
         int totalBeds = DormBLL.GetTotalBeds();
         int availableBeds = DormBLL.GetAvailableBeds();
 

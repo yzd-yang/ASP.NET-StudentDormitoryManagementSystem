@@ -221,7 +221,7 @@ public class DormBLL
         return result != null ? Convert.ToInt32(result) : 0;
     }
 
-    public static DataTable GetAllRooms(int buildingId = 0, string roomNo = "", int pageIndex = 1, int pageSize = 12)
+    public static DataTable GetAllRooms(int buildingId = 0, string roomNo = "", int floor = 0, int roomType = 0, string status = "", int pageIndex = 1, int pageSize = 12)
     {
         string sql = @"SELECT r.*, b.Name as BuildingName, b.Campus,
                        (SELECT COUNT(*) FROM Beds WHERE RoomId=r.Id AND Status=1) as OccupiedBeds,
@@ -230,93 +230,114 @@ public class DormBLL
                        JOIN Buildings b ON r.BuildingId = b.Id
                        WHERE r.Status=1";
 
+        var paramList = new System.Collections.Generic.List<MySqlParameter>();
+
         if (buildingId > 0)
         {
             sql += " AND r.BuildingId=@BuildingId";
+            paramList.Add(new MySqlParameter("@BuildingId", buildingId));
         }
         if (!string.IsNullOrEmpty(roomNo))
         {
             sql += " AND r.RoomNo LIKE @RoomNo";
+            paramList.Add(new MySqlParameter("@RoomNo", "%" + roomNo + "%"));
+        }
+        if (floor > 0)
+        {
+            sql += " AND r.Floor=@Floor";
+            paramList.Add(new MySqlParameter("@Floor", floor));
+        }
+        if (roomType > 0)
+        {
+            sql += " AND r.RoomType=@RoomType";
+            paramList.Add(new MySqlParameter("@RoomType", roomType));
+        }
+
+        // 先查出所有符合条件的房间，再用HAVING筛选满员状态
+        if (status == "full")
+        {
+            sql += " HAVING OccupiedBeds = TotalBeds";
+        }
+        else if (status == "empty")
+        {
+            sql += " HAVING OccupiedBeds = 0";
+        }
+        else if (status == "partial")
+        {
+            sql += " HAVING OccupiedBeds > 0 AND OccupiedBeds < TotalBeds";
         }
 
         sql += " ORDER BY b.Name, r.RoomNo LIMIT @Offset, @PageSize";
 
         int offset = (pageIndex - 1) * pageSize;
+        paramList.Add(new MySqlParameter("@Offset", offset));
+        paramList.Add(new MySqlParameter("@PageSize", pageSize));
 
-        MySqlParameter[] parameters;
-        if (buildingId > 0 && !string.IsNullOrEmpty(roomNo))
-        {
-            parameters = new MySqlParameter[]
-            {
-                new MySqlParameter("@BuildingId", buildingId),
-                new MySqlParameter("@RoomNo", "%" + roomNo + "%"),
-                new MySqlParameter("@Offset", offset),
-                new MySqlParameter("@PageSize", pageSize)
-            };
-        }
-        else if (buildingId > 0)
-        {
-            parameters = new MySqlParameter[]
-            {
-                new MySqlParameter("@BuildingId", buildingId),
-                new MySqlParameter("@Offset", offset),
-                new MySqlParameter("@PageSize", pageSize)
-            };
-        }
-        else if (!string.IsNullOrEmpty(roomNo))
-        {
-            parameters = new MySqlParameter[]
-            {
-                new MySqlParameter("@RoomNo", "%" + roomNo + "%"),
-                new MySqlParameter("@Offset", offset),
-                new MySqlParameter("@PageSize", pageSize)
-            };
-        }
-        else
-        {
-            parameters = new MySqlParameter[]
-            {
-                new MySqlParameter("@Offset", offset),
-                new MySqlParameter("@PageSize", pageSize)
-            };
-        }
-
-        return DBHelper.GetDataTable(sql, parameters);
+        return DBHelper.GetDataTable(sql, paramList.ToArray());
     }
 
-    public static int GetRoomCount(int buildingId = 0, string roomNo = "")
+    public static int GetRoomCount(int buildingId = 0, string roomNo = "", int floor = 0, int roomType = 0, string status = "")
     {
-        string sql = "SELECT COUNT(*) FROM Rooms r WHERE r.Status=1";
+        // 带HAVING的查询需要用子查询包装
+        string sql = @"SELECT COUNT(*) FROM (
+                       SELECT r.Id
+                       FROM Rooms r
+                       JOIN Buildings b ON r.BuildingId = b.Id
+                       WHERE r.Status=1";
+
+        var paramList = new System.Collections.Generic.List<MySqlParameter>();
 
         if (buildingId > 0)
         {
             sql += " AND r.BuildingId=@BuildingId";
+            paramList.Add(new MySqlParameter("@BuildingId", buildingId));
         }
         if (!string.IsNullOrEmpty(roomNo))
         {
             sql += " AND r.RoomNo LIKE @RoomNo";
+            paramList.Add(new MySqlParameter("@RoomNo", "%" + roomNo + "%"));
+        }
+        if (floor > 0)
+        {
+            sql += " AND r.Floor=@Floor";
+            paramList.Add(new MySqlParameter("@Floor", floor));
+        }
+        if (roomType > 0)
+        {
+            sql += " AND r.RoomType=@RoomType";
+            paramList.Add(new MySqlParameter("@RoomType", roomType));
         }
 
-        MySqlParameter[] parameters = null;
-        if (buildingId > 0 && !string.IsNullOrEmpty(roomNo))
+        if (status == "full")
         {
-            parameters = new MySqlParameter[]
-            {
-                new MySqlParameter("@BuildingId", buildingId),
-                new MySqlParameter("@RoomNo", "%" + roomNo + "%")
-            };
+            sql += " HAVING (SELECT COUNT(*) FROM Beds WHERE RoomId=r.Id AND Status=1) = (SELECT COUNT(*) FROM Beds WHERE RoomId=r.Id)";
         }
-        else if (buildingId > 0)
+        else if (status == "empty")
         {
-            parameters = new MySqlParameter[] { new MySqlParameter("@BuildingId", buildingId) };
+            sql += " HAVING (SELECT COUNT(*) FROM Beds WHERE RoomId=r.Id AND Status=1) = 0";
         }
-        else if (!string.IsNullOrEmpty(roomNo))
+        else if (status == "partial")
         {
-            parameters = new MySqlParameter[] { new MySqlParameter("@RoomNo", "%" + roomNo + "%") };
+            sql += " HAVING (SELECT COUNT(*) FROM Beds WHERE RoomId=r.Id AND Status=1) > 0 AND (SELECT COUNT(*) FROM Beds WHERE RoomId=r.Id AND Status=1) < (SELECT COUNT(*) FROM Beds WHERE RoomId=r.Id)";
         }
 
-        object result = DBHelper.ExecuteScalar(sql, parameters);
+        sql += ") t";
+
+        object result = DBHelper.ExecuteScalar(sql, paramList.ToArray());
         return result != null ? Convert.ToInt32(result) : 0;
+    }
+
+    public static DataTable GetFloorsByBuilding(int buildingId)
+    {
+        string sql = "SELECT DISTINCT Floor FROM Rooms WHERE BuildingId=@BuildingId ORDER BY Floor";
+        MySqlParameter[] parameters = new MySqlParameter[] { new MySqlParameter("@BuildingId", buildingId) };
+        return DBHelper.GetDataTable(sql, parameters);
+    }
+
+    public static DataTable GetAllFloors()
+    {
+        string sql = "SELECT DISTINCT Floor FROM Rooms ORDER BY Floor";
+        return DBHelper.GetDataTable(sql);
     }
 
     public static int GetTotalRoomCount()
