@@ -193,10 +193,12 @@ SmartDorm/
 - 分页功能
 
 #### 报修管理（admin/repair.aspx）✅
-- 统计卡片（待处理、处理中、紧急、今日已完成）
-- 筛选栏（状态、宿舍楼、报修类型）
-- 工单列表表格
-- 右侧详情面板（学生信息、报修描述、派工处理、内部备注、驳回/完成按钮）
+- 统计卡片（待处理、处理中、紧急、今日已完成）- 动态数据
+- 筛选栏（状态、宿舍楼、报修类型）- 动态数据
+- 工单列表表格（工单号、类型、位置、描述、时间、状态）- 动态数据
+- 点击行弹出详情面板（学生信息、报修描述、派工处理、内部备注）
+- 指派技工、完成工单、驳回、保存备注功能
+- 分页功能
 
 #### 通知公告管理（admin/notice.aspx）✅
 - 发布新公告表单（标题、范围、类别、富文本编辑器、置顶开关、发送开关）
@@ -309,6 +311,12 @@ public class RepairBLL
     public static int GetTodayRepairCount()
     public static int GetUrgentRepairCount()
     public static DataTable GetRepairTrendByDay(int days)
+    public static DataTable GetRepairList(...)             // 管理端工单列表（支持筛选分页）
+    public static int GetRepairListCount(...)              // 工单总数（支持筛选）
+    public static DataTable GetRepairById(int id)          // 获取单个工单详情
+    public static DataTable GetRepairStats()               // 统计数据
+    public static DataTable GetAdminListForAssign()        // 获取可指派管理员
+    public static bool UpdateInternalNote(int orderId, string note) // 保存内部备注
 }
 ```
 
