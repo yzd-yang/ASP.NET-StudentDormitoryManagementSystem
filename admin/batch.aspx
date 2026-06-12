@@ -273,28 +273,6 @@
                     </div>
                     <asp:HiddenField ID="hfSelectedRoomIds" runat="server" Value="" />
                 </div>
-                    <div style="background:var(--surface-container-low); border-radius:14px; padding:14px; border:1px solid rgba(0,0,0,0.04);">
-                        <p style="font-size:12px; color:var(--on-surface-variant); margin-bottom:10px;">点击宿舍号可添加/移除宿舍范围</p>
-                        <div class="room-grid-select">
-                            <asp:Repeater ID="rptModalRooms" runat="server" OnItemCommand="rptModalRooms_ItemCommand">
-                                <ItemTemplate>
-                                    <asp:LinkButton ID="btnToggleRoom" runat="server" CommandName="ToggleRoom" CommandArgument='<%# Eval("Id") %>' 
-                                        CssClass='<%# IsRoomSelected(Eval("Id")) ? "room-btn selected" : "room-btn" %>'>
-                                        <%# Eval("RoomNo").ToString().Split('-')[1] %>
-                                    </asp:LinkButton>
-                                </ItemTemplate>
-                            </asp:Repeater>
-                        </div>
-                    </div>
-                    <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;">
-                        <span style="font-size:12px; color:var(--on-surface-variant);">已选范围:</span>
-                        <asp:Repeater ID="rptSelectedRooms" runat="server">
-                            <ItemTemplate>
-                                <span style="background:rgba(73,234,206,0.15); color:var(--primary); padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;"><%# Eval("BuildingName") %> <%# Eval("RoomNo") %></span>
-                            </ItemTemplate>
-                        </asp:Repeater>
-                    </div>
-                </div>
             </div>
             <div class="modal-footer">
                 <asp:Button ID="btnCancelBatch" runat="server" CssClass="form-cancel" Text="取消" OnClick="btnCloseModal_Click" />
