@@ -4,28 +4,74 @@
 <html lang="zh-CN">
 <head runat="server">
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><asp:ContentPlaceHolder ID="title" runat="server">智慧宿舍</asp:ContentPlaceHolder></title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
+    <link href="/css/student.css" rel="stylesheet" />
+    <style>
+        .student-header {
+            position:fixed; top:0; left:0; right:0; height:64px; z-index:100;
+            background:rgba(255,255,255,0.6); backdrop-filter:blur(12px);
+            border-bottom:1px solid rgba(255,255,255,0.4);
+            display:flex; align-items:center; justify-content:space-between;
+            padding:0 24px;
+        }
+        .header-left { display:flex; align-items:center; gap:40px; }
+        .header-brand { font-size:20px; font-weight:800; color:var(--primary); text-decoration:none; }
+        .header-nav { display:flex; gap:24px; }
+        .header-nav a {
+            font-size:14px; font-weight:600; color:var(--on-surface-variant);
+            text-decoration:none; padding:8px 16px; border-radius:20px; transition:all 0.2s;
+        }
+        .header-nav a:hover { color:var(--primary); }
+        .header-nav a.active { color:var(--on-surface); background:rgba(73,234,206,0.15); }
+        .header-right { display:flex; align-items:center; gap:8px; }
+        .header-icon-btn {
+            width:40px; height:40px; display:flex; align-items:center; justify-content:center;
+            border:none; background:transparent; border-radius:50%; cursor:pointer;
+            color:var(--on-surface-variant); transition:all 0.2s;
+        }
+        .header-icon-btn:hover { background:rgba(73,234,206,0.1); }
+        .header-divider { width:1px; height:24px; background:rgba(73,234,206,0.2); margin:0 8px; }
+        .header-user { display:flex; align-items:center; gap:8px; padding:6px 12px; border-radius:20px; cursor:pointer; transition:all 0.2s; text-decoration:none; color:inherit; }
+        .header-user:hover { background:rgba(73,234,206,0.1); }
+        .header-user-avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); display:flex; align-items:center; justify-content:center; color:var(--on-primary); font-size:14px; font-weight:700; }
+        .header-user-name { font-size:14px; font-weight:600; color:var(--on-surface); }
+
+        @media (max-width:768px) {
+            .header-nav { display:none; }
+            .header-left { gap:16px; }
+        }
+    </style>
     <asp:ContentPlaceHolder ID="head" runat="server" />
 </head>
 <body>
     <form id="form1" runat="server">
 
-        <header class="student-header glass-strong">
-            <div class="student-header-inner">
-                <div class="student-header-left">
-                    <span class="material-symbols-outlined" style="color: var(--primary); font-size: 28px;">apartment</span>
-                    <span class="student-header-title">智慧宿舍</span>
-                </div>
-                <div class="student-header-right">
-                    <span class="student-header-name"><%= Session["UserName"] ?? "同学" %></span>
-                    <asp:LinkButton ID="btnLogout" runat="server" OnClick="btnLogout_Click" CssClass="student-header-logout">
-                        <span class="material-symbols-outlined" style="font-size: 20px;">logout</span>
-                    </asp:LinkButton>
-                </div>
+        <header class="student-header">
+            <div class="header-left">
+                <a href="/student/home.aspx" class="header-brand">SmartDorm</a>
+                <nav class="header-nav">
+                    <a href="/student/home.aspx" class="<%= IsActive("home") %>">我的宿舍</a>
+                    <a href="/student/repair.aspx" class="<%= IsActive("repair") %>">故障报修</a>
+                    <a href="/student/batch.aspx" class="<%= IsActive("batch") %>">选宿</a>
+                    <a href="/student/profile.aspx" class="<%= IsActive("profile") %>">个人中心</a>
+                </nav>
+            </div>
+            <div class="header-right">
+                <button type="button" class="header-icon-btn">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+                <button type="button" class="header-icon-btn">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <div class="header-divider"></div>
+                <a href="/student/profile.aspx" class="header-user">
+                    <div class="header-user-avatar"><%= GetUserInitial() %></div>
+                    <span class="header-user-name"><%= GetUserName() %></span>
+                </a>
             </div>
         </header>
 
@@ -33,6 +79,7 @@
             <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
         </main>
 
+        <!-- Mobile Navigation -->
         <nav class="student-tabbar glass-strong">
             <a href="/student/home.aspx" class="student-tab-item <%= IsActive("home") %>">
                 <span class="material-symbols-outlined">home</span>
