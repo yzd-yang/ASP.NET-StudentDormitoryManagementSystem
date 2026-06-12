@@ -212,6 +212,11 @@ public partial class admin_allocation : System.Web.UI.Page
             if (DormBLL.ReleaseBed(bedId))
             {
                 LoadRooms();
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('退宿成功！','success');", true);
+            }
+            else
+            {
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('退宿失败','error');", true);
             }
         }
     }
@@ -284,7 +289,7 @@ public partial class admin_allocation : System.Web.UI.Page
 
             if (bedId == 0)
             {
-                Page.ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('床位ID无效，请重新选择床位');", true);
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('床位ID无效，请重新选择床位','error');", true);
                 return;
             }
 
@@ -293,11 +298,11 @@ public partial class admin_allocation : System.Web.UI.Page
             {
                 pnlAllocateModal.Style["display"] = "none";
                 LoadRooms();
-                Page.ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('分配成功！');", true);
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('分配成功！','success');", true);
             }
             else
             {
-                Page.ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('分配失败：该学生已有宿舍床位或该床位已被占用');", true);
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('分配失败：该学生已有宿舍床位或该床位已被占用','error');", true);
                 pnlAllocateModal.Style["display"] = "flex";
             }
         }

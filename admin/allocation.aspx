@@ -92,6 +92,15 @@
 
         .empty-msg { text-align:center; padding:40px; color:var(--on-surface-variant); }
         .empty-msg .material-symbols-outlined { font-size:48px; opacity:0.3; display:block; margin-bottom:8px; }
+
+        .toast {
+            position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px); z-index:9999;
+            padding:14px 28px; border-radius:14px; font-size:15px; font-weight:700;
+            box-shadow:0 8px 24px rgba(0,0,0,0.15); transition:transform 0.3s ease; display:flex; align-items:center; gap:10px;
+        }
+        .toast.show { transform:translateX(-50%) translateY(0); }
+        .toast.success { background:var(--primary); color:var(--on-primary); }
+        .toast.error { background:var(--error); color:#fff; }
     </style>
 </asp:Content>
 
@@ -261,5 +270,15 @@
             modal.style.display = 'none';
             document.body.style.overflow = '';
         }
+        function showToast(msg, type) {
+            var toast = document.getElementById('toast');
+            toast.className = 'toast ' + type;
+            toast.innerHTML = '<span class="material-symbols-outlined">' + (type === 'success' ? 'check_circle' : 'error') + '</span>' + msg;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 3000);
+        }
     </script>
+
+    <!-- Toast 提示 -->
+    <div id="toast" class="toast"></div>
 </asp:Content>
