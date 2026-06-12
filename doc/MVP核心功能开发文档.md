@@ -205,10 +205,12 @@ SmartDorm/
 - 分页
 
 #### 选宿批次管理（admin/batch.aspx）✅
-- 统计卡片（总批次、进行中、待开始、已结束）
-- 筛选栏
-- 批次列表表格
-- 创建新批次弹窗
+- 统计卡片（总批次、进行中、待开始、已结束）- 动态数据
+- 筛选栏（批次名称、状态、适用年级、学院）- 动态数据
+- 批次列表表格（名称、时间、限定条件、状态、操作）- 动态数据
+- 创建/编辑批次弹窗（名称、时间、年级/学院/专业限定、房间选择）- 动态数据
+- 房间选择：楼栋+楼层筛选，按钮网格点击选择，已选标签显示
+- 删除批次功能
 
 #### 系统管理（admin/system.aspx）✅
 - 管理员账号管理（搜索、角色/状态筛选、新增、编辑、重置密码、删除）- 动态数据
@@ -336,6 +338,22 @@ public class DeptBLL
 }
 ```
 
+### 6.7 BatchBLL.cs
+
+```csharp
+public class BatchBLL
+{
+    public static DataTable GetBatchList(string keyword, int status, string grade, string college)
+    public static DataTable GetBatchStats()
+    public static bool AddBatch(string batchName, DateTime startTime, DateTime endTime, string gradeLimit, string collegeLimit, string majorLimit, int adminId, int[] roomIds)
+    public static bool UpdateBatch(int id, string batchName, DateTime startTime, DateTime endTime, string gradeLimit, string collegeLimit, string majorLimit, int status)
+    public static bool DeleteBatch(int id)
+    public static DataTable GetBatchRooms(int batchId)
+    public static DataTable GetBuildingsForBatch()
+    public static DataTable GetRoomsForBatch(int buildingId, int floor)
+}
+```
+
 ---
 
 ## 七、安全设计
@@ -414,7 +432,7 @@ if (Session["AdminId"] == null)
 | 功能 | 需新建的BLL | 状态 |
 |------|------------|------|
 | 通知公告CRUD | NoticeBLL.cs | 待开发 |
-| 选宿批次CRUD | BatchBLL.cs | 待开发 |
+| 选宿批次CRUD | BatchBLL.cs | ✅ 已完成 |
 | 管理员管理CRUD | AdminBLL.cs | ✅ 已完成 |
 | 院系专业管理 | DeptBLL.cs | ✅ 已完成 |
 | 老师注册 | UserBLL.RegisterAdmin | 待开发 |
