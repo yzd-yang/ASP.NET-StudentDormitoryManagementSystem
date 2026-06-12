@@ -213,8 +213,10 @@ SmartDorm/
 #### 系统管理（admin/system.aspx）✅
 - 管理员账号管理（搜索、角色/状态筛选、新增、编辑、重置密码、删除）- 动态数据
 - 楼宇管理（列表、新增、编辑、删除）- 动态数据
-- 批量生成房间（选楼宇、类型、楼层范围、每层房间数）- 动态数据
+- 房间管理（查看楼宇房间、修改状态、删除、单独添加）- 动态数据
+- 批量生成房间（选楼宇、类型、楼层范围、每层房间数）- 动态数据，含验证
 - 院系专业管理（树形结构、添加学院/专业、编辑、删除）- 动态数据
+- 权限控制：仅超级管理员（Role=1）可访问，其他角色跳转仪表盘
 
 ---
 
@@ -277,6 +279,10 @@ public class DormBLL
     public static bool UpdateBuilding(...)
     public static bool DeleteBuilding(int id)
     public static int BatchCreateRooms(...)                        // 批量生成房间（含床位）
+    public static DataTable GetRoomsByBuildingForManage(int buildingId) // 获取楼宇房间（含入住数）
+    public static bool AddRoom(...)                                // 添加单个房间（含床位）
+    public static bool UpdateRoomStatus(int roomId, int status)   // 切换房间状态
+    public static bool DeleteRoom(int roomId)                      // 删除房间（含清除床位）
     public static DataTable GetColleges()
     public static DataTable GetMajorsByCollege(string college)
     public static DataTable GetGrades()
