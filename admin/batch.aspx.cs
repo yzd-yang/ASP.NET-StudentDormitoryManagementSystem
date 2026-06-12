@@ -96,16 +96,16 @@ public partial class admin_batch : System.Web.UI.Page
                     txtBatchName.Text = row["BatchName"].ToString();
                     txtStartTime.Text = Convert.ToDateTime(row["StartTime"]).ToString("yyyy-MM-ddTHH:mm");
                     txtEndTime.Text = Convert.ToDateTime(row["EndTime"]).ToString("yyyy-MM-ddTHH:mm");
-                    
+
                     string gradeLimit = row["GradeLimit"] != DBNull.Value ? row["GradeLimit"].ToString() : "";
                     string collegeLimit = row["CollegeLimit"] != DBNull.Value ? row["CollegeLimit"].ToString() : "";
                     string majorLimit = row["MajorLimit"] != DBNull.Value ? row["MajorLimit"].ToString() : "";
-                    int status = Convert.ToInt32(row["Status"]);
+                    int batchStatus = Convert.ToInt32(row["Status"]);
 
                     SetDropDownValue(ddlGradeLimit, gradeLimit);
                     SetDropDownValue(ddlCollegeLimit, collegeLimit);
                     SetDropDownValue(ddlMajorLimit, majorLimit);
-                    ddlBatchStatusEdit.SelectedValue = status.ToString();
+                    ddlBatchStatusEdit.SelectedValue = batchStatus.ToString();
                     break;
                 }
             }
@@ -147,7 +147,6 @@ public partial class admin_batch : System.Web.UI.Page
                 floorOptions += "<option value=\"" + row["Floor"] + "\">" + row["Floor"] + "层</option>";
             }
             ddlModalFloor.InnerHtml = floorOptions;
-
             LoadRoomsForJS(buildingId, 0);
         }
         else
@@ -169,7 +168,6 @@ public partial class admin_batch : System.Web.UI.Page
     private void LoadRoomsForJS(int buildingId, int floor)
     {
         DataTable dt = BatchBLL.GetRoomsForBatch(buildingId, floor);
-        // 构建JSON: {Id, RoomNo, BuildingName}
         string buildingName = "";
         DataTable buildings = BatchBLL.GetBuildingsForBatch();
         foreach (DataRow row in buildings.Rows)
@@ -189,27 +187,7 @@ public partial class admin_batch : System.Web.UI.Page
         }
         json += "]";
 
-        Page.ClientScript.RegisterStartupScript(this.GetType(), "renderRooms", "renderRoomGrid('" + json.Replace("'", "\\'") + "');", true);
-    }
-            LoadModalRooms(buildingId, 0);
-            LoadSelectedRooms();
-        }
-        else
-        {
-            rptModalRooms.DataSource = null;
-            rptModalRooms.DataBind();
-            rptSelectedRooms.DataSource = null;
-            rptSelectedRooms.DataBind();
-        }
-        pnlBatchModal.Style["display"] = "flex";
-    }
-
-    protected void ddlModalFloor_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        int buildingId = Convert.ToInt32(ddlModalBuilding.SelectedValue);
-        int floor = Convert.ToInt32(ddlModalFloor.SelectedValue);
-        LoadModalRooms(buildingId, floor);
-        pnlBatchModal.Style["display"] = "flex";
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "renderRooms" + Guid.NewGuid(), "renderRoomGrid('" + json.Replace("'", "\\'") + "');", true);
     }
 
     protected void ddlCollegeLimit_SelectedIndexChanged(object sender, EventArgs e)
@@ -228,93 +206,6 @@ public partial class admin_batch : System.Web.UI.Page
         pnlBatchModal.Style["display"] = "flex";
     }
 
-    private void LoadModalRooms(int buildingId, int floor)
-    {
-        DataTable dt = BatchBLL.GetRoomsForBatch(buildingId, floor);
-        rptModalRooms.DataSource = dt;
-        rptModalRooms.DataBind();
-    }
-
-    private void LoadSelectedRooms()
-    {
-        string selectedIds = ViewState["SelectedRoomIds"] as string ?? "";
-        if (string.IsNullOrEmpty(selectedIds))
-        {
-            rptSelectedRooms.DataSource = null;
-            rptSelectedRooms.DataBind();
-            return;
-        }
-
-        DataTable dt = new DataTable();
-        dt.Columns.Add("BuildingName", typeof(string));
-        dt.Columns.Add("RoomNo", typeof(string));
-
-        string[] ids = selectedIds.Split(',');
-        foreach (string id in ids)
-        {
-            int roomId;
-            if (int.TryParse(id.Trim(), out roomId))
-            {
-                DataTable roomInfo = DBHelper.GetDataTable(
-                    "SELECT r.RoomNo, b.Name as BuildingName FROM Rooms r JOIN Buildings b ON r.BuildingId=b.Id WHERE r.Id=@Id",
-                    new MySql.Data.MySqlClient.MySqlParameter("@Id", roomId));
-                if (roomInfo.Rows.Count > 0)
-                {
-                    dt.Rows.Add(roomInfo.Rows[0]["BuildingName"], roomInfo.Rows[0]["RoomNo"]);
-                }
-            }
-        }
-        rptSelectedRooms.DataSource = dt;
-        rptSelectedRooms.DataBind();
-    }
-
-    protected void rptModalRooms_ItemCommand(object source, RepeaterCommandEventArgs e)
-    {
-        if (e.CommandName == "ToggleRoom")
-        {
-            int roomId = Convert.ToInt32(e.CommandArgument);
-            string selectedIds = ViewState["SelectedRoomIds"] as string ?? "";
-            string[] ids = string.IsNullOrEmpty(selectedIds) ? new string[0] : selectedIds.Split(',');
-
-            System.Collections.Generic.List<string> list = new System.Collections.Generic.List<string>(ids);
-            string roomIdStr = roomId.ToString();
-
-            if (list.Contains(roomIdStr))
-            {
-                list.Remove(roomIdStr);
-            }
-            else
-            {
-                list.Add(roomIdStr);
-            }
-
-            ViewState["SelectedRoomIds"] = string.Join(",", list);
-
-            // 重新加载房间列表和已选房间
-            int buildingId = Convert.ToInt32(ddlModalBuilding.SelectedValue);
-            int floor = Convert.ToInt32(ddlModalFloor.SelectedValue);
-            if (buildingId > 0)
-            {
-                LoadModalRooms(buildingId, floor);
-            }
-            LoadSelectedRooms();
-            pnlBatchModal.Style["display"] = "flex";
-        }
-    }
-
-    protected bool IsRoomSelected(object roomId)
-    {
-        string selectedIds = ViewState["SelectedRoomIds"] as string ?? "";
-        if (string.IsNullOrEmpty(selectedIds)) return false;
-        string[] ids = selectedIds.Split(',');
-        string rid = roomId.ToString();
-        for (int i = 0; i < ids.Length; i++)
-        {
-            if (ids[i] == rid) return true;
-        }
-        return false;
-    }
-
     protected void btnSaveBatch_Click(object sender, EventArgs e)
     {
         string batchName = txtBatchName.Text.Trim();
@@ -323,7 +214,7 @@ public partial class admin_batch : System.Web.UI.Page
         string gradeLimit = ddlGradeLimit.SelectedValue;
         string collegeLimit = ddlCollegeLimit.SelectedValue;
         string majorLimit = ddlMajorLimit.SelectedValue;
-        int status = Convert.ToInt32(ddlBatchStatusEdit.SelectedValue);
+        int batchStatus = Convert.ToInt32(ddlBatchStatusEdit.SelectedValue);
         int adminId = Convert.ToInt32(Session["AdminId"]);
 
         if (string.IsNullOrEmpty(batchName))
@@ -358,7 +249,7 @@ public partial class admin_batch : System.Web.UI.Page
         if (!string.IsNullOrEmpty(hfBatchId.Value))
         {
             int id = Convert.ToInt32(hfBatchId.Value);
-            if (BatchBLL.UpdateBatch(id, batchName, startTime, endTime, gradeLimit, collegeLimit, majorLimit, status))
+            if (BatchBLL.UpdateBatch(id, batchName, startTime, endTime, gradeLimit, collegeLimit, majorLimit, batchStatus))
             {
                 pnlBatchModal.Style["display"] = "none";
                 LoadBatches();
