@@ -97,7 +97,7 @@
         <div class="notice-form-card">
             <div class="form-section-title">
                 <div class="form-section-icon"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">edit_square</span></div>
-                <h3 id="formTitle">发布新公告</h3>
+                <h3 id="formTitle" runat="server">发布新公告</h3>
             </div>
             <asp:HiddenField ID="hfNoticeId" runat="server" />
             <div class="form-group">
