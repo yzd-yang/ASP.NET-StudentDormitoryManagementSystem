@@ -398,6 +398,38 @@ public partial class admin_system : System.Web.UI.Page
         int roomsPerFloor = Convert.ToInt32(txtRoomsPerFloor.Value);
         int roomType = Convert.ToInt32(ddlGenRoomType.SelectedValue);
 
+        // 验证：每层房间数不能超过楼宇设置的RoomsPerFloor
+        DataTable buildings = DormBLL.GetBuildingList();
+        int maxRoomsPerFloor = 0;
+        int maxFloorCount = 0;
+        foreach (DataRow row in buildings.Rows)
+        {
+            if (Convert.ToInt32(row["Id"]) == buildingId)
+            {
+                maxRoomsPerFloor = Convert.ToInt32(row["RoomsPerFloor"]);
+                maxFloorCount = Convert.ToInt32(row["FloorCount"]);
+                break;
+            }
+        }
+
+        if (roomsPerFloor > maxRoomsPerFloor)
+        {
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('每层房间数不能超过 " + maxRoomsPerFloor + "（楼宇设置值）','error');", true);
+            return;
+        }
+
+        if (startFloor > endFloor)
+        {
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('起始层数不能大于结束层数','error');", true);
+            return;
+        }
+
+        if (endFloor > maxFloorCount)
+        {
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('结束层数不能超过 " + maxFloorCount + "（楼宇总层数）','error');", true);
+            return;
+        }
+
         int bedCount = 2;
         if (roomType == 2) bedCount = 4;
         else if (roomType == 3) bedCount = 6;
