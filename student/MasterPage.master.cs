@@ -28,6 +28,10 @@ public partial class student_MasterPage : System.Web.UI.MasterPage
     protected string IsActive(string page)
     {
         string currentPage = Request.Url.Segments[Request.Url.Segments.Length - 1].Replace(".aspx", "");
+        if (page.Equals("batch", StringComparison.OrdinalIgnoreCase) && currentPage.Equals("grab-dorm", StringComparison.OrdinalIgnoreCase))
+        {
+            return "active";
+        }
         return currentPage.Equals(page, StringComparison.OrdinalIgnoreCase) ? "active" : "";
     }
 

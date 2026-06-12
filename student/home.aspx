@@ -3,294 +3,300 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="title" runat="server">我的宿舍 - 智慧宿舍</asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="head" runat="server">
-    <link href="/css/student.css" rel="stylesheet" />
     <style>
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-        .mint-gradient {
-            background: linear-gradient(135deg, rgba(73, 234, 206, 0.15) 0%, rgba(255, 255, 255, 0.4) 100%);
+        .home-page { display:flex; flex-direction:column; gap:24px; }
+        .home-card {
+            background:rgba(255,255,255,0.7); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+            border:1px solid rgba(255,255,255,0.42); border-radius:24px; box-shadow:0 1px 8px rgba(0,0,0,0.04);
         }
 
-        /* Hero */
-        .hero-section { margin-bottom: 32px; }
-        .hero-wrap {
-            position: relative; overflow: hidden; border-radius: 24px;
-            height: 260px; display: flex; flex-direction: column; justify-content: flex-end;
-            padding: 48px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid rgba(255,255,255,0.4);
+        .home-hero {
+            position:relative; min-height:320px; overflow:hidden; border-radius:24px; padding:48px;
+            display:flex; align-items:flex-end;
+            background-image:url('https://lh3.googleusercontent.com/aida-public/AB6AXuDvub5epDD0W6jzLzcezGMTa9iGTYLyUSoTqCsMEHR_gRKJ-4ti08NPjhNFwJsWi4TSg7FByjTGKAGcy2H-TN3fa6usYF-05ZNqdYLL1ibSx-RP0eEQx-rhvt8uUhZ-U9_KJbhJE2YCnSVW-Ecihon--9Su1flYTgBzk46fs7ZVT8UOeO9DKEzCPWtXIN3zgZS8B69YLFBhPi1Bf0Zk4daqKfFVk_s0YboPxGXuZD2yKB9VKiVXkvfh0Hj5HSu4xJEWr-mo_jg9OQ'), linear-gradient(135deg, #006b5c 0%, #49EACE 48%, #f5ffdc 100%);
+            background-size:cover;
+            background-position:center;
         }
-        .hero-bg {
-            position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-            background: linear-gradient(135deg, #006b5c 0%, #49EACE 50%, #A7F3E7 100%);
+        .home-hero::before {
+            content:""; position:absolute; inset:0; z-index:1;
+            background:linear-gradient(to top, rgba(0,0,0,0.62), rgba(0,0,0,0.18) 58%, rgba(0,0,0,0.04));
         }
-        .hero-overlay {
-            position: absolute; inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+        .home-hero-content { position:relative; z-index:2; width:100%; display:flex; align-items:flex-end; justify-content:space-between; gap:24px; color:#fff; }
+        .home-hero-title { font-size:48px; line-height:1.12; font-weight:800; margin-bottom:12px; }
+        .home-hero-meta { display:flex; align-items:center; gap:24px; flex-wrap:wrap; font-size:18px; opacity:0.94; }
+        .home-hero-meta span { display:inline-flex; align-items:center; gap:8px; }
+        .home-hero-action {
+            display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:10px 24px;
+            color:#fff; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.26);
+            border-radius:16px; font-size:14px; font-weight:700; text-decoration:none; backdrop-filter:blur(8px);
+            transition:all 0.2s; white-space:nowrap;
         }
-        .hero-content {
-            position: relative; z-index: 1; color: #fff;
-            display: flex; flex-direction: column; gap: 16px;
-        }
-        @media (min-width: 768px) {
-            .hero-content { flex-direction: row; align-items: flex-end; justify-content: space-between; }
-        }
-        .hero-title { font-size: 48px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; line-height: 1.1; }
-        @media (max-width: 767px) { .hero-title { font-size: 28px; } }
-        .hero-meta { display: flex; align-items: center; gap: 24px; opacity: 0.9; font-size: 18px; }
-        .hero-meta-item { display: flex; align-items: center; gap: 8px; }
-        .hero-btn {
-            background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
-            color: #fff; padding: 10px 24px; border-radius: 12px; font-size: 14px; font-weight: 600;
-            border: 1px solid rgba(255,255,255,0.2); cursor: pointer; display: flex;
-            align-items: center; gap: 8px; font-family: inherit; transition: all 0.2s;
-            text-decoration: none;
-        }
-        .hero-btn:hover { background: rgba(255,255,255,0.25); }
+        .home-hero-action:hover { background:rgba(255,255,255,0.24); }
 
-        /* 3列卡片网格 */
-        .cards-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 32px; }
-        @media (max-width: 1024px) { .cards-grid { grid-template-columns: 1fr 1fr; } }
-        @media (max-width: 767px) { .cards-grid { grid-template-columns: 1fr; } }
+        .home-dashboard { display:grid; grid-template-columns:minmax(0, 2fr) minmax(320px, 1fr); gap:32px; align-items:start; }
+        .home-main-column, .home-side-column { display:flex; flex-direction:column; gap:32px; }
+        .home-summary-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:24px; }
 
-        /* Score card */
-        .score-card { padding: 20px; border-radius: 20px; display: flex; flex-direction: column; justify-content: space-between; }
-        .score-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
-        .score-title { font-size: 16px; font-weight: 700; color: var(--on-surface); }
-        .score-sub { font-size: 13px; color: var(--on-surface-variant); margin-top: 4px; }
-        .score-icon { font-size: 36px; color: var(--primary); transition: transform 0.2s; }
-        .score-card:hover .score-icon { transform: scale(1.1); }
-        .score-row { display: flex; align-items: flex-end; gap: 12px; margin-bottom: 16px; }
-        .score-num { font-size: 48px; font-weight: 800; color: var(--on-surface); line-height: 1; letter-spacing: -0.02em; }
-        .score-label { color: #00a08e; font-size: 14px; font-weight: 600; }
-        .score-hint { font-size: 12px; color: var(--on-surface-variant); margin-top: 2px; }
-        .score-btn {
-            width: 100%; padding: 16px; background: #49EACE; color: #000;
-            border: none; border-radius: 16px; font-size: 14px; font-weight: 600;
-            cursor: pointer; font-family: inherit; box-shadow: 0 4px 12px rgba(73,234,206,0.2);
-            transition: all 0.2s;
+        .home-score-card, .home-pay-card, .home-roommates-card, .home-facility-card, .home-tools-card { padding:24px; }
+        .home-card-head { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:24px; }
+        .home-card-title { font-size:24px; line-height:1.25; font-weight:700; color:var(--on-surface); }
+        .home-card-subtitle { font-size:13px; color:var(--on-surface-variant); margin-top:4px; }
+        .home-card-icon { font-size:40px; color:var(--primary); transition:transform 0.2s; }
+        .home-card:hover .home-card-icon { transform:scale(1.08); }
+        .home-score-card { background:linear-gradient(135deg, rgba(73,234,206,0.15), rgba(255,255,255,0.42)); }
+        .home-score-row { display:flex; align-items:flex-end; gap:12px; margin-bottom:24px; }
+        .home-score-value { font-size:56px; font-weight:800; line-height:0.95; color:var(--on-surface); }
+        .home-score-label { display:block; font-size:14px; color:#00a08e; font-weight:700; }
+        .home-score-hint { font-size:12px; color:var(--on-surface-variant); margin-top:4px; }
+        .home-primary-btn {
+            width:100%; min-height:52px; border:none; border-radius:16px; background:var(--primary); color:#000;
+            font:inherit; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+            box-shadow:0 6px 16px rgba(73,234,206,0.22); text-decoration:none; transition:all 0.2s;
         }
-        .score-btn:hover { opacity: 0.9; }
+        .home-primary-btn:hover { opacity:0.9; }
+        .home-pay-badge { display:inline-flex; align-items:center; padding:6px 16px; border-radius:999px; background:rgba(73,234,206,0.16); color:#006658; font-size:14px; font-weight:800; }
+        .home-pay-footer { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:28px; padding-top:24px; border-top:1px solid rgba(73,234,206,0.12); }
+        .home-pay-label { font-size:14px; color:var(--on-surface-variant); }
+        .home-pay-amount { font-size:24px; font-weight:800; color:var(--on-surface); margin-top:4px; }
+        .home-pay-link { color:var(--primary); font-size:14px; font-weight:700; text-decoration:none; white-space:nowrap; }
+        .home-pay-link:hover { text-decoration:underline; }
 
-        /* Payment card */
-        .pay-card { padding: 24px; border-radius: 24px; display: flex; flex-direction: column; justify-content: space-between; }
-        .pay-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 700; background: rgba(73,234,206,0.15); color: #006658; text-transform: uppercase; letter-spacing: 0.05em; }
-        .pay-divider { border-top: 1px solid rgba(73,234,206,0.1); margin-top: 24px; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; }
-        .pay-label { font-size: 14px; color: var(--on-surface-variant); }
-        .pay-amount { font-size: 24px; font-weight: 700; color: var(--on-surface); margin-top: 4px; }
-        .pay-link { color: var(--primary); font-size: 14px; font-weight: 600; text-decoration: none; }
-        .pay-link:hover { text-decoration: underline; }
+        .home-section-head { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:28px; }
+        .home-section-title { display:flex; align-items:center; gap:12px; font-size:24px; line-height:1.25; font-weight:700; color:var(--on-surface); margin:0; }
+        .home-section-title .material-symbols-outlined { color:var(--primary); font-size:32px; }
+        .home-text-action { border:none; background:transparent; color:var(--primary); font:inherit; font-size:14px; font-weight:700; cursor:pointer; padding:8px 14px; border-radius:14px; white-space:nowrap; }
+        .home-text-action:hover { background:rgba(73,234,206,0.1); }
+        .home-roommate-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:20px; }
+        .home-roommate {
+            display:flex; align-items:center; gap:20px; min-width:0; padding:20px; border-radius:18px;
+            border:1px solid rgba(255,255,255,0.48); background:rgba(255,255,255,0.28); cursor:pointer; transition:all 0.2s;
+        }
+        .home-roommate:hover { border-color:var(--primary); background:rgba(255,255,255,0.56); }
+        .home-roommate.self { border:2px solid var(--primary); background:rgba(73,234,206,0.06); }
+        .home-avatar { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:#fff; border:2px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,0.08); color:var(--primary); font-size:22px; font-weight:800; }
+        .home-roommate.self .home-avatar { border-color:var(--primary); }
+        .home-roommate-info { min-width:0; }
+        .home-roommate-name { display:flex; align-items:center; gap:8px; font-size:18px; font-weight:700; color:var(--on-surface); }
+        .home-self-badge { padding:2px 8px; border-radius:999px; background:var(--primary); color:#000; font-size:10px; font-weight:800; }
+        .home-roommate-major { margin-top:4px; font-size:16px; color:var(--on-surface-variant); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
-        /* Facility card */
-        .facility-card { padding: 20px; border-radius: 20px; display: flex; flex-direction: column; height: 100%; }
-        .facility-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-        .facility-title { font-size: 20px; font-weight: 600; color: var(--on-surface); display: flex; align-items: center; gap: 12px; }
-        .facility-sync { font-size: 12px; color: var(--on-surface-variant); }
-        .facility-list { display: flex; flex-direction: column; gap: 16px; flex-grow: 1; }
-        .facility-row {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 16px; border-radius: 16px; background: rgba(255,255,255,0.5);
-            border: 1px solid rgba(255,255,255,0.5); transition: all 0.2s;
-        }
-        .facility-row:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-color: var(--primary); }
-        .facility-row.error { background: rgba(186,26,26,0.04); border-color: rgba(186,26,26,0.1); }
-        .facility-left { display: flex; align-items: center; gap: 16px; }
-        .facility-icon-wrap { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(73,234,206,0.1); }
-        .facility-icon-wrap.error { background: rgba(186,26,26,0.1); }
-        .facility-icon-wrap .material-symbols-outlined { font-size: 22px; color: var(--primary); }
-        .facility-icon-wrap.error .material-symbols-outlined { color: var(--error); }
-        .facility-name { font-size: 14px; font-weight: 600; color: var(--on-surface); }
-        .facility-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
-        .facility-badge.ok { background: rgba(73,234,206,0.12); color: #00a08e; }
-        .facility-badge.error { background: rgba(186,26,26,0.08); color: var(--error); }
-        .repair-btn {
-            width: 100%; margin-top: 32px; padding: 16px; background: #49EACE; color: #000;
-            border: none; border-radius: 16px; font-size: 14px; font-weight: 600;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px;
-            font-family: inherit; box-shadow: 0 4px 12px rgba(73,234,206,0.2); transition: all 0.2s;
-            text-decoration: none;
-        }
-        .repair-btn:hover { opacity: 0.9; }
+        .home-facility-card { min-height:100%; display:flex; flex-direction:column; }
+        .home-sync { font-size:12px; color:var(--on-surface-variant); white-space:nowrap; }
+        .home-facility-list { display:flex; flex-direction:column; gap:16px; flex:1; }
+        .home-facility-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px; border-radius:18px; background:rgba(255,255,255,0.42); border:1px solid rgba(255,255,255,0.5); transition:all 0.2s; }
+        .home-facility-row:hover { border-color:var(--primary); box-shadow:0 2px 10px rgba(0,0,0,0.04); }
+        .home-facility-row.error { background:rgba(186,26,26,0.045); border-color:rgba(186,26,26,0.12); }
+        .home-facility-left { display:flex; align-items:center; gap:14px; min-width:0; }
+        .home-facility-icon { width:40px; height:40px; border-radius:14px; display:flex; align-items:center; justify-content:center; background:rgba(73,234,206,0.12); color:var(--primary); flex-shrink:0; }
+        .home-facility-icon.error { background:rgba(186,26,26,0.1); color:var(--error); }
+        .home-facility-name { font-size:14px; font-weight:700; color:var(--on-surface); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .home-status { padding:5px 12px; border-radius:999px; font-size:12px; font-weight:800; white-space:nowrap; }
+        .home-status.ok { background:rgba(73,234,206,0.13); color:#00a08e; }
+        .home-status.error { background:rgba(186,26,26,0.09); color:var(--error); }
+        .home-repair-btn { margin-top:32px; }
 
-        /* Roommates */
-        .roommate-section { padding: 24px; border-radius: 20px; margin-bottom: 32px; }
-        .roommate-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-        .roommate-title { font-size: 20px; font-weight: 600; color: var(--on-surface); display: flex; align-items: center; gap: 12px; }
-        .roommate-action { color: var(--primary); font-size: 14px; font-weight: 600; background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-family: inherit; }
-        .roommate-action:hover { background: rgba(73,234,206,0.1); }
-        .roommate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 767px) { .roommate-grid { grid-template-columns: 1fr; } }
-        .roommate-card {
-            display: flex; align-items: center; gap: 20px; padding: 20px;
-            border-radius: 16px; border: 1px solid rgba(255,255,255,0.4);
-            cursor: pointer; transition: all 0.2s;
+        .home-tools-card { background:linear-gradient(135deg, rgba(73,234,206,0.14), rgba(255,255,255,0.52)); }
+        .home-tools-label { margin-bottom:20px; color:var(--primary); font-size:14px; font-weight:800; letter-spacing:0.04em; }
+        .home-tools-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+        .home-tool {
+            display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; min-height:112px;
+            border-radius:18px; border:1px solid rgba(255,255,255,0.46); background:rgba(255,255,255,0.55);
+            color:var(--on-surface-variant); text-decoration:none; font-size:13px; font-weight:700; transition:all 0.2s;
         }
-        .roommate-card:hover { border-color: var(--primary); background: rgba(255,255,255,0.6); }
-        .roommate-card.self { border: 2px solid var(--primary); background: rgba(73,234,206,0.05); }
-        .roommate-img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 2px solid #fff; }
-        .roommate-img.self { border: 2px solid var(--primary); }
-        .roommate-name { font-size: 18px; font-weight: 600; color: var(--on-surface); display: flex; align-items: center; gap: 8px; }
-        .roommate-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: #49EACE; color: #000; font-weight: 700; text-transform: uppercase; }
-        .roommate-info { font-size: 16px; color: var(--on-surface-variant); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .home-tool:hover { color:var(--on-surface); border-color:var(--primary); background:rgba(73,234,206,0.09); }
+        .home-tool .material-symbols-outlined { color:var(--primary); font-size:32px; }
+
+        @media (max-width:1100px) {
+            .home-dashboard { grid-template-columns:1fr; }
+            .home-summary-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
+            .home-side-column { display:grid; grid-template-columns:minmax(0, 1fr) minmax(280px, 0.7fr); gap:24px; }
+        }
+        @media (max-width:767px) {
+            .home-page { gap:20px; }
+            .home-hero { min-height:260px; padding:28px 22px; border-radius:20px; }
+            .home-hero-content { flex-direction:column; align-items:flex-start; justify-content:flex-end; }
+            .home-hero-title { font-size:32px; margin-bottom:10px; }
+            .home-hero-meta { gap:12px; font-size:15px; }
+            .home-hero-action { width:100%; }
+            .home-dashboard, .home-main-column, .home-side-column { display:flex; flex-direction:column; gap:20px; }
+            .home-summary-grid, .home-roommate-grid, .home-tools-grid { grid-template-columns:1fr; gap:16px; }
+            .home-score-card, .home-pay-card, .home-roommates-card, .home-facility-card, .home-tools-card { padding:20px; border-radius:20px; }
+            .home-card-title, .home-section-title { font-size:20px; }
+            .home-card-icon { font-size:34px; }
+            .home-section-head { align-items:flex-start; margin-bottom:20px; }
+            .home-text-action { padding:6px 0; }
+            .home-roommate { padding:16px; gap:16px; }
+            .home-avatar { width:56px; height:56px; }
+            .home-roommate-name { font-size:17px; }
+            .home-roommate-major { font-size:14px; }
+            .home-facility-row { padding:14px; }
+        }
+        @media (max-width:420px) {
+            .home-pay-footer { align-items:flex-start; flex-direction:column; }
+            .home-section-head { flex-direction:column; }
+            .home-sync { white-space:normal; }
+        }
     </style>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-wrap">
-            <div class="hero-bg"></div>
-            <div class="hero-overlay"></div>
-            <div class="hero-content">
+    <div class="home-page">
+        <section class="home-hero home-card">
+            <div class="home-hero-content">
                 <div>
-                    <h1 class="hero-title">北校区 3号楼</h1>
-                    <div class="hero-meta">
-                        <span class="hero-meta-item">
-                            <span class="material-symbols-outlined" style="font-size:24px;">meeting_room</span> 502-A 室
-                        </span>
-                        <span class="hero-meta-item">
-                            <span class="material-symbols-outlined" style="font-size:24px;">bed</span> 02号床位
-                        </span>
+                    <h1 class="home-hero-title">北校区 3号楼</h1>
+                    <div class="home-hero-meta">
+                        <span><span class="material-symbols-outlined">meeting_room</span> 502-A 室</span>
+                        <span><span class="material-symbols-outlined">bed</span> 02号床位</span>
                     </div>
                 </div>
-                <div>
-                    <a href="profile.aspx" class="hero-btn">
-                        <span class="material-symbols-outlined" style="font-size:20px;">edit</span>
-                        修改个人资料
+                <a href="profile.aspx" class="home-hero-action">
+                    <span class="material-symbols-outlined" style="font-size:20px;">edit</span>
+                    修改个人资料
+                </a>
+            </div>
+        </section>
+
+        <div class="home-dashboard">
+            <div class="home-main-column">
+                <div class="home-summary-grid">
+                    <section class="home-card home-score-card">
+                        <div class="home-card-head">
+                            <div>
+                                <h2 class="home-card-title">宿舍评分</h2>
+                                <p class="home-card-subtitle">基于本月卫生与安全周检</p>
+                            </div>
+                            <span class="material-symbols-outlined home-card-icon" style="font-variation-settings:'FILL' 1;">stars</span>
+                        </div>
+                        <div class="home-score-row">
+                            <span class="home-score-value">94</span>
+                            <div>
+                                <span class="home-score-label">优秀</span>
+                                <div class="home-score-hint">超过 85% 的宿舍</div>
+                            </div>
+                        </div>
+                        <button class="home-primary-btn" type="button">查看详细自查报告</button>
+                    </section>
+
+                    <section class="home-card home-pay-card">
+                        <div class="home-card-head">
+                            <div>
+                                <h2 class="home-card-title">住宿费缴纳</h2>
+                                <p class="home-card-subtitle">2023-2024 秋季学期</p>
+                            </div>
+                            <span class="material-symbols-outlined home-card-icon">payments</span>
+                        </div>
+                        <span class="home-pay-badge">已缴纳</span>
+                        <div class="home-pay-footer">
+                            <div>
+                                <div class="home-pay-label">应缴合计</div>
+                                <div class="home-pay-amount">¥ 1,200.00</div>
+                            </div>
+                            <a href="#" class="home-pay-link">查看流水</a>
+                        </div>
+                    </section>
+                </div>
+
+                <section class="home-card home-roommates-card">
+                    <div class="home-section-head">
+                        <h2 class="home-section-title">
+                            <span class="material-symbols-outlined">group</span>
+                            我的室友 (4)
+                        </h2>
+                        <button class="home-text-action" type="button">管理室友群组</button>
+                    </div>
+                    <div class="home-roommate-grid">
+                        <div class="home-roommate self">
+                            <div class="home-avatar">张</div>
+                            <div class="home-roommate-info">
+                                <div class="home-roommate-name">张伟 <span class="home-self-badge">我</span></div>
+                                <div class="home-roommate-major">计算机科学与技术 · 2022级</div>
+                            </div>
+                        </div>
+                        <div class="home-roommate">
+                            <div class="home-avatar">李</div>
+                            <div class="home-roommate-info">
+                                <div class="home-roommate-name">李明</div>
+                                <div class="home-roommate-major">自动化 · 2022级</div>
+                            </div>
+                        </div>
+                        <div class="home-roommate">
+                            <div class="home-avatar">王</div>
+                            <div class="home-roommate-info">
+                                <div class="home-roommate-name">王小红</div>
+                                <div class="home-roommate-major">数字媒体艺术 · 2022级</div>
+                            </div>
+                        </div>
+                        <div class="home-roommate">
+                            <div class="home-avatar">赵</div>
+                            <div class="home-roommate-info">
+                                <div class="home-roommate-name">赵强</div>
+                                <div class="home-roommate-major">电子信息工程 · 2022级</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="home-side-column">
+                <section class="home-card home-facility-card">
+                    <div class="home-section-head">
+                        <h2 class="home-section-title">
+                            <span class="material-symbols-outlined">construction</span>
+                            设施状态
+                        </h2>
+                        <span class="home-sync">最后同步: 10:30 AM</span>
+                    </div>
+                    <div class="home-facility-list">
+                        <div class="home-facility-row">
+                            <div class="home-facility-left">
+                                <span class="home-facility-icon"><span class="material-symbols-outlined">ac_unit</span></span>
+                                <span class="home-facility-name">空调系统</span>
+                            </div>
+                            <span class="home-status ok">运行正常</span>
+                        </div>
+                        <div class="home-facility-row">
+                            <div class="home-facility-left">
+                                <span class="home-facility-icon"><span class="material-symbols-outlined">water_drop</span></span>
+                                <span class="home-facility-name">热水器</span>
+                            </div>
+                            <span class="home-status ok">运行正常</span>
+                        </div>
+                        <div class="home-facility-row error">
+                            <div class="home-facility-left">
+                                <span class="home-facility-icon error"><span class="material-symbols-outlined">lightbulb</span></span>
+                                <span class="home-facility-name">照明设施</span>
+                            </div>
+                            <span class="home-status error">等待维修</span>
+                        </div>
+                        <div class="home-facility-row">
+                            <div class="home-facility-left">
+                                <span class="home-facility-icon"><span class="material-symbols-outlined">wifi</span></span>
+                                <span class="home-facility-name">校园网</span>
+                            </div>
+                            <span class="home-status ok">连接稳定</span>
+                        </div>
+                    </div>
+                    <a href="repair.aspx" class="home-primary-btn home-repair-btn">
+                        <span class="material-symbols-outlined">add_circle</span>
+                        提交报修申请
                     </a>
-                </div>
-            </div>
-        </div>
-    </section>
+                </section>
 
-    <!-- 3栏卡片：评分 + 缴费 + 设施 -->
-    <div class="cards-grid">
-        <!-- 评分卡片 -->
-        <div class="glass-card score-card mint-gradient">
-            <div class="score-header">
-                <div>
-                    <div class="score-title">宿舍评分</div>
-                    <div class="score-sub">基于本月卫生与安全周检</div>
-                </div>
-                <span class="material-symbols-outlined score-icon" style="font-variation-settings:'FILL' 1;">stars</span>
-            </div>
-            <div class="score-row">
-                <span class="score-num">94</span>
-                <div>
-                    <span class="score-label">优秀</span>
-                    <div class="score-hint">超过 85% 的宿舍</div>
-                </div>
-            </div>
-            <button class="score-btn">查看详细自查报告</button>
-        </div>
-
-        <!-- 缴费卡片 -->
-        <div class="glass-card pay-card">
-            <div class="score-header">
-                <div>
-                    <div class="score-title">住宿费缴纳</div>
-                    <div class="score-sub">2023-2024 秋季学期</div>
-                </div>
-                <span class="material-symbols-outlined score-icon">payments</span>
-            </div>
-            <div>
-                <span class="pay-badge">已缴纳</span>
-            </div>
-            <div class="pay-divider">
-                <div>
-                    <div class="pay-label">应缴合计</div>
-                    <div class="pay-amount">¥ 1,200.00</div>
-                </div>
-                <a href="#" class="pay-link">查看流水</a>
-            </div>
-        </div>
-
-        <!-- 设施状态卡片 -->
-        <div class="glass-card facility-card">
-            <div class="facility-header">
-                <div class="facility-title">
-                    <span class="material-symbols-outlined" style="color:var(--primary); font-size:32px;">construction</span>
-                    设施状态
-                </div>
-                <span class="facility-sync">最后同步: 10:30 AM</span>
-            </div>
-            <div class="facility-list">
-                <div class="facility-row">
-                    <div class="facility-left">
-                        <div class="facility-icon-wrap"><span class="material-symbols-outlined">ac_unit</span></div>
-                        <span class="facility-name">空调系统</span>
+                <section class="home-card home-tools-card">
+                    <div class="home-tools-label">快捷工具</div>
+                    <div class="home-tools-grid">
+                        <a href="batch.aspx" class="home-tool">
+                            <span class="material-symbols-outlined">event_available</span>
+                            宿舍预约
+                        </a>
+                        <a href="#" class="home-tool">
+                            <span class="material-symbols-outlined">policy</span>
+                            管理规章
+                        </a>
                     </div>
-                    <span class="facility-badge ok">运行正常</span>
-                </div>
-                <div class="facility-row">
-                    <div class="facility-left">
-                        <div class="facility-icon-wrap"><span class="material-symbols-outlined">water_drop</span></div>
-                        <span class="facility-name">热水器</span>
-                    </div>
-                    <span class="facility-badge ok">运行正常</span>
-                </div>
-                <div class="facility-row error">
-                    <div class="facility-left">
-                        <div class="facility-icon-wrap error"><span class="material-symbols-outlined">lightbulb</span></div>
-                        <span class="facility-name">照明设施</span>
-                    </div>
-                    <span class="facility-badge error">等待维修</span>
-                </div>
-                <div class="facility-row">
-                    <div class="facility-left">
-                        <div class="facility-icon-wrap"><span class="material-symbols-outlined">wifi</span></div>
-                        <span class="facility-name">校园网</span>
-                    </div>
-                    <span class="facility-badge ok">连接稳定</span>
-                </div>
-            </div>
-            <a href="repair.aspx" class="repair-btn">
-                <span class="material-symbols-outlined">add_circle</span>
-                提交报修申请
-            </a>
+                </section>
+            </aside>
         </div>
     </div>
-
-    <!-- 室友区域 -->
-    <section class="glass-card roommate-section">
-        <div class="roommate-header">
-            <h3 class="roommate-title">
-                <span class="material-symbols-outlined" style="color:var(--primary); font-size:32px;">group</span>
-                我的室友 (4)
-            </h3>
-            <button class="roommate-action">管理室友群组</button>
-        </div>
-        <div class="roommate-grid">
-            <div class="roommate-card self">
-                <img alt="Avatar" class="roommate-img self" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbyslLsMRvdDQq_i-6PIvqW1xXfMmd7WxPIeGnabDMXGzCuA9-O7FAym9RljAs_2k5b6WrIOb6YqK6q64e1Sq1my-_59ereVLVvaTLgug_Q_Sj-q1-0AvRjjMr2gNzpBQg7EudsswENo54KVSZdf4o9Qx6Z_90fK3dmzSm4sTVqqoRJ-q0QRfi5G3j0_x4vhAeJ1qx4A75Iutb4JgfvoC8EYh6Op38ZaV78Hk-dHWzNnpYZPoOJL0QTeX-6zRhL__e8MHGtX7yvg">
-                <div style="overflow:hidden;">
-                    <div class="roommate-name">张伟 <span class="roommate-badge">我</span></div>
-                    <div class="roommate-info">计算机科学与技术 · 2022级</div>
-                </div>
-            </div>
-            <div class="roommate-card">
-                <img alt="Avatar" class="roommate-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAH5e4C8gYf40--3ApLuzKEZTf-p6wWWPHbSDCm4kbhj05nSXVNdtuFE5bjrdeXXGfrFED2EmEka4kZT0hBXRUnMS739u_eAtkbcJWegN_emYA2VEKAJD8an7yojLzc8FhO0-Q1jbIXr2rQQtOgr6PNeFoMaAbPoAvlqjExRWkVagCtmJUPxEXvnW_PEgjaotmqw5AtSmRhEbUsqX68Etq7dEIcuHHphT1iuQ5bUhd0UU0WEE60wIZ_cgo7vEZJSoifMB9GOp8b7Q">
-                <div style="overflow:hidden;">
-                    <div class="roommate-name">李明</div>
-                    <div class="roommate-info">自动化 · 2022级</div>
-                </div>
-            </div>
-            <div class="roommate-card">
-                <img alt="Avatar" class="roommate-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTm5Sk9ARTpp5s0xHxQPSx4Bh0953x7nB8RwxsD9Q7k9OD1LOFGoS8BEVUulTAqOqn3_9a6gmClWfBNA8lz1b8hwlB9I2bSQlyURp8QRlRpBHk-1YN_DBX6SVw0_6BNudb2ZhrOcG49QtRkYKUz1hi7-BGGscfJshWrM2JAhu5CMkCLsdffVRZix02Wi5_baNxJ3bONvM9y-mUYL1c77MyeIekT1RxnmS82Nk1_KQSueQlpaSUCGBx0fvb2cKLPN4Ovae0SsOBDw">
-                <div style="overflow:hidden;">
-                    <div class="roommate-name">王小红</div>
-                    <div class="roommate-info">数字媒体艺术 · 2022级</div>
-                </div>
-            </div>
-            <div class="roommate-card">
-                <img alt="Avatar" class="roommate-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0_EK9SsDFP_SWZobyMpWArxj7idMqA0F2_G2PB87sdGm35kJ0AKByXVogQ_nWQprhrK8cmTRf3mD2ISXN_kef-LYgk6wxqlcDxNh561QJ3KUuOfi7CMI2Fye-FvupL5sG61RSsGnbIXK6KfMVz-iFjaqJu6Hhv8ybQ4rO8pyTjyl_2LueGR-NWixc-GtW13glph9_IQeoeMdu0GjGWbEouSOg_7iGoQKNXHbp-sH-Tk1X4NpsnJZe-qjNCMMyA-n1hc35Z7Rbkw">
-                <div style="overflow:hidden;">
-                    <div class="roommate-name">赵强</div>
-                    <div class="roommate-info">电子信息工程 · 2022级</div>
-                </div>
-            </div>
-        </div>
-    </section>
 </asp:Content>
