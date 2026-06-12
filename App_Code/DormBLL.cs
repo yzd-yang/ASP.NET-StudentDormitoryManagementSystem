@@ -104,32 +104,33 @@ public class DormBLL
 
     public static DataTable SearchStudents(string keyword, string college, string major, string grade, string className)
     {
-        string sql = @"SELECT Id, StudentNo, Name, College, Major, Grade, ClassName
-                       FROM Students 
-                       WHERE Status=1";
+        string sql = @"SELECT s.Id, s.StudentNo, s.Name, s.College, s.Major, s.Grade, s.ClassName
+                       FROM Students s
+                       LEFT JOIN Beds b ON s.Id = b.StudentId AND b.Status = 1
+                       WHERE s.Status=1 AND b.Id IS NULL";
 
         if (!string.IsNullOrEmpty(keyword))
         {
-            sql += " AND (StudentNo LIKE @Keyword OR Name LIKE @Keyword)";
+            sql += " AND (s.StudentNo LIKE @Keyword OR s.Name LIKE @Keyword)";
         }
         if (!string.IsNullOrEmpty(college))
         {
-            sql += " AND College=@College";
+            sql += " AND s.College=@College";
         }
         if (!string.IsNullOrEmpty(major))
         {
-            sql += " AND Major=@Major";
+            sql += " AND s.Major=@Major";
         }
         if (!string.IsNullOrEmpty(grade))
         {
-            sql += " AND Grade=@Grade";
+            sql += " AND s.Grade=@Grade";
         }
         if (!string.IsNullOrEmpty(className))
         {
-            sql += " AND ClassName=@ClassName";
+            sql += " AND s.ClassName=@ClassName";
         }
 
-        sql += " ORDER BY StudentNo LIMIT 30";
+        sql += " ORDER BY s.StudentNo LIMIT 30";
 
         var paramList = new System.Collections.Generic.List<MySqlParameter>();
         if (!string.IsNullOrEmpty(keyword))

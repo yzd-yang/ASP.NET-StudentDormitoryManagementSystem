@@ -233,12 +233,7 @@
                                         <div class="student-detail"><%# Eval("StudentNo") %> · <%# Eval("College") %> · <%# Eval("Major") %> · <%# Eval("Grade") %> <%# Eval("ClassName") %></div>
                                     </div>
                                 </div>
-                                <asp:Panel ID="pnlHasBed" runat="server" Visible='<%# HasStudentBed(Eval("Id")) %>'>
-                                    <span style="font-size:12px; color:var(--error); font-weight:600;">已有床位</span>
-                                </asp:Panel>
-                                <asp:Panel ID="pnlCanSelect" runat="server" Visible='<%# !HasStudentBed(Eval("Id")) %>'>
-                                    <asp:LinkButton ID="btnSelectStudent" runat="server" CommandName="Select" CommandArgument='<%# Eval("Id") %>' CssClass="student-select-btn">选择</asp:LinkButton>
-                                </asp:Panel>
+                                <asp:LinkButton ID="btnSelectStudent" runat="server" CommandName="Select" CommandArgument='<%# Eval("Id") %>' CssClass="student-select-btn">选择</asp:LinkButton>
                             </div>
                         </ItemTemplate>
                     </asp:Repeater>

@@ -338,12 +338,6 @@ public partial class admin_allocation : System.Web.UI.Page
         return "空余 " + (t - o);
     }
 
-    protected bool HasStudentBed(object studentId)
-    {
-        if (studentId == null || studentId == DBNull.Value) return false;
-        return DormBLL.HasBed(Convert.ToInt32(studentId));
-    }
-
     protected override void RaisePostBackEvent(IPostBackEventHandler sourceControl, string eventArgument)
     {
         if (!string.IsNullOrEmpty(Request.Form["PageBtn"]))
