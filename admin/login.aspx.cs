@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Web;
 using System.Web.UI;
 
@@ -41,6 +41,7 @@ public partial class admin_login : System.Web.UI.Page
         Session["AdminNo"] = adminNo;
         Session["AdminName"] = "\u7CFB\u7EDF\u7BA1\u7406\u5458";
         Session["AdminRoleName"] = "\u8D85\u7EA7\u7BA1\u7406\u5458";
+        Session["AdminRole"] = "1";
         Session["Role"] = "admin";
         Response.Redirect("/admin/dashboard.aspx");
     }
