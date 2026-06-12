@@ -132,13 +132,18 @@
             </div>
             <div class="profile-field">
                 <label class="profile-label">姓名</label>
-                <asp:TextBox ID="txtName" runat="server" CssClass="profile-input" />
+                <asp:TextBox ID="txtName" runat="server" CssClass="profile-input" ReadOnly="true" />
             </div>
             <div class="profile-field">
                 <label class="profile-label">手机号</label>
-                <asp:TextBox ID="txtPhone" runat="server" CssClass="profile-input" />
+                <asp:TextBox ID="txtPhone" runat="server" CssClass="profile-input" ReadOnly="true" />
             </div>
-            <asp:Button ID="btnSaveInfo" runat="server" CssClass="profile-save-btn" Text="保存修改" OnClick="btnSaveInfo_Click" />
+            <div style="display:flex; gap:10px; margin-top:8px;">
+                <button type="button" class="profile-save-btn" style="background:transparent; color:var(--primary); border:1px solid var(--primary); box-shadow:none;" onclick="enableEdit()">
+                    <span class="material-symbols-outlined" style="font-size:18px;">edit</span> 修改
+                </button>
+                <asp:Button ID="btnSaveInfo" runat="server" CssClass="profile-save-btn" Text="保存修改" OnClick="btnSaveInfo_Click" style="display:none;" />
+            </div>
         </div>
 
         <!-- 安全设置 -->
@@ -166,6 +171,23 @@
     <div id="toast" class="toast"></div>
 
     <script type="text/javascript">
+        function enableEdit() {
+            var nameInput = document.getElementById('<%= txtName.ClientID %>');
+            var phoneInput = document.getElementById('<%= txtPhone.ClientID %>');
+            var saveBtn = document.getElementById('<%= btnSaveInfo.ClientID %>');
+            var editBtn = event.target.closest('button');
+
+            nameInput.removeAttribute('readonly');
+            nameInput.style.background = '#fff';
+            nameInput.style.borderColor = 'var(--primary)';
+            phoneInput.removeAttribute('readonly');
+            phoneInput.style.background = '#fff';
+            phoneInput.style.borderColor = 'var(--primary)';
+
+            saveBtn.style.display = 'flex';
+            editBtn.style.display = 'none';
+        }
+
         function showToast(msg, type) {
             var toast = document.getElementById('toast');
             toast.className = 'toast ' + type;
