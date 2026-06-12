@@ -105,4 +105,22 @@ public class DormBLL
         object result = DBHelper.ExecuteScalar(sql);
         return result != null ? Convert.ToInt32(result) : 0;
     }
+
+    public static DataTable GetBuildingOccupancy()
+    {
+        string sql = @"SELECT b.Id, b.Name as BuildingName, b.Campus,
+                       (SELECT COUNT(*) FROM Beds bed JOIN Rooms r ON bed.RoomId = r.Id WHERE r.BuildingId = b.Id) as TotalBeds,
+                       (SELECT COUNT(*) FROM Beds bed JOIN Rooms r ON bed.RoomId = r.Id WHERE r.BuildingId = b.Id AND bed.Status = 1) as OccupiedBeds
+                       FROM Buildings b
+                       WHERE b.Status = 1
+                       ORDER BY b.Name";
+        return DBHelper.GetDataTable(sql);
+    }
+
+    public static int GetTotalBeds()
+    {
+        string sql = "SELECT COUNT(*) FROM Beds";
+        object result = DBHelper.ExecuteScalar(sql);
+        return result != null ? Convert.ToInt32(result) : 0;
+    }
 }

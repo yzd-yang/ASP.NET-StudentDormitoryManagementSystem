@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using MySql.Data.MySqlClient;
 
@@ -121,5 +121,30 @@ public class RepairBLL
         string sql = "SELECT COUNT(*) FROM RepairOrders WHERE Status=2";
         object result = DBHelper.ExecuteScalar(sql);
         return result != null ? Convert.ToInt32(result) : 0;
+    }
+
+    public static int GetTodayRepairCount()
+    {
+        string sql = "SELECT COUNT(*) FROM RepairOrders WHERE DATE(CreateTime) = CURDATE()";
+        object result = DBHelper.ExecuteScalar(sql);
+        return result != null ? Convert.ToInt32(result) : 0;
+    }
+
+    public static int GetUrgentRepairCount()
+    {
+        string sql = "SELECT COUNT(*) FROM RepairOrders WHERE Status IN (1, 3)";
+        object result = DBHelper.ExecuteScalar(sql);
+        return result != null ? Convert.ToInt32(result) : 0;
+    }
+
+    public static DataTable GetRepairTrendByDay(int days)
+    {
+        string sql = @"SELECT DATE(CreateTime) as RepairDate, COUNT(*) as Count 
+                       FROM RepairOrders 
+                       WHERE CreateTime >= DATE_SUB(CURDATE(), INTERVAL @Days DAY)
+                       GROUP BY DATE(CreateTime)
+                       ORDER BY RepairDate";
+        MySqlParameter[] parameters = new MySqlParameter[] { new MySqlParameter("@Days", days) };
+        return DBHelper.GetDataTable(sql, parameters);
     }
 }
