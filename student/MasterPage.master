@@ -79,6 +79,21 @@
             <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server" />
         </main>
 
+        <!-- Footer -->
+        <footer style="background:rgba(255,255,255,0.4); backdrop-filter:blur(8px); border-top:1px solid rgba(0,0,0,0.05); padding:32px 0; margin-top:48px;">
+            <div style="max-width:1200px; margin:0 auto; padding:0 32px; display:flex; flex-direction:column; align-items:center; gap:16px;">
+                <div style="text-align:center;">
+                    <div style="font-size:20px; font-weight:800; color:var(--primary); margin-bottom:4px;">SmartDorm</div>
+                    <p style="font-size:14px; color:var(--on-surface-variant);">© 2024 智慧宿舍管理系统。通过现代技术提升学生生活品质。</p>
+                </div>
+                <div style="display:flex; gap:24px;">
+                    <a href="#" style="font-size:12px; color:var(--on-surface-variant); text-decoration:none;">隐私政策</a>
+                    <a href="#" style="font-size:12px; color:var(--on-surface-variant); text-decoration:none;">服务协议</a>
+                    <a href="#" style="font-size:12px; color:var(--on-surface-variant); text-decoration:none;">联系支持</a>
+                </div>
+            </div>
+        </footer>
+
     </form>
 </body>
 </html>
