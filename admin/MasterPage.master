@@ -10,6 +10,35 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
     <link href="/css/admin.css" rel="stylesheet" />
+    <style>
+        .notification-wrapper { position:relative; }
+        .notif-dropdown {
+            display:none; position:absolute; top:48px; right:0; width:360px; max-height:480px;
+            background:#fff; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,0.12);
+            border:1px solid rgba(0,0,0,0.06); z-index:300; overflow:hidden;
+        }
+        .notif-dropdown.show { display:block; }
+        .notif-header { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid rgba(0,0,0,0.06); }
+        .notif-title { font-size:16px; font-weight:700; color:var(--on-surface); }
+        .notif-link { font-size:13px; font-weight:600; color:var(--primary); text-decoration:none; }
+        .notif-link:hover { text-decoration:underline; }
+        .notif-list { max-height:400px; overflow-y:auto; }
+        .notif-item {
+            display:flex; align-items:center; gap:12px; padding:14px 20px; border-bottom:1px solid rgba(0,0,0,0.04);
+            text-decoration:none; color:inherit; transition:background 0.2s; cursor:pointer;
+        }
+        .notif-item:hover { background:rgba(73,234,206,0.06); }
+        .notif-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .notif-icon.repair { background:rgba(186,26,26,0.08); color:var(--error); }
+        .notif-icon.notice { background:rgba(73,234,206,0.1); color:var(--primary); }
+        .notif-icon .material-symbols-outlined { font-size:18px; }
+        .notif-content { flex:1; min-width:0; }
+        .notif-text { font-size:14px; font-weight:600; color:var(--on-surface); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .notif-time { font-size:12px; color:var(--on-surface-variant); margin-top:2px; }
+        .notif-empty { text-align:center; padding:40px 20px; color:var(--on-surface-variant); }
+        .notif-empty .material-symbols-outlined { font-size:40px; opacity:0.3; display:block; margin-bottom:8px; }
+        .admin-header-badge.hide { display:none; }
+    </style>
     <asp:ContentPlaceHolder ID="head" runat="server" />
 </head>
 <body class="admin-body">
@@ -25,10 +54,33 @@
                     <span class="admin-header-brand">SmartDorm</span>
                 </div>
                 <div class="admin-header-right">
-                    <button type="button" class="admin-header-btn" title="通知">
-                        <span class="material-symbols-outlined">notifications</span>
-                        <span class="admin-header-badge"></span>
-                    </button>
+                    <div class="notification-wrapper">
+                        <button type="button" class="admin-header-btn" title="通知" onclick="toggleNotifications()">
+                            <span class="material-symbols-outlined">notifications</span>
+                            <span class="admin-header-badge" id="notifBadge" runat="server"></span>
+                        </button>
+                        <div id="notifDropdown" class="notif-dropdown">
+                            <div class="notif-header">
+                                <span class="notif-title">通知</span>
+                                <a href="/admin/repair.aspx" class="notif-link">查看全部</a>
+                            </div>
+                            <div class="notif-list">
+                                <asp:Repeater ID="rptNotifications" runat="server">
+                                    <ItemTemplate>
+                                        <a href='<%# Eval("Link") %>' class="notif-item">
+                                            <div class="notif-icon <%# Eval("IconClass") %>">
+                                                <span class="material-symbols-outlined"><%# Eval("Icon") %></span>
+                                            </div>
+                                            <div class="notif-content">
+                                                <div class="notif-text"><%# Eval("Title") %></div>
+                                                <div class="notif-time"><%# Eval("Time") %></div>
+                                            </div>
+                                        </a>
+                                    </ItemTemplate>
+                                </asp:Repeater>
+                            </div>
+                        </div>
+                    </div>
                     <div class="admin-header-user" onclick="toggleUserMenu()">
                         <div class="admin-header-avatar">
                             <%= GetAdminInitial() %>
@@ -142,6 +194,14 @@
         function toggleUserMenu() {
             var dropdown = document.getElementById('userDropdown');
             dropdown.classList.toggle('show');
+            document.getElementById('notifDropdown').classList.remove('show');
+        }
+
+        // 切换通知下拉菜单
+        function toggleNotifications() {
+            var dropdown = document.getElementById('notifDropdown');
+            dropdown.classList.toggle('show');
+            document.getElementById('userDropdown').classList.remove('show');
         }
 
         // 点击其他地方关闭下拉菜单
@@ -150,6 +210,11 @@
             var dropdown = document.getElementById('userDropdown');
             if (!user.contains(e.target) && !dropdown.contains(e.target)) {
                 dropdown.classList.remove('show');
+            }
+            var notifWrapper = document.querySelector('.notification-wrapper');
+            var notifDropdown = document.getElementById('notifDropdown');
+            if (!notifWrapper.contains(e.target)) {
+                notifDropdown.classList.remove('show');
             }
         });
 
