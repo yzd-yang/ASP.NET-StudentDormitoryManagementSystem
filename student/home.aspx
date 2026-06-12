@@ -5,271 +5,334 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="head" runat="server">
     <link href="/css/student.css" rel="stylesheet" />
     <style>
-        .dorm-hero {
-            position:relative; border-radius:24px; overflow:hidden; height:280px; margin-bottom:32px;
-            display:flex; flex-direction:column; justify-content:flex-end; padding:32px;
-            background:linear-gradient(135deg, #006b5c 0%, #49EACE 100%); color:#fff;
-        }
-        .dorm-hero::before { content:''; position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%); }
-        .dorm-hero-content { position:relative; z-index:1; display:flex; justify-content:space-between; align-items:end; flex-wrap:wrap; gap:16px; }
-        .dorm-hero h1 { font-size:32px; font-weight:800; margin-bottom:8px; letter-spacing:-0.02em; }
-        .dorm-hero-meta { display:flex; gap:24px; opacity:0.9; font-size:18px; }
-        .dorm-hero-meta span { display:flex; align-items:center; gap:8px; }
-        .dorm-hero-btn {
-            background:rgba(255,255,255,0.15); backdrop-filter:blur(8px); color:#fff;
-            padding:10px 20px; border-radius:12px; font-size:14px; font-weight:600;
-            border:1px solid rgba(255,255,255,0.2); cursor:pointer; display:flex;
-            align-items:center; gap:6px; font-family:inherit; transition:all 0.2s;
-        }
-        .dorm-hero-btn:hover { background:rgba(255,255,255,0.25); }
-
         .glass-card {
-            background:rgba(255,255,255,0.7); backdrop-filter:blur(12px);
-            border:1px solid rgba(255,255,255,0.4); border-radius:24px;
-            padding:24px; box-shadow:0 2px 12px rgba(0,0,0,0.04);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
-        .glass-card:hover { box-shadow:0 8px 24px rgba(73,234,206,0.1); }
-
-        .score-card { background:linear-gradient(135deg, rgba(73,234,206,0.15) 0%, rgba(255,255,255,0.4) 100%); }
-        .score-card-header { display:flex; justify-content:space-between; align-items:start; margin-bottom:16px; }
-        .score-card-title { font-size:18px; font-weight:700; color:var(--on-surface); }
-        .score-card-sub { font-size:13px; color:var(--on-surface-variant); margin-top:2px; }
-        .score-value { font-size:56px; font-weight:800; color:var(--on-surface); line-height:1; }
-        .score-tag { display:inline-block; padding:4px 14px; border-radius:20px; font-size:14px; font-weight:700; background:rgba(73,234,206,0.2); color:#006b5c; }
-
-        .roommate-section { margin-top:0; }
-        .roommate-section-title { font-size:18px; font-weight:700; color:var(--on-surface); margin-bottom:20px; display:flex; align-items:center; gap:10px; }
-        .roommate-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-        .roommate-item {
-            display:flex; align-items:center; gap:16px; padding:16px;
-            background:rgba(255,255,255,0.5); border-radius:20px;
-            border:1px solid rgba(255,255,255,0.4); transition:all 0.2s; cursor:pointer;
+        .mint-gradient {
+            background: linear-gradient(135deg, rgba(73, 234, 206, 0.15) 0%, rgba(255, 255, 255, 0.4) 100%);
         }
-        .roommate-item:hover { border-color:var(--primary); background:rgba(255,255,255,0.7); transform:translateY(-2px); }
-        .roommate-item.self { border:2px solid var(--primary); background:rgba(73,234,206,0.05); }
-        .roommate-avatar { width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); display:flex; align-items:center; justify-content:center; color:var(--on-primary); font-weight:700; font-size:20px; flex-shrink:0; box-shadow:0 2px 8px rgba(73,234,206,0.2); }
-        .roommate-name { font-size:16px; font-weight:700; color:var(--on-surface); }
-        .roommate-detail { font-size:14px; color:var(--on-surface-variant); margin-top:2px; }
-        .roommate-badge { font-size:10px; padding:2px 8px; border-radius:10px; background:var(--primary); color:var(--on-primary); font-weight:700; }
 
-        .facility-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
-        .facility-title { font-size:18px; font-weight:700; color:var(--on-surface); display:flex; align-items:center; gap:10px; }
-        .facility-sync { font-size:12px; color:var(--on-surface-variant); }
-        .facility-grid { display:flex; flex-direction:column; gap:12px; }
-        .facility-item {
-            display:flex; align-items:center; justify-content:space-between;
-            padding:16px; background:rgba(255,255,255,0.5); border-radius:16px;
-            border:1px solid rgba(255,255,255,0.4); transition:all 0.2s;
+        /* Hero */
+        .hero-section { margin-bottom: 24px; }
+        .hero-wrap {
+            position: relative; overflow: hidden; border-radius: 24px;
+            height: 320px; display: flex; flex-direction: column; justify-content: flex-end;
+            padding: 48px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid rgba(255,255,255,0.4);
         }
-        .facility-item:hover { box-shadow:0 2px 8px rgba(0,0,0,0.04); border-color:var(--primary); }
-        .facility-item.error { border-color:rgba(186,26,26,0.15); background:rgba(186,26,26,0.03); }
-        .facility-left { display:flex; align-items:center; gap:12px; }
-        .facility-icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; }
-        .facility-icon.green { background:rgba(73,234,206,0.12); color:var(--primary); }
-        .facility-icon.red { background:rgba(186,26,26,0.08); color:var(--error); }
-        .facility-name { font-size:14px; font-weight:600; color:var(--on-surface); }
-        .facility-status { font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; }
-        .facility-status.ok { background:rgba(73,234,206,0.12); color:#006b5c; }
-        .facility-status.error { background:rgba(186,26,26,0.08); color:var(--error); }
-
-        .quick-tools { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:0; }
-        .quick-tool {
-            display:flex; flex-direction:column; align-items:center; gap:10px;
-            padding:20px; background:rgba(255,255,255,0.6); border-radius:16px;
-            border:1px solid rgba(255,255,255,0.4); cursor:pointer; transition:all 0.2s; text-decoration:none;
+        .hero-bg {
+            position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+            background: linear-gradient(135deg, #006b5c 0%, #49EACE 50%, #A7F3E7 100%);
         }
-        .quick-tool:hover { background:rgba(73,234,206,0.08); border-color:var(--primary); transform:translateY(-2px); }
-        .quick-tool-icon { font-size:28px; color:var(--primary); }
-        .quick-tool-label { font-size:13px; font-weight:600; color:var(--on-surface-variant); }
-
-        .report-btn {
-            width:100%; padding:16px; background:var(--primary); color:var(--on-primary);
-            border:none; border-radius:16px; font-size:15px; font-weight:700; cursor:pointer;
-            display:flex; align-items:center; justify-content:center; gap:8px;
-            margin-top:16px; box-shadow:0 4px 16px rgba(73,234,206,0.3); transition:all 0.2s; font-family:inherit;
+        .hero-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
         }
-        .report-btn:hover { box-shadow:0 6px 24px rgba(73,234,206,0.5); }
-
-        .section-title { font-size:18px; font-weight:700; color:var(--on-surface); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
-
-        @media (max-width:768px) {
-            .dorm-hero { height:auto; min-height:200px; }
-            .dorm-hero h1 { font-size:24px; }
-            .dorm-hero-meta { font-size:15px; gap:16px; flex-wrap:wrap; }
-            .dorm-hero-content { flex-direction:column; align-items:start; }
-            .roommate-grid { grid-template-columns:1fr; }
+        .hero-content {
+            position: relative; z-index: 1; color: #fff;
+            display: flex; flex-direction: column; gap: 16px;
         }
+        @media (min-width: 768px) {
+            .hero-content { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+        }
+        .hero-title { font-size: 48px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; line-height: 1.1; }
+        @media (max-width: 767px) { .hero-title { font-size: 28px; } }
+        .hero-meta { display: flex; align-items: center; gap: 24px; opacity: 0.9; font-size: 18px; }
+        .hero-meta-item { display: flex; align-items: center; gap: 8px; }
+        .hero-btn {
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+            color: #fff; padding: 10px 24px; border-radius: 12px; font-size: 14px; font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.2); cursor: pointer; display: flex;
+            align-items: center; gap: 8px; font-family: inherit; transition: all 0.2s;
+            text-decoration: none;
+        }
+        .hero-btn:hover { background: rgba(255,255,255,0.25); }
+
+        /* Cards grid */
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 767px) { .cards-grid { grid-template-columns: 1fr; } }
+
+        /* Score card */
+        .score-card { padding: 24px; border-radius: 24px; display: flex; flex-direction: column; justify-content: space-between; }
+        .score-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+        .score-title { font-size: 18px; font-weight: 700; color: var(--on-surface); }
+        .score-sub { font-size: 14px; color: var(--on-surface-variant); margin-top: 4px; }
+        .score-icon { font-size: 40px; color: var(--primary); transition: transform 0.2s; }
+        .score-card:hover .score-icon { transform: scale(1.1); }
+        .score-row { display: flex; align-items: flex-end; gap: 12px; margin-bottom: 24px; }
+        .score-num { font-size: 56px; font-weight: 800; color: var(--on-surface); line-height: 1; letter-spacing: -0.02em; }
+        .score-label { color: #00a08e; font-size: 14px; font-weight: 600; }
+        .score-hint { font-size: 12px; color: var(--on-surface-variant); margin-top: 2px; }
+        .score-btn {
+            width: 100%; padding: 16px; background: #49EACE; color: #000;
+            border: none; border-radius: 16px; font-size: 14px; font-weight: 600;
+            cursor: pointer; font-family: inherit; box-shadow: 0 4px 12px rgba(73,234,206,0.2);
+            transition: all 0.2s;
+        }
+        .score-btn:hover { opacity: 0.9; }
+
+        /* Payment card */
+        .pay-card { padding: 24px; border-radius: 24px; display: flex; flex-direction: column; justify-content: space-between; }
+        .pay-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 700; background: rgba(73,234,206,0.15); color: #006658; text-transform: uppercase; letter-spacing: 0.05em; }
+        .pay-divider { border-top: 1px solid rgba(73,234,206,0.1); margin-top: 24px; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; }
+        .pay-label { font-size: 14px; color: var(--on-surface-variant); }
+        .pay-amount { font-size: 24px; font-weight: 700; color: var(--on-surface); margin-top: 4px; }
+        .pay-link { color: var(--primary); font-size: 14px; font-weight: 600; text-decoration: none; }
+        .pay-link:hover { text-decoration: underline; }
+
+        /* Roommates */
+        .roommate-section { padding: 32px; border-radius: 24px; }
+        .roommate-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        .roommate-title { font-size: 24px; font-weight: 600; color: var(--on-surface); display: flex; align-items: center; gap: 12px; }
+        .roommate-action { color: var(--primary); font-size: 14px; font-weight: 600; background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-family: inherit; }
+        .roommate-action:hover { background: rgba(73,234,206,0.1); }
+        .roommate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 767px) { .roommate-grid { grid-template-columns: 1fr; } }
+        .roommate-card {
+            display: flex; align-items: center; gap: 20px; padding: 20px;
+            border-radius: 16px; border: 1px solid rgba(255,255,255,0.4);
+            cursor: pointer; transition: all 0.2s;
+        }
+        .roommate-card:hover { border-color: var(--primary); background: rgba(255,255,255,0.6); }
+        .roommate-card.self { border: 2px solid var(--primary); background: rgba(73,234,206,0.05); }
+        .roommate-img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 2px solid #fff; }
+        .roommate-img.self { border: 2px solid var(--primary); }
+        .roommate-name { font-size: 18px; font-weight: 600; color: var(--on-surface); display: flex; align-items: center; gap: 8px; }
+        .roommate-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: #49EACE; color: #000; font-weight: 700; text-transform: uppercase; }
+        .roommate-info { font-size: 16px; color: var(--on-surface-variant); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        /* Facility section */
+        .facility-section { padding: 32px; border-radius: 24px; height: 100%; display: flex; flex-direction: column; }
+        .facility-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+        .facility-title { font-size: 24px; font-weight: 600; color: var(--on-surface); display: flex; align-items: center; gap: 12px; }
+        .facility-sync { font-size: 12px; color: var(--on-surface-variant); }
+        .facility-list { display: flex; flex-direction: column; gap: 16px; flex-grow: 1; }
+        .facility-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px; border-radius: 16px; background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.5); transition: all 0.2s;
+        }
+        .facility-row:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-color: var(--primary); }
+        .facility-row.error { background: rgba(186,26,26,0.04); border-color: rgba(186,26,26,0.1); }
+        .facility-left { display: flex; align-items: center; gap: 16px; }
+        .facility-icon-wrap { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(73,234,206,0.1); }
+        .facility-icon-wrap.error { background: rgba(186,26,26,0.1); }
+        .facility-icon-wrap .material-symbols-outlined { font-size: 22px; color: var(--primary); }
+        .facility-icon-wrap.error .material-symbols-outlined { color: var(--error); }
+        .facility-name { font-size: 14px; font-weight: 600; color: var(--on-surface); }
+        .facility-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .facility-badge.ok { background: rgba(73,234,206,0.12); color: #00a08e; }
+        .facility-badge.error { background: rgba(186,26,26,0.08); color: var(--error); }
+        .repair-btn {
+            width: 100%; margin-top: 32px; padding: 16px; background: #49EACE; color: #000;
+            border: none; border-radius: 16px; font-size: 14px; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px;
+            font-family: inherit; box-shadow: 0 4px 12px rgba(73,234,206,0.2); transition: all 0.2s;
+            text-decoration: none;
+        }
+        .repair-btn:hover { opacity: 0.9; }
+
+        /* Quick tools */
+        .tools-section { padding: 32px; border-radius: 24px; }
+        .tools-title { font-size: 14px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 24px; }
+        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .tool-card {
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+            padding: 16px; border-radius: 16px; background: rgba(255,255,255,0.6);
+            border: 1px solid rgba(255,255,255,0.4); text-decoration: none;
+            color: var(--on-surface-variant); transition: all 0.2s; cursor: pointer;
+        }
+        .tool-card:hover { background: rgba(73,234,206,0.1); border-color: var(--primary); }
+        .tool-card .material-symbols-outlined { font-size: 28px; color: var(--primary); transition: transform 0.2s; }
+        .tool-card:hover .material-symbols-outlined { transform: scale(1.1); }
+        .tool-label { font-size: 12px; font-weight: 500; }
     </style>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <!-- Hero Section -->
-    <div class="dorm-hero">
-        <div class="dorm-hero-content">
-            <div>
-                <h1>北校区 3号楼</h1>
-                <div class="dorm-hero-meta">
-                    <span><span class="material-symbols-outlined" style="font-size:24px">meeting_room</span> 502-A 室</span>
-                    <span><span class="material-symbols-outlined" style="font-size:24px">bed</span> 02号床位</span>
+    <section class="hero-section">
+        <div class="hero-wrap">
+            <div class="hero-bg"></div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <div>
+                    <h1 class="hero-title">北校区 3号楼</h1>
+                    <div class="hero-meta">
+                        <span class="hero-meta-item">
+                            <span class="material-symbols-outlined" style="font-size:24px;">meeting_room</span> 502-A 室
+                        </span>
+                        <span class="hero-meta-item">
+                            <span class="material-symbols-outlined" style="font-size:24px;">bed</span> 02号床位
+                        </span>
+                    </div>
+                </div>
+                <div>
+                    <a href="profile.aspx" class="hero-btn">
+                        <span class="material-symbols-outlined" style="font-size:20px;">edit</span>
+                        修改个人资料
+                    </a>
                 </div>
             </div>
-            <a href="profile.aspx" class="dorm-hero-btn">
-                <span class="material-symbols-outlined" style="font-size:20px;">edit</span>
-                修改个人资料
-            </a>
         </div>
-    </div>
+    </section>
 
-    <!-- 两栏布局 -->
-    <div style="display:grid; grid-template-columns:1fr 380px; gap:24px; align-items:start;">
-        <!-- 左栏 -->
-        <div style="display:flex; flex-direction:column; gap:24px;">
-            <!-- 评分和缴费 -->
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-                <div class="glass-card score-card">
-                    <div class="score-card-header">
+    <!-- Main Content -->
+    <div style="display:grid; grid-template-columns:2fr 1fr; gap:32px; align-items:start;">
+        <!-- Left Column -->
+        <div style="display:flex; flex-direction:column; gap:32px;">
+            <!-- Score & Payment Cards -->
+            <div class="cards-grid">
+                <!-- Score Card -->
+                <div class="glass-card score-card mint-gradient">
+                    <div class="score-header">
                         <div>
-                            <div class="score-card-title">宿舍评分</div>
-                            <div class="score-card-sub">基于本月卫生与安全周检</div>
+                            <div class="score-title">宿舍评分</div>
+                            <div class="score-sub">基于本月卫生与安全周检</div>
                         </div>
-                        <span class="material-symbols-outlined" style="color:var(--primary); font-size:40px; font-variation-settings:'FILL' 1;">stars</span>
+                        <span class="material-symbols-outlined score-icon" style="font-variation-settings:'FILL' 1;">stars</span>
                     </div>
-                    <div style="display:flex; align-items:end; gap:10px; margin-bottom:20px;">
-                        <span class="score-value">94</span>
-                        <div style="margin-bottom:6px;">
-                            <span class="score-tag">优秀</span>
-                            <div style="font-size:12px; color:var(--on-surface-variant); margin-top:4px;">超过 85% 的宿舍</div>
+                    <div class="score-row">
+                        <span class="score-num">94</span>
+                        <div>
+                            <span class="score-label">优秀</span>
+                            <div class="score-hint">超过 85% 的宿舍</div>
                         </div>
                     </div>
-                    <button class="report-btn" style="background:var(--primary); margin-top:0;">查看详细自查报告</button>
+                    <button class="score-btn">查看详细自查报告</button>
                 </div>
-                <div class="glass-card">
-                    <div class="score-card-header">
+
+                <!-- Payment Card -->
+                <div class="glass-card pay-card">
+                    <div class="score-header">
                         <div>
-                            <div class="score-card-title">住宿费缴纳</div>
-                            <div class="score-card-sub">2023-2024 秋季学期</div>
+                            <div class="score-title">住宿费缴纳</div>
+                            <div class="score-sub">2023-2024 秋季学期</div>
                         </div>
-                        <span class="material-symbols-outlined" style="color:var(--primary); font-size:40px;">payments</span>
+                        <span class="material-symbols-outlined score-icon">payments</span>
                     </div>
-                    <div style="margin-bottom:16px;">
-                        <span style="display:inline-block; padding:6px 16px; border-radius:20px; font-size:14px; font-weight:700; background:rgba(73,234,206,0.15); color:#006b5c;">已缴纳</span>
+                    <div>
+                        <span class="pay-badge">已缴纳</span>
                     </div>
-                    <div style="padding-top:16px; border-top:1px solid rgba(73,234,206,0.1); display:flex; justify-content:space-between; align-items:center;">
+                    <div class="pay-divider">
                         <div>
-                            <div style="font-size:13px; color:var(--on-surface-variant);">应缴合计</div>
-                            <div style="font-size:24px; font-weight:800; color:var(--on-surface); margin-top:4px;">¥ 1,200.00</div>
+                            <div class="pay-label">应缴合计</div>
+                            <div class="pay-amount">¥ 1,200.00</div>
                         </div>
-                        <a href="#" style="color:var(--primary); font-size:14px; font-weight:600;">查看流水</a>
+                        <a href="#" class="pay-link">查看流水</a>
                     </div>
                 </div>
             </div>
 
-            <!-- 我的室友 -->
-            <div class="glass-card roommate-section">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <div class="roommate-section-title" style="margin-bottom:0;">
-                        <span class="material-symbols-outlined" style="color:var(--primary); font-size:28px;">group</span>
+            <!-- Roommates -->
+            <section class="glass-card roommate-section">
+                <div class="roommate-header">
+                    <h3 class="roommate-title">
+                        <span class="material-symbols-outlined" style="color:var(--primary); font-size:32px;">group</span>
                         我的室友 (4)
-                    </div>
-                    <a href="#" style="color:var(--primary); font-size:14px; font-weight:600;">管理室友群组</a>
+                    </h3>
+                    <button class="roommate-action">管理室友群组</button>
                 </div>
                 <div class="roommate-grid">
-                    <div class="roommate-item self">
-                        <div class="roommate-avatar">张</div>
-                        <div>
-                            <div style="display:flex; align-items:center; gap:8px;">
-                                <span class="roommate-name">张伟</span>
-                                <span class="roommate-badge">我</span>
-                            </div>
-                            <div class="roommate-detail">计算机科学与技术 · 2022级</div>
+                    <!-- Self -->
+                    <div class="roommate-card self">
+                        <img alt="Avatar" class="roommate-img self" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbyslLsMRvdDQq_i-6PIvqW1xXfMmd7WxPIeGnabDMXGzCuA9-O7FAym9RljAs_2k5b6WrIOb6YqK6q64e1Sq1my-_59ereVLVvaTLgug_Q_Sj-q1-0AvRjjMr2gNzpBQg7EudsswENo54KVSZdf4o9Qx6Z_90fK3dmzSm4sTVqqoRJ-q0QRfi5G3j0_x4vhAeJ1qx4A75Iutb4JgfvoC8EYh6Op38ZaV78Hk-dHWzNnpYZPoOJL0QTeX-6zRhL__e8MHGtX7yvg">
+                        <div style="overflow:hidden;">
+                            <div class="roommate-name">张伟 <span class="roommate-badge">我</span></div>
+                            <div class="roommate-info">计算机科学与技术 · 2022级</div>
                         </div>
                     </div>
-                    <div class="roommate-item">
-                        <div class="roommate-avatar">李</div>
-                        <div>
+                    <!-- Roommate 2 -->
+                    <div class="roommate-card">
+                        <img alt="Avatar" class="roommate-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAH5e4C8gYf40--3ApLuzKEZTf-p6wWWPHbSDCm4kbhj05nSXVNdtuFE5bjrdeXXGfrFED2EmEka4kZT0hBXRUnMS739u_eAtkbcJWegN_emYA2VEKAJD8an7yojLzc8FhO0-Q1jbIXr2rQQtOgr6PNeFoMaAbPoAvlqjExRWkVagCtmJUPxEXvnW_PEgjaotmqw5AtSmRhEbUsqX68Etq7dEIcuHHphT1iuQ5bUhd0UU0WEE60wIZ_cgo7vEZJSoifMB9GOp8b7Q">
+                        <div style="overflow:hidden;">
                             <div class="roommate-name">李明</div>
-                            <div class="roommate-detail">自动化 · 2022级</div>
+                            <div class="roommate-info">自动化 · 2022级</div>
                         </div>
                     </div>
-                    <div class="roommate-item">
-                        <div class="roommate-avatar">王</div>
-                        <div>
+                    <!-- Roommate 3 -->
+                    <div class="roommate-card">
+                        <img alt="Avatar" class="roommate-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTm5Sk9ARTpp5s0xHxQPSx4Bh0953x7nB8RwxsD9Q7k9OD1LOFGoS8BEVUulTAqOqn3_9a6gmClWfBNA8lz1b8hwlB9I2bSQlyURp8QRlRpBHk-1YN_DBX6SVw0_6BNudb2ZhrOcG49QtRkYKUz1hi7-BGGscfJshWrM2JAhu5CMkCLsdffVRZix02Wi5_baNxJ3bONvM9y-mUYL1c77MyeIekT1RxnmS82Nk1_KQSueQlpaSUCGBx0fvb2cKLPN4Ovae0SsOBDw">
+                        <div style="overflow:hidden;">
                             <div class="roommate-name">王小红</div>
-                            <div class="roommate-detail">数字媒体艺术 · 2022级</div>
+                            <div class="roommate-info">数字媒体艺术 · 2022级</div>
                         </div>
                     </div>
-                    <div class="roommate-item">
-                        <div class="roommate-avatar">赵</div>
-                        <div>
+                    <!-- Roommate 4 -->
+                    <div class="roommate-card">
+                        <img alt="Avatar" class="roommate-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0_EK9SsDFP_SWZobyMpWArxj7idMqA0F2_G2PB87sdGm35kJ0AKByXVogQ_nWQprhrK8cmTRf3mD2ISXN_kef-LYgk6wxqlcDxNh561QJ3KUuOfi7CMI2Fye-FvupL5sG61RSsGnbIXK6KfMVz-iFjaqJu6Hhv8ybQ4rO8pyTjyl_2LueGR-NWixc-GtW13glph9_IQeoeMdu0GjGWbEouSOg_7iGoQKNXHbp-sH-Tk1X4NpsnJZe-qjNCMMyA-n1hc35Z7Rbkw">
+                        <div style="overflow:hidden;">
                             <div class="roommate-name">赵强</div>
-                            <div class="roommate-detail">电子信息工程 · 2022级</div>
+                            <div class="roommate-info">电子信息工程 · 2022级</div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
 
-        <!-- 右栏 -->
-        <div style="display:flex; flex-direction:column; gap:24px;">
-            <!-- 设施状态 -->
-            <div class="glass-card">
+        <!-- Right Column -->
+        <aside style="display:flex; flex-direction:column; gap:32px;">
+            <!-- Facility Status -->
+            <section class="glass-card facility-section">
                 <div class="facility-header">
-                    <div class="facility-title">
-                        <span class="material-symbols-outlined" style="color:var(--primary); font-size:28px;">construction</span>
+                    <h3 class="facility-title">
+                        <span class="material-symbols-outlined" style="color:var(--primary); font-size:32px;">construction</span>
                         设施状态
-                    </div>
+                    </h3>
                     <span class="facility-sync">最后同步: 10:30 AM</span>
                 </div>
-                <div class="facility-grid">
-                    <div class="facility-item">
+                <div class="facility-list">
+                    <div class="facility-row">
                         <div class="facility-left">
-                            <div class="facility-icon green"><span class="material-symbols-outlined">ac_unit</span></div>
+                            <div class="facility-icon-wrap"><span class="material-symbols-outlined">ac_unit</span></div>
                             <span class="facility-name">空调系统</span>
                         </div>
-                        <span class="facility-status ok">运行正常</span>
+                        <span class="facility-badge ok">运行正常</span>
                     </div>
-                    <div class="facility-item">
+                    <div class="facility-row">
                         <div class="facility-left">
-                            <div class="facility-icon green"><span class="material-symbols-outlined">water_drop</span></div>
+                            <div class="facility-icon-wrap"><span class="material-symbols-outlined">water_drop</span></div>
                             <span class="facility-name">热水器</span>
                         </div>
-                        <span class="facility-status ok">运行正常</span>
+                        <span class="facility-badge ok">运行正常</span>
                     </div>
-                    <div class="facility-item error">
+                    <div class="facility-row error">
                         <div class="facility-left">
-                            <div class="facility-icon red"><span class="material-symbols-outlined">lightbulb</span></div>
+                            <div class="facility-icon-wrap error"><span class="material-symbols-outlined">lightbulb</span></div>
                             <span class="facility-name">照明设施</span>
                         </div>
-                        <span class="facility-status error">等待维修</span>
+                        <span class="facility-badge error">等待维修</span>
                     </div>
-                    <div class="facility-item">
+                    <div class="facility-row">
                         <div class="facility-left">
-                            <div class="facility-icon green"><span class="material-symbols-outlined">wifi</span></div>
+                            <div class="facility-icon-wrap"><span class="material-symbols-outlined">wifi</span></div>
                             <span class="facility-name">校园网</span>
                         </div>
-                        <span class="facility-status ok">连接稳定</span>
+                        <span class="facility-badge ok">连接稳定</span>
                     </div>
                 </div>
-                <a href="repair.aspx" class="report-btn">
+                <a href="repair.aspx" class="repair-btn">
                     <span class="material-symbols-outlined">add_circle</span>
                     提交报修申请
                 </a>
-            </div>
+            </section>
 
-            <!-- 快捷工具 -->
-            <div class="glass-card" style="background:linear-gradient(135deg, rgba(73,234,206,0.15) 0%, rgba(255,255,255,0.4) 100%);">
-                <div style="font-size:14px; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:16px;">快捷工具</div>
-                <div class="quick-tools">
-                    <a href="#" class="quick-tool">
-                        <span class="material-symbols-outlined quick-tool-icon">event_available</span>
-                        <span class="quick-tool-label">宿舍预约</span>
+            <!-- Quick Tools -->
+            <section class="glass-card tools-section mint-gradient">
+                <h3 class="tools-title">快捷工具</h3>
+                <div class="tools-grid">
+                    <a href="#" class="tool-card">
+                        <span class="material-symbols-outlined">event_available</span>
+                        <span class="tool-label">宿舍预约</span>
                     </a>
-                    <a href="#" class="quick-tool">
-                        <span class="material-symbols-outlined quick-tool-icon">policy</span>
-                        <span class="quick-tool-label">管理规章</span>
+                    <a href="#" class="tool-card">
+                        <span class="material-symbols-outlined">policy</span>
+                        <span class="tool-label">管理规章</span>
                     </a>
                 </div>
-            </div>
-        </div>
+            </section>
+        </aside>
     </div>
 </asp:Content>
