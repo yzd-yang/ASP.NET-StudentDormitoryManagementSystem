@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/admin/MasterPage.master" AutoEventWireup="true" CodeFile="system.aspx.cs" Inherits="admin_system" ResponseEncoding="utf-8" %>
+<%@ Page Language="C#" MasterPageFile="~/admin/MasterPage.master" AutoEventWireup="true" CodeFile="system.aspx.cs" Inherits="admin_system" ResponseEncoding="utf-8" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="title" runat="server">系统管理 - SmartDorm</asp:Content>
 
@@ -6,7 +6,6 @@
     <style>
         .sys-section { background:rgba(255,255,255,0.6); backdrop-filter:blur(12px); border-radius:16px; padding:24px; border:1px solid rgba(255,255,255,0.5); margin-bottom:20px; }
         .sys-section-title { font-size:18px; font-weight:700; color:var(--primary); margin-bottom:20px; }
-
         .sys-filter { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:20px; }
         .sys-filter-field { position:relative; }
         .sys-filter-field .material-symbols-outlined { position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:20px; color:var(--outline); }
@@ -17,7 +16,6 @@
             display:flex; align-items:center; gap:6px; padding:10px 20px; background:var(--primary); color:var(--on-primary);
             border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; margin-left:auto; font-family:inherit;
         }
-
         .sys-table { width:100%; border-collapse:collapse; }
         .sys-table th { padding:12px 16px; text-align:left; font-size:13px; font-weight:700; color:var(--on-surface-variant); border-bottom:1px solid rgba(0,0,0,0.05); }
         .sys-table td { padding:14px 16px; font-size:14px; color:var(--on-surface); border-bottom:1px solid rgba(0,0,0,0.03); }
@@ -32,13 +30,9 @@
         .sys-action-link.edit { color:var(--primary); }
         .sys-action-link.reset { color:var(--on-surface-variant); }
         .sys-action-link.delete { color:var(--error); }
-
         .sys-grid { display:grid; grid-template-columns:1fr 1.5fr 0.8fr; gap:20px; }
         .sys-card { background:rgba(255,255,255,0.6); backdrop-filter:blur(12px); border-radius:16px; padding:20px; border:1px solid rgba(255,255,255,0.5); }
         .sys-card-title { font-size:15px; font-weight:700; color:var(--on-surface); margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; }
-        .sys-add-icon { width:28px; height:28px; display:flex; align-items:center; justify-content:center; border:none; background:transparent; border-radius:50%; cursor:pointer; color:var(--primary); }
-        .sys-add-icon:hover { background:rgba(73,234,206,0.1); }
-
         .building-item {
             display:flex; align-items:center; justify-content:space-between; padding:14px;
             background:rgba(255,255,255,0.6); border-radius:12px; margin-bottom:10px; border:1px solid rgba(255,255,255,0.4); transition:all 0.2s;
@@ -49,50 +43,69 @@
         .building-icon .material-symbols-outlined { color:var(--primary); font-size:24px; }
         .building-name { font-size:14px; font-weight:700; color:var(--on-surface); }
         .building-sub { font-size:12px; color:var(--on-surface-variant); }
-        .building-actions { display:flex; gap:4px; opacity:0; transition:opacity 0.2s; }
-        .building-item:hover .building-actions { opacity:1; }
+        .building-actions { display:flex; gap:4px; }
         .building-action-btn { padding:6px; border:none; background:transparent; border-radius:6px; cursor:pointer; color:var(--on-surface-variant); }
         .building-action-btn:hover { background:rgba(0,0,0,0.04); }
         .building-action-btn.delete:hover { color:var(--error); background:rgba(186,26,26,0.06); }
         .building-action-btn .material-symbols-outlined { font-size:18px; }
-
         .building-add {
             padding:14px; border:2px dashed rgba(107,122,118,0.3); border-radius:12px; display:flex;
-            align-items:center; justify-content:center; gap:6px; color:var(--outline); font-size:14px; font-weight:600; cursor:pointer;
+            align-items:center; justify-content:center; gap:6px; color:var(--outline); font-size:14px; font-weight:600; cursor:pointer; background:transparent; width:100%; font-family:inherit;
         }
         .building-add:hover { border-color:var(--primary); color:var(--primary); }
-
         .batch-gen-form { display:flex; flex-direction:column; gap:14px; }
         .batch-gen-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
         .batch-gen-row-3 { display:flex; gap:8px; }
         .batch-gen-row-3 span { display:flex; align-items:center; color:var(--on-surface-variant); }
-        .batch-gen-input { width:100%; padding:10px 14px; border:none; border-radius:10px; background:#FFF9E6; font-family:inherit; font-size:14px; outline:none; }
+        .batch-gen-input { width:100%; padding:10px 14px; border:none; border-radius:10px; background:#FFF9E6; font-family:inherit; font-size:14px; outline:none; box-sizing:border-box; }
         .batch-gen-input:focus { box-shadow:0 0 0 2px rgba(73,234,206,0.3); }
-        .batch-gen-preview {
-            padding:14px; background:rgba(232,233,236,0.4); border-radius:12px; border:1px solid rgba(0,0,0,0.04);
-        }
+        .batch-gen-preview { padding:14px; background:rgba(232,233,236,0.4); border-radius:12px; border:1px solid rgba(0,0,0,0.04); }
         .batch-gen-preview-label { font-size:13px; font-weight:600; color:var(--on-surface-variant); margin-bottom:8px; }
-        .batch-gen-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
-        .batch-gen-tag { padding:4px 10px; border-radius:6px; font-size:12px; background:rgba(255,255,255,0.7); border:1px solid rgba(0,0,0,0.04); }
         .batch-gen-summary { font-size:13px; color:var(--primary); font-weight:600; }
         .batch-gen-btn {
             width:100%; padding:12px; background:var(--primary); color:var(--on-primary); border:none;
             border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit;
         }
-
         .dept-tree { max-height:350px; overflow-y:auto; }
         .dept-group { margin-bottom:8px; }
-        .dept-header { display:flex; align-items:center; gap:8px; padding:8px 4px; cursor:pointer; font-weight:700; color:var(--on-surface); font-size:14px; }
+        .dept-header { display:flex; align-items:center; gap:8px; padding:8px 4px; cursor:pointer; font-weight:700; color:var(--on-surface); font-size:14px; background:none; border:none; width:100%; text-align:left; font-family:inherit; }
         .dept-header .material-symbols-outlined { font-size:20px; color:var(--primary); }
         .dept-children { padding-left:32px; }
         .dept-child { display:flex; align-items:center; justify-content:space-between; padding:6px 4px; font-size:14px; color:var(--on-surface); }
-        .dept-child-edit { opacity:0; cursor:pointer; color:var(--outline); font-size:16px; transition:opacity 0.2s; }
-        .dept-child:hover .dept-child-edit { opacity:1; }
+        .dept-child-actions { display:flex; gap:4px; }
+        .dept-child-btn { padding:4px; border:none; background:transparent; border-radius:4px; cursor:pointer; color:var(--outline); font-size:14px; }
+        .dept-child-btn:hover { background:rgba(0,0,0,0.04); }
+        .dept-child-btn.delete:hover { color:var(--error); }
         .dept-add-btn {
             width:100%; padding:10px; border:2px dashed rgba(73,234,206,0.4); border-radius:10px; background:transparent;
             color:var(--primary); font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; margin-top:12px; font-family:inherit;
         }
         .dept-add-btn:hover { background:rgba(73,234,206,0.06); }
+
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
+        .modal-overlay.show { display:flex; }
+        .modal-card { background:#fff; border-radius:24px; max-width:480px; width:90%; box-shadow:0 20px 60px rgba(0,0,0,0.2); }
+        .modal-header { padding:20px 24px; border-bottom:1px solid rgba(0,0,0,0.05); display:flex; justify-content:space-between; align-items:center; }
+        .modal-header h3 { font-size:18px; font-weight:700; color:var(--on-surface); }
+        .modal-close { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border:none; background:rgba(0,0,0,0.05); border-radius:50%; cursor:pointer; color:var(--on-surface-variant); }
+        .modal-body { padding:24px; }
+        .modal-field { margin-bottom:16px; }
+        .modal-field label { display:block; font-size:13px; font-weight:600; color:var(--on-surface-variant); margin-bottom:6px; }
+        .modal-input { width:100%; padding:12px 14px; border:1px solid var(--outline-variant); border-radius:12px; background:#FFF9E6; font-family:inherit; font-size:14px; outline:none; box-sizing:border-box; }
+        .modal-input:focus { border-color:var(--primary); box-shadow:0 0 0 2px rgba(73,234,206,0.12); }
+        .modal-select { width:100%; padding:12px 14px; border:1px solid var(--outline-variant); border-radius:12px; background:#FFF9E6; font-family:inherit; font-size:14px; outline:none; }
+        .modal-footer { padding:16px 24px; border-top:1px solid rgba(0,0,0,0.05); display:flex; justify-content:flex-end; gap:12px; }
+        .modal-cancel { padding:12px 24px; border:2px solid var(--outline-variant); background:transparent; border-radius:14px; font-size:14px; font-weight:700; cursor:pointer; color:var(--on-surface-variant); font-family:inherit; }
+        .modal-confirm { padding:12px 24px; background:var(--primary); color:var(--on-primary); border:none; border-radius:14px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+
+        .toast {
+            position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px); z-index:9999;
+            padding:14px 28px; border-radius:14px; font-size:15px; font-weight:700;
+            box-shadow:0 8px 24px rgba(0,0,0,0.15); transition:transform 0.3s ease; display:flex; align-items:center; gap:10px;
+        }
+        .toast.show { transform:translateX(-50%) translateY(0); }
+        .toast.success { background:var(--primary); color:var(--on-primary); }
+        .toast.error { background:var(--error); color:#fff; }
 
         @media (max-width:1024px) { .sys-grid { grid-template-columns:1fr; } }
     </style>
@@ -112,33 +125,41 @@
         <div class="sys-filter">
             <div class="sys-filter-field">
                 <span class="material-symbols-outlined">search</span>
-                <input class="sys-filter-input" type="text" placeholder="搜索 ID/姓名/手机号" />
+                <asp:TextBox ID="txtAdminSearch" runat="server" CssClass="sys-filter-input" placeholder="搜索 ID/姓名/手机号" />
             </div>
-            <select class="sys-filter-select"><option value="">所有角色</option><option>系统管理员</option><option>宿管主管</option><option>维修人员</option></select>
-            <select class="sys-filter-select"><option value="">所有状态</option><option>启用</option><option>禁用</option></select>
-            <button class="sys-add-btn"><span class="material-symbols-outlined" style="font-size:18px;">person_add</span> 新增管理员</button>
+            <asp:DropDownList ID="ddlAdminRole" runat="server" CssClass="sys-filter-select">
+                <asp:ListItem Value="0" Text="所有角色" />
+                <asp:ListItem Value="1" Text="超级管理员" />
+                <asp:ListItem Value="2" Text="宿管" />
+                <asp:ListItem Value="3" Text="后勤" />
+            </asp:DropDownList>
+            <asp:DropDownList ID="ddlAdminStatus" runat="server" CssClass="sys-filter-select">
+                <asp:ListItem Value="-1" Text="所有状态" />
+                <asp:ListItem Value="1" Text="启用" />
+                <asp:ListItem Value="0" Text="禁用" />
+            </asp:DropDownList>
+            <asp:Button ID="btnAdminSearch" runat="server" CssClass="sys-add-btn" Text="搜索" OnClick="btnAdminSearch_Click" style="margin-left:0;" />
+            <button type="button" class="sys-add-btn" onclick="showAdminModal()"><span class="material-symbols-outlined" style="font-size:18px;">person_add</span> 新增管理员</button>
         </div>
         <table class="sys-table">
             <thead><tr><th>工号</th><th>姓名</th><th>手机号</th><th>角色</th><th>状态</th><th style="text-align:right;">操作</th></tr></thead>
             <tbody>
-                <tr>
-                    <td>admin001</td><td><strong>陈志强</strong></td><td>138****0001</td>
-                    <td><span class="sys-role-badge admin">系统管理员</span></td>
-                    <td><span class="sys-status"><span class="sys-status-dot"></span> 启用</span></td>
-                    <td style="text-align:right;"><button class="sys-action-link edit">编辑</button> <button class="sys-action-link reset">重置密码</button> <button class="sys-action-link delete">删除</button></td>
-                </tr>
-                <tr>
-                    <td>admin002</td><td><strong>李美玲</strong></td><td>135****4423</td>
-                    <td><span class="sys-role-badge manager">宿管主管</span></td>
-                    <td><span class="sys-status"><span class="sys-status-dot"></span> 启用</span></td>
-                    <td style="text-align:right;"><button class="sys-action-link edit">编辑</button> <button class="sys-action-link reset">重置密码</button> <button class="sys-action-link delete">删除</button></td>
-                </tr>
-                <tr>
-                    <td>admin004</td><td><strong>赵后勤</strong></td><td>138****0004</td>
-                    <td><span class="sys-role-badge worker">后勤人员</span></td>
-                    <td><span class="sys-status"><span class="sys-status-dot"></span> 启用</span></td>
-                    <td style="text-align:right;"><button class="sys-action-link edit">编辑</button> <button class="sys-action-link reset">重置密码</button> <button class="sys-action-link delete">删除</button></td>
-                </tr>
+                <asp:Repeater ID="rptAdmins" runat="server" OnItemCommand="rptAdmins_ItemCommand">
+                    <ItemTemplate>
+                        <tr>
+                            <td><%# Eval("AdminNo") %></td>
+                            <td><strong><%# Eval("Name") %></strong></td>
+                            <td><%# Eval("Phone") %></td>
+                            <td><span class="sys-role-badge <%# GetRoleBadgeClass(Eval("Role")) %>"><%# Eval("RoleName") %></span></td>
+                            <td><span class="sys-status"><span class="sys-status-dot"></span> <%# Convert.ToInt32(Eval("Status")) == 1 ? "启用" : "禁用" %></span></td>
+                            <td style="text-align:right;">
+                                <asp:LinkButton ID="btnEdit" runat="server" CommandName="EditAdmin" CommandArgument='<%# Eval("Id") %>' CssClass="sys-action-link edit">编辑</asp:LinkButton>
+                                <asp:LinkButton ID="btnReset" runat="server" CommandName="ResetPwd" CommandArgument='<%# Eval("Id") %>' CssClass="sys-action-link reset" OnClientClick="return confirm('确定要重置密码为123456吗？');">重置密码</asp:LinkButton>
+                                <asp:LinkButton ID="btnDelete" runat="server" CommandName="DeleteAdmin" CommandArgument='<%# Eval("Id") %>' CssClass="sys-action-link delete" OnClientClick="return confirm('确定要删除该管理员吗？');">删除</asp:LinkButton>
+                            </td>
+                        </tr>
+                    </ItemTemplate>
+                </asp:Repeater>
             </tbody>
         </table>
     </div>
@@ -148,38 +169,25 @@
     <div class="sys-grid">
         <!-- 楼宇管理 -->
         <div class="sys-card">
-            <div class="sys-card-title">楼宇管理 <button class="sys-add-icon"><span class="material-symbols-outlined">add_circle</span></button></div>
-            <div class="building-item">
-                <div class="building-left">
-                    <div class="building-icon"><span class="material-symbols-outlined">apartment</span></div>
-                    <div><div class="building-name">A座 (男生宿舍)</div><div class="building-sub">12层 | 240房间</div></div>
-                </div>
-                <div class="building-actions">
-                    <button class="building-action-btn"><span class="material-symbols-outlined">edit</span></button>
-                    <button class="building-action-btn delete"><span class="material-symbols-outlined">delete</span></button>
-                </div>
-            </div>
-            <div class="building-item">
-                <div class="building-left">
-                    <div class="building-icon"><span class="material-symbols-outlined">apartment</span></div>
-                    <div><div class="building-name">B座 (女生宿舍)</div><div class="building-sub">12层 | 240房间</div></div>
-                </div>
-                <div class="building-actions">
-                    <button class="building-action-btn"><span class="material-symbols-outlined">edit</span></button>
-                    <button class="building-action-btn delete"><span class="material-symbols-outlined">delete</span></button>
-                </div>
-            </div>
-            <div class="building-item">
-                <div class="building-left">
-                    <div class="building-icon"><span class="material-symbols-outlined">apartment</span></div>
-                    <div><div class="building-name">C座 (研究生公寓)</div><div class="building-sub">8层 | 160房间</div></div>
-                </div>
-                <div class="building-actions">
-                    <button class="building-action-btn"><span class="material-symbols-outlined">edit</span></button>
-                    <button class="building-action-btn delete"><span class="material-symbols-outlined">delete</span></button>
-                </div>
-            </div>
-            <div class="building-add"><span class="material-symbols-outlined">add</span> 添加新楼宇</div>
+            <div class="sys-card-title">楼宇管理</div>
+            <asp:Repeater ID="rptBuildings" runat="server" OnItemCommand="rptBuildings_ItemCommand">
+                <ItemTemplate>
+                    <div class="building-item">
+                        <div class="building-left">
+                            <div class="building-icon"><span class="material-symbols-outlined">apartment</span></div>
+                            <div>
+                                <div class="building-name"><%# Eval("Name") %> (<%# Eval("Campus") %>)</div>
+                                <div class="building-sub"><%# Eval("FloorCount") %>层 | <%# Eval("RoomCount") %>房间</div>
+                            </div>
+                        </div>
+                        <div class="building-actions">
+                            <asp:LinkButton ID="btnEditBuilding" runat="server" CommandName="EditBuilding" CommandArgument='<%# Eval("Id") %>' CssClass="building-action-btn"><span class="material-symbols-outlined">edit</span></asp:LinkButton>
+                            <asp:LinkButton ID="btnDeleteBuilding" runat="server" CommandName="DeleteBuilding" CommandArgument='<%# Eval("Id") %>' CssClass="building-action-btn delete" OnClientClick="return confirm('确定要删除该楼宇吗？');"><span class="material-symbols-outlined">delete</span></asp:LinkButton>
+                        </div>
+                    </div>
+                </ItemTemplate>
+            </asp:Repeater>
+            <button type="button" class="building-add" onclick="showBuildingModal()"><span class="material-symbols-outlined">add</span> 添加新楼宇</button>
         </div>
 
         <!-- 批量生成房间 -->
@@ -187,28 +195,38 @@
             <div class="sys-card-title">批量生成房间</div>
             <div class="batch-gen-form">
                 <div class="batch-gen-row">
-                    <div><label style="font-size:13px; font-weight:600; color:var(--on-surface-variant); display:block; margin-bottom:6px;">选择楼宇</label>
-                    <select class="batch-gen-input"><option>A座</option><option>B座</option><option>C座</option></select></div>
-                    <div><label style="font-size:13px; font-weight:600; color:var(--on-surface-variant); display:block; margin-bottom:6px;">房间类型</label>
-                    <select class="batch-gen-input"><option>4人间</option><option>6人间</option></select></div>
+                    <div>
+                        <label style="font-size:13px; font-weight:600; color:var(--on-surface-variant); display:block; margin-bottom:6px;">选择楼宇</label>
+                        <asp:DropDownList ID="ddlGenBuilding" runat="server" CssClass="batch-gen-input" />
+                    </div>
+                    <div>
+                        <label style="font-size:13px; font-weight:600; color:var(--on-surface-variant); display:block; margin-bottom:6px;">房间类型</label>
+                        <asp:DropDownList ID="ddlGenRoomType" runat="server" CssClass="batch-gen-input">
+                            <asp:ListItem Value="2" Text="四人间" />
+                            <asp:ListItem Value="3" Text="六人间" />
+                            <asp:ListItem Value="1" Text="双人间" />
+                        </asp:DropDownList>
+                    </div>
                 </div>
                 <div class="batch-gen-row">
-                    <div><label style="font-size:13px; font-weight:600; color:var(--on-surface-variant); display:block; margin-bottom:6px;">起始层数 - 结束层数</label>
-                    <div class="batch-gen-row-3"><input class="batch-gen-input" type="number" value="1" /><span>-</span><input class="batch-gen-input" type="number" value="12" /></div></div>
-                    <div><label style="font-size:13px; font-weight:600; color:var(--on-surface-variant); display:block; margin-bottom:6px;">每层房间数</label>
-                    <input class="batch-gen-input" type="number" value="20" /></div>
+                    <div>
+                        <label style="font-size:13px; font-weight:600; color:var(--on-surface-variant); display:block; margin-bottom:6px;">起始层数 - 结束层数</label>
+                        <div class="batch-gen-row-3">
+                            <asp:TextBox ID="txtStartFloor" runat="server" CssClass="batch-gen-input" Text="1" TextMode="Number" />
+                            <span>-</span>
+                            <asp:TextBox ID="txtEndFloor" runat="server" CssClass="batch-gen-input" Text="6" TextMode="Number" />
+                        </div>
+                    </div>
+                    <div>
+                        <label style="font-size:13px; font-weight:600; color:var(--on-surface-variant); display:block; margin-bottom:6px;">每层房间数</label>
+                        <asp:TextBox ID="txtRoomsPerFloor" runat="server" CssClass="batch-gen-input" Text="20" TextMode="Number" />
+                    </div>
                 </div>
                 <div class="batch-gen-preview">
-                    <div class="batch-gen-preview-label">预览生成的编号:</div>
-                    <div class="batch-gen-tags">
-                        <span class="batch-gen-tag">A-101</span>
-                        <span class="batch-gen-tag">A-102</span>
-                        <span class="batch-gen-tag">...</span>
-                        <span class="batch-gen-tag">A-1220</span>
-                    </div>
-                    <div class="batch-gen-summary">共计将生成 240 个房间，960 个床位</div>
+                    <div class="batch-gen-preview-label">预览说明:</div>
+                    <div class="batch-gen-summary">选择楼宇和参数后，点击"执行批量生成"将自动创建房间和床位</div>
                 </div>
-                <button class="batch-gen-btn">执行批量生成</button>
+                <asp:Button ID="btnBatchGen" runat="server" CssClass="batch-gen-btn" Text="执行批量生成" OnClick="btnBatchGen_Click" OnClientClick="return confirm('确定要批量生成房间吗？');" />
             </div>
         </div>
 
@@ -216,22 +234,201 @@
         <div class="sys-card">
             <div class="sys-card-title">院系结构</div>
             <div class="dept-tree">
-                <div class="dept-group">
-                    <div class="dept-header"><span class="material-symbols-outlined">keyboard_arrow_down</span><span class="material-symbols-outlined">account_balance</span> 信息工程学院</div>
-                    <div class="dept-children">
-                        <div class="dept-child"><span>计算机科学与技术</span><span class="material-symbols-outlined dept-child-edit">edit</span></div>
-                        <div class="dept-child" style="border-left:2px solid var(--primary); padding-left:8px;"><span>软件工程</span><span class="material-symbols-outlined dept-child-edit">edit</span></div>
-                        <div class="dept-child"><span>网络空间安全</span><span class="material-symbols-outlined dept-child-edit">edit</span></div>
-                    </div>
-                </div>
-                <div class="dept-group">
-                    <div class="dept-header" style="color:var(--on-surface-variant);"><span class="material-symbols-outlined">keyboard_arrow_right</span><span class="material-symbols-outlined">account_balance</span> 外国语学院</div>
-                </div>
-                <div class="dept-group">
-                    <div class="dept-header" style="color:var(--on-surface-variant);"><span class="material-symbols-outlined">keyboard_arrow_right</span><span class="material-symbols-outlined">account_balance</span> 经济管理学院</div>
-                </div>
+                <asp:Repeater ID="rptDepts" runat="server" OnItemDataBound="rptDepts_ItemDataBound" OnItemCommand="rptDepts_ItemCommand">
+                    <ItemTemplate>
+                        <div class="dept-group">
+                            <button type="button" class="dept-header" onclick="toggleDept(this)">
+                                <span class="material-symbols-outlined">keyboard_arrow_down</span>
+                                <span class="material-symbols-outlined">account_balance</span>
+                                <%# Eval("CollegeName") %>
+                            </button>
+                            <div class="dept-children">
+                                <asp:Repeater ID="rptMajors" runat="server" OnItemCommand="rptMajors_ItemCommand">
+                                    <ItemTemplate>
+                                        <div class="dept-child">
+                                            <span><%# Eval("MajorName") %></span>
+                                            <div class="dept-child-actions">
+                                                <asp:LinkButton ID="btnEditMajor" runat="server" CommandName="EditMajor" CommandArgument='<%# Eval("Id") %>' CssClass="dept-child-btn"><span class="material-symbols-outlined" style="font-size:16px;">edit</span></asp:LinkButton>
+                                                <asp:LinkButton ID="btnDeleteMajor" runat="server" CommandName="DeleteMajor" CommandArgument='<%# Eval("Id") %>' CssClass="dept-child-btn delete" OnClientClick="return confirm('确定要删除该专业吗？');"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></asp:LinkButton>
+                                            </div>
+                                        </div>
+                                    </ItemTemplate>
+                                </asp:Repeater>
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
             </div>
-            <button class="dept-add-btn"><span class="material-symbols-outlined" style="font-size:18px;">add</span> 添加学院</button>
+            <button type="button" class="dept-add-btn" onclick="showDeptModal()"><span class="material-symbols-outlined" style="font-size:18px;">add</span> 添加学院/专业</button>
         </div>
     </div>
+
+    <!-- 新增/编辑管理员弹窗 -->
+    <asp:Panel ID="pnlAdminModal" runat="server" CssClass="modal-overlay" Style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><asp:Literal ID="litAdminModalTitle" runat="server" Text="新增管理员" /></h3>
+                <asp:Button ID="btnCloseAdminModal" runat="server" CssClass="modal-close" Text="X" OnClick="btnCloseAdminModal_Click" />
+            </div>
+            <div class="modal-body">
+                <asp:HiddenField ID="hfAdminId" runat="server" />
+                <div class="modal-field">
+                    <label>工号</label>
+                    <asp:TextBox ID="txtAdminNo" runat="server" CssClass="modal-input" placeholder="请输入工号" />
+                </div>
+                <div class="modal-field">
+                    <label>姓名</label>
+                    <asp:TextBox ID="txtAdminName" runat="server" CssClass="modal-input" placeholder="请输入姓名" />
+                </div>
+                <div class="modal-field">
+                    <label>手机号</label>
+                    <asp:TextBox ID="txtAdminPhone" runat="server" CssClass="modal-input" placeholder="请输入手机号" />
+                </div>
+                <div class="modal-field">
+                    <label>角色</label>
+                    <asp:DropDownList ID="ddlAdminRoleModal" runat="server" CssClass="modal-select">
+                        <asp:ListItem Value="1" Text="超级管理员" />
+                        <asp:ListItem Value="2" Text="宿管" />
+                        <asp:ListItem Value="3" Text="后勤" />
+                    </asp:DropDownList>
+                </div>
+                <div class="modal-field">
+                    <label>状态</label>
+                    <asp:DropDownList ID="ddlAdminStatusModal" runat="server" CssClass="modal-select">
+                        <asp:ListItem Value="1" Text="启用" />
+                        <asp:ListItem Value="0" Text="禁用" />
+                    </asp:DropDownList>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <asp:Button ID="btnCancelAdmin" runat="server" CssClass="modal-cancel" Text="取消" OnClick="btnCloseAdminModal_Click" />
+                <asp:Button ID="btnSaveAdmin" runat="server" CssClass="modal-confirm" Text="保存" OnClick="btnSaveAdmin_Click" />
+            </div>
+        </div>
+    </asp:Panel>
+
+    <!-- 新增/编辑楼宇弹窗 -->
+    <asp:Panel ID="pnlBuildingModal" runat="server" CssClass="modal-overlay" Style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><asp:Literal ID="litBuildingModalTitle" runat="server" Text="新增楼宇" /></h3>
+                <asp:Button ID="btnCloseBuildingModal" runat="server" CssClass="modal-close" Text="X" OnClick="btnCloseBuildingModal_Click" />
+            </div>
+            <div class="modal-body">
+                <asp:HiddenField ID="hfBuildingId" runat="server" />
+                <div class="modal-field">
+                    <label>楼宇名称</label>
+                    <asp:TextBox ID="txtBuildingName" runat="server" CssClass="modal-input" placeholder="如：A座" />
+                </div>
+                <div class="modal-field">
+                    <label>所属校区</label>
+                    <asp:TextBox ID="txtBuildingCampus" runat="server" CssClass="modal-input" placeholder="如：北校区" />
+                </div>
+                <div class="modal-field">
+                    <label>楼层数</label>
+                    <asp:TextBox ID="txtBuildingFloors" runat="server" CssClass="modal-input" TextMode="Number" Text="6" />
+                </div>
+                <div class="modal-field">
+                    <label>每层房间数</label>
+                    <asp:TextBox ID="txtBuildingRooms" runat="server" CssClass="modal-input" TextMode="Number" Text="20" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <asp:Button ID="btnCancelBuilding" runat="server" CssClass="modal-cancel" Text="取消" OnClick="btnCloseBuildingModal_Click" />
+                <asp:Button ID="btnSaveBuilding" runat="server" CssClass="modal-confirm" Text="保存" OnClick="btnSaveBuilding_Click" />
+            </div>
+        </div>
+    </asp:Panel>
+
+    <!-- 新增院系/专业弹窗 -->
+    <asp:Panel ID="pnlDeptModal" runat="server" CssClass="modal-overlay" Style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>添加院系/专业</h3>
+                <asp:Button ID="btnCloseDeptModal" runat="server" CssClass="modal-close" Text="X" OnClick="btnCloseDeptModal_Click" />
+            </div>
+            <div class="modal-body">
+                <div class="modal-field">
+                    <label>学院名称</label>
+                    <asp:TextBox ID="txtCollegeName" runat="server" CssClass="modal-input" placeholder="请输入学院名称" />
+                </div>
+                <div class="modal-field">
+                    <label>专业名称</label>
+                    <asp:TextBox ID="txtMajorName" runat="server" CssClass="modal-input" placeholder="请输入专业名称" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <asp:Button ID="btnCancelDept" runat="server" CssClass="modal-cancel" Text="取消" OnClick="btnCloseDeptModal_Click" />
+                <asp:Button ID="btnSaveDept" runat="server" CssClass="modal-confirm" Text="保存" OnClick="btnSaveDept_Click" />
+            </div>
+        </div>
+    </asp:Panel>
+
+    <!-- 编辑专业弹窗 -->
+    <asp:Panel ID="pnlEditMajorModal" runat="server" CssClass="modal-overlay" Style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>编辑专业</h3>
+                <asp:Button ID="btnCloseEditMajorModal" runat="server" CssClass="modal-close" Text="X" OnClick="btnCloseEditMajorModal_Click" />
+            </div>
+            <div class="modal-body">
+                <asp:HiddenField ID="hfEditMajorId" runat="server" />
+                <div class="modal-field">
+                    <label>专业名称</label>
+                    <asp:TextBox ID="txtEditMajorName" runat="server" CssClass="modal-input" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <asp:Button ID="btnCancelEditMajor" runat="server" CssClass="modal-cancel" Text="取消" OnClick="btnCloseEditMajorModal_Click" />
+                <asp:Button ID="btnSaveEditMajor" runat="server" CssClass="modal-confirm" Text="保存" OnClick="btnSaveEditMajor_Click" />
+            </div>
+        </div>
+    </asp:Panel>
+
+    <div id="toast" class="toast"></div>
+
+    <script type="text/javascript">
+        function showAdminModal() {
+            document.getElementById('<%= pnlAdminModal.ClientID %>').style.display = 'flex';
+        }
+        function hideAdminModal() {
+            document.getElementById('<%= pnlAdminModal.ClientID %>').style.display = 'none';
+        }
+        function showBuildingModal() {
+            document.getElementById('<%= pnlBuildingModal.ClientID %>').style.display = 'flex';
+        }
+        function hideBuildingModal() {
+            document.getElementById('<%= pnlBuildingModal.ClientID %>').style.display = 'none';
+        }
+        function showDeptModal() {
+            document.getElementById('<%= pnlDeptModal.ClientID %>').style.display = 'flex';
+        }
+        function hideDeptModal() {
+            document.getElementById('<%= pnlDeptModal.ClientID %>').style.display = 'none';
+        }
+        function showEditMajorModal() {
+            document.getElementById('<%= pnlEditMajorModal.ClientID %>').style.display = 'flex';
+        }
+        function hideEditMajorModal() {
+            document.getElementById('<%= pnlEditMajorModal.ClientID %>').style.display = 'none';
+        }
+        function toggleDept(el) {
+            var children = el.nextElementSibling;
+            var icon = el.querySelector('.material-symbols-outlined');
+            if (children.style.display === 'none') {
+                children.style.display = 'block';
+                icon.textContent = 'keyboard_arrow_down';
+            } else {
+                children.style.display = 'none';
+                icon.textContent = 'keyboard_arrow_right';
+            }
+        }
+        function showToast(msg, type) {
+            var toast = document.getElementById('toast');
+            toast.className = 'toast ' + type;
+            toast.innerHTML = '<span class="material-symbols-outlined">' + (type === 'success' ? 'check_circle' : 'error') + '</span>' + msg;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 3000);
+        }
+    </script>
 </asp:Content>

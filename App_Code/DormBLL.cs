@@ -346,4 +346,131 @@ public class DormBLL
         object result = DBHelper.ExecuteScalar(sql);
         return result != null ? Convert.ToInt32(result) : 0;
     }
+
+    // 楼宇管理
+    public static DataTable GetBuildingList()
+    {
+        string sql = @"SELECT b.*, 
+                       (SELECT COUNT(*) FROM Rooms WHERE BuildingId=b.Id) as RoomCount
+                       FROM Buildings b ORDER BY b.Name";
+        return DBHelper.GetDataTable(sql);
+    }
+
+    public static bool AddBuilding(string name, int floorCount, int roomsPerFloor, string campus)
+    {
+        string sql = "INSERT INTO Buildings (Name, FloorCount, RoomsPerFloor, Campus) VALUES (@Name, @FloorCount, @RoomsPerFloor, @Campus)";
+        MySqlParameter[] parameters = new MySqlParameter[]
+        {
+            new MySqlParameter("@Name", name),
+            new MySqlParameter("@FloorCount", floorCount),
+            new MySqlParameter("@RoomsPerFloor", roomsPerFloor),
+            new MySqlParameter("@Campus", campus)
+        };
+        return DBHelper.ExecuteNonQuery(sql, parameters) > 0;
+    }
+
+    public static bool UpdateBuilding(int id, string name, int floorCount, int roomsPerFloor, string campus)
+    {
+        string sql = "UPDATE Buildings SET Name=@Name, FloorCount=@FloorCount, RoomsPerFloor=@RoomsPerFloor, Campus=@Campus WHERE Id=@Id";
+        MySqlParameter[] parameters = new MySqlParameter[]
+        {
+            new MySqlParameter("@Name", name),
+            new MySqlParameter("@FloorCount", floorCount),
+            new MySqlParameter("@RoomsPerFloor", roomsPerFloor),
+            new MySqlParameter("@Campus", campus),
+            new MySqlParameter("@Id", id)
+        };
+        return DBHelper.ExecuteNonQuery(sql, parameters) > 0;
+    }
+
+    public static bool DeleteBuilding(int id)
+    {
+        string checkSql = "SELECT COUNT(*) FROM Rooms WHERE BuildingId=@Id";
+        object count = DBHelper.ExecuteScalar(checkSql, new MySqlParameter[] { new MySqlParameter("@Id", id) });
+        if (count != null && Convert.ToInt32(count) > 0) return false;
+
+        string sql = "DELETE FROM Buildings WHERE Id=@Id";
+        return DBHelper.ExecuteNonQuery(sql, new MySqlParameter[] { new MySqlParameter("@Id", id) }) > 0;
+    }
+
+    // 批量生成房间
+    public static int BatchCreateRooms(int buildingId, int startFloor, int endFloor, int roomsPerFloor, int roomType, int bedCount)
+    {
+        string prefixSql = "SELECT Name FROM Buildings WHERE Id=@Id";
+        DataTable dt = DBHelper.GetDataTable(prefixSql, new MySqlParameter[] { new MySqlParameter("@Id", buildingId) });
+        if (dt.Rows.Count == 0) return 0;
+        string prefix = dt.Rows[0]["Name"].ToString();
+
+        int totalCreated = 0;
+        for (int floor = startFloor; floor <= endFloor; floor++)
+        {
+            for (int room = 1; room <= roomsPerFloor; room++)
+            {
+                string roomNo = prefix + "-" + floor + room.ToString("D2");
+                string sql = "INSERT INTO Rooms (BuildingId, Floor, RoomNo, RoomType, BedCount) VALUES (@BuildingId, @Floor, @RoomNo, @RoomType, @BedCount)";
+                MySqlParameter[] parameters = new MySqlParameter[]
+                {
+                    new MySqlParameter("@BuildingId", buildingId),
+                    new MySqlParameter("@Floor", floor),
+                    new MySqlParameter("@RoomNo", roomNo),
+                    new MySqlParameter("@RoomType", roomType),
+                    new MySqlParameter("@BedCount", bedCount)
+                };
+                if (DBHelper.ExecuteNonQuery(sql, parameters) > 0)
+                {
+                    // 创建床位
+                    int roomId = Convert.ToInt32(DBHelper.ExecuteScalar("SELECT LAST_INSERT_ID()"));
+                    for (int bed = 0; bed < bedCount; bed++)
+                    {
+                        string bedNo = ((char)('A' + bed)).ToString();
+                        string bedSql = "INSERT INTO Beds (RoomId, BedNo) VALUES (@RoomId, @BedNo)";
+                        DBHelper.ExecuteNonQuery(bedSql, new MySqlParameter[] {
+                            new MySqlParameter("@RoomId", roomId),
+                            new MySqlParameter("@BedNo", bedNo)
+                        });
+                    }
+                    totalCreated++;
+                }
+            }
+        }
+        return totalCreated;
+    }
+}
+
+// 院系管理
+public class DeptBLL
+{
+    public static DataTable GetDepartmentTree()
+    {
+        string sql = "SELECT * FROM Departments ORDER BY CollegeName, SortOrder";
+        return DBHelper.GetDataTable(sql);
+    }
+
+    public static bool AddDepartment(string collegeName, string majorName)
+    {
+        string sql = "INSERT INTO Departments (CollegeName, MajorName) VALUES (@CollegeName, @MajorName)";
+        MySqlParameter[] parameters = new MySqlParameter[]
+        {
+            new MySqlParameter("@CollegeName", collegeName),
+            new MySqlParameter("@MajorName", majorName)
+        };
+        return DBHelper.ExecuteNonQuery(sql, parameters) > 0;
+    }
+
+    public static bool UpdateDepartment(int id, string majorName)
+    {
+        string sql = "UPDATE Departments SET MajorName=@MajorName WHERE Id=@Id";
+        MySqlParameter[] parameters = new MySqlParameter[]
+        {
+            new MySqlParameter("@MajorName", majorName),
+            new MySqlParameter("@Id", id)
+        };
+        return DBHelper.ExecuteNonQuery(sql, parameters) > 0;
+    }
+
+    public static bool DeleteDepartment(int id)
+    {
+        string sql = "DELETE FROM Departments WHERE Id=@Id";
+        return DBHelper.ExecuteNonQuery(sql, new MySqlParameter[] { new MySqlParameter("@Id", id) }) > 0;
+    }
 }
