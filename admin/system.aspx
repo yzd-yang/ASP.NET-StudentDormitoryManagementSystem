@@ -252,14 +252,14 @@
                     <div>
                         <label style="font-size:13px; font-weight:600; color:var(--on-surface-variant); display:block; margin-bottom:6px;">起始层数 - 结束层数</label>
                         <div class="batch-gen-row-3">
-                            <asp:TextBox ID="txtStartFloor" runat="server" CssClass="batch-gen-input" Text="1" TextMode="Number" />
+                            <input type="number" id="txtStartFloor" runat="server" class="batch-gen-input" value="1" min="1" max="50" />
                             <span>-</span>
-                            <asp:TextBox ID="txtEndFloor" runat="server" CssClass="batch-gen-input" Text="6" TextMode="Number" />
+                            <input type="number" id="txtEndFloor" runat="server" class="batch-gen-input" value="6" min="1" max="50" />
                         </div>
                     </div>
                     <div>
                         <label style="font-size:13px; font-weight:600; color:var(--on-surface-variant); display:block; margin-bottom:6px;">每层房间数</label>
-                        <asp:TextBox ID="txtRoomsPerFloor" runat="server" CssClass="batch-gen-input" Text="20" TextMode="Number" />
+                        <input type="number" id="txtRoomsPerFloor" runat="server" class="batch-gen-input" value="20" min="1" max="50" />
                     </div>
                 </div>
                 <div class="batch-gen-preview">

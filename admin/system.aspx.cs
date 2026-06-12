@@ -393,9 +393,9 @@ public partial class admin_system : System.Web.UI.Page
     protected void btnBatchGen_Click(object sender, EventArgs e)
     {
         int buildingId = Convert.ToInt32(ddlGenBuilding.SelectedValue);
-        int startFloor = Convert.ToInt32(txtStartFloor.Text);
-        int endFloor = Convert.ToInt32(txtEndFloor.Text);
-        int roomsPerFloor = Convert.ToInt32(txtRoomsPerFloor.Text);
+        int startFloor = Convert.ToInt32(txtStartFloor.Value);
+        int endFloor = Convert.ToInt32(txtEndFloor.Value);
+        int roomsPerFloor = Convert.ToInt32(txtRoomsPerFloor.Value);
         int roomType = Convert.ToInt32(ddlGenRoomType.SelectedValue);
 
         int bedCount = 2;
