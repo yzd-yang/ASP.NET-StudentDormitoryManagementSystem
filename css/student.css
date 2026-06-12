@@ -1,4 +1,4 @@
-﻿/* ========== 学生端母版页样式 ========== */
+/* ========== 学生端母版页样式 ========== */
 
 /* 顶部导航 */
 .student-header {
@@ -66,10 +66,10 @@
     padding-top: 72px;
     padding-bottom: 80px;
     min-height: 100vh;
-    max-width: 768px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 24px;
+    padding-right: 24px;
 }
 
 /* 底部 Tab 导航 */
