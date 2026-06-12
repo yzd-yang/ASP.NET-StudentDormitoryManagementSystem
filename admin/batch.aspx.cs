@@ -66,12 +66,14 @@ public partial class admin_batch : System.Web.UI.Page
             ddlFilterCollege.Items.Add(new ListItem(row["CollegeName"].ToString(), row["CollegeName"].ToString()));
         }
 
-        // 加载楼宇列表到弹窗
+        // 加载楼宇列表到弹窗HTML select
         DataTable buildings = BatchBLL.GetBuildingsForBatch();
+        string buildingOptions = "<option value=\"0\">选择楼栋</option>";
         foreach (DataRow row in buildings.Rows)
         {
-            ddlModalBuilding.Items.Add(new ListItem(row["Name"].ToString() + " (" + row["Campus"] + ")", row["Id"].ToString()));
+            buildingOptions += "<option value=\"" + row["Id"] + "\">" + row["Name"].ToString() + " (" + row["Campus"].ToString() + ")</option>";
         }
+        ddlModalBuilding.InnerHtml = buildingOptions;
     }
 
     protected void btnBatchSearch_Click(object sender, EventArgs e)
@@ -135,16 +137,60 @@ public partial class admin_batch : System.Web.UI.Page
 
     protected void ddlModalBuilding_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int buildingId = Convert.ToInt32(ddlModalBuilding.SelectedValue);
+        int buildingId = Convert.ToInt32(ddlModalBuilding.Value);
         if (buildingId > 0)
         {
             DataTable floors = DormBLL.GetFloorsByBuilding(buildingId);
-            ddlModalFloor.Items.Clear();
-            ddlModalFloor.Items.Add(new ListItem("全部楼层", "0"));
+            string floorOptions = "<option value=\"0\">全部楼层</option>";
             foreach (DataRow row in floors.Rows)
             {
-                ddlModalFloor.Items.Add(new ListItem(row["Floor"].ToString() + "层", row["Floor"].ToString()));
+                floorOptions += "<option value=\"" + row["Floor"] + "\">" + row["Floor"] + "层</option>";
             }
+            ddlModalFloor.InnerHtml = floorOptions;
+
+            LoadRoomsForJS(buildingId, 0);
+        }
+        else
+        {
+            ddlModalFloor.InnerHtml = "<option value=\"0\">全部楼层</option>";
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "clearGrid", "document.getElementById('roomGrid').innerHTML='';", true);
+        }
+        pnlBatchModal.Style["display"] = "flex";
+    }
+
+    protected void ddlModalFloor_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int buildingId = Convert.ToInt32(ddlModalBuilding.Value);
+        int floor = Convert.ToInt32(ddlModalFloor.Value);
+        LoadRoomsForJS(buildingId, floor);
+        pnlBatchModal.Style["display"] = "flex";
+    }
+
+    private void LoadRoomsForJS(int buildingId, int floor)
+    {
+        DataTable dt = BatchBLL.GetRoomsForBatch(buildingId, floor);
+        // 构建JSON: {Id, RoomNo, BuildingName}
+        string buildingName = "";
+        DataTable buildings = BatchBLL.GetBuildingsForBatch();
+        foreach (DataRow row in buildings.Rows)
+        {
+            if (Convert.ToInt32(row["Id"]) == buildingId)
+            {
+                buildingName = row["Name"].ToString();
+                break;
+            }
+        }
+
+        string json = "[";
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            if (i > 0) json += ",";
+            json += "{\"Id\":" + dt.Rows[i]["Id"] + ",\"RoomNo\":\"" + dt.Rows[i]["RoomNo"] + "\",\"BuildingName\":\"" + buildingName + "\"}";
+        }
+        json += "]";
+
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "renderRooms", "renderRoomGrid('" + json.Replace("'", "\\'") + "');", true);
+    }
             LoadModalRooms(buildingId, 0);
             LoadSelectedRooms();
         }
@@ -295,7 +341,7 @@ public partial class admin_batch : System.Web.UI.Page
         }
 
         // 获取选中的房间
-        string selectedIds = ViewState["SelectedRoomIds"] as string ?? "";
+        string selectedIds = hfSelectedRoomIds.Value;
         int[] roomIds = new int[0];
         if (!string.IsNullOrEmpty(selectedIds))
         {
@@ -348,8 +394,10 @@ public partial class admin_batch : System.Web.UI.Page
         ddlCollegeLimit.SelectedIndex = 0;
         ddlMajorLimit.SelectedIndex = 0;
         ddlBatchStatusEdit.SelectedIndex = 0;
-        ViewState["SelectedRoomIds"] = "";
-        ddlModalBuilding.SelectedIndex = 0;
+        hfSelectedRoomIds.Value = "";
+        ddlModalBuilding.Value = "0";
+        ddlModalFloor.InnerHtml = "<option value=\"0\">全部楼层</option>";
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "clearGrid", "selectedRooms=[]; document.getElementById('roomGrid').innerHTML=''; document.getElementById('selectedRoomTags').innerHTML='';", true);
     }
 
     protected string GetStatusClass(object status)

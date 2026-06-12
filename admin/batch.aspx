@@ -256,13 +256,23 @@
                 <div class="form-group">
                     <label>宿舍范围</label>
                     <div style="display:flex; gap:12px; margin-bottom:12px;">
-                        <asp:DropDownList ID="ddlModalBuilding" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlModalBuilding_SelectedIndexChanged">
-                            <asp:ListItem Value="0" Text="选择楼栋" />
-                        </asp:DropDownList>
-                        <asp:DropDownList ID="ddlModalFloor" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlModalFloor_SelectedIndexChanged">
-                            <asp:ListItem Value="0" Text="全部楼层" />
-                        </asp:DropDownList>
+                        <select id="ddlModalBuilding" runat="server" class="form-select" onchange="onBuildingChange()">
+                            <option value="0">选择楼栋</option>
+                        </select>
+                        <select id="ddlModalFloor" runat="server" class="form-select" onchange="onFloorChange()">
+                            <option value="0">全部楼层</option>
+                        </select>
                     </div>
+                    <div style="background:var(--surface-container-low); border-radius:14px; padding:14px; border:1px solid rgba(0,0,0,0.04);">
+                        <p style="font-size:12px; color:var(--on-surface-variant); margin-bottom:10px;">点击宿舍号可添加/移除宿舍范围</p>
+                        <div class="room-grid-select" id="roomGrid"></div>
+                    </div>
+                    <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;">
+                        <span style="font-size:12px; color:var(--on-surface-variant);">已选范围:</span>
+                        <span id="selectedRoomTags"></span>
+                    </div>
+                    <asp:HiddenField ID="hfSelectedRoomIds" runat="server" Value="" />
+                </div>
                     <div style="background:var(--surface-container-low); border-radius:14px; padding:14px; border:1px solid rgba(0,0,0,0.04);">
                         <p style="font-size:12px; color:var(--on-surface-variant); margin-bottom:10px;">点击宿舍号可添加/移除宿舍范围</p>
                         <div class="room-grid-select">
@@ -296,9 +306,87 @@
     <div id="toast" class="toast"></div>
 
     <script type="text/javascript">
+        var selectedRooms = [];
+        var allRooms = [];
+
         function showCreateModal() {
             document.getElementById('<%= pnlBatchModal.ClientID %>').style.display = 'flex';
         }
+
+        function onBuildingChange() {
+            var buildingId = document.getElementById('<%= ddlModalBuilding.ClientID %>').value;
+            if (buildingId > 0) {
+                // 通过PageMethods获取楼层和房间
+                document.getElementById('<%= ddlModalFloor.ClientID %>').innerHTML = '<option value="0">全部楼层</option>';
+                document.getElementById('roomGrid').innerHTML = '';
+                selectedRooms = [];
+                updateSelectedTags();
+                document.getElementById('<%= hfSelectedRoomIds.ClientID %>').value = '';
+                // 触发PostBack加载楼层
+                __doPostBack('<%= ddlModalBuilding.UniqueID %>', '');
+            }
+        }
+
+        function onFloorChange() {
+            __doPostBack('<%= ddlModalFloor.UniqueID %>', '');
+        }
+
+        function toggleRoom(roomId, roomNo, buildingName) {
+            var idx = selectedRooms.findIndex(function(r) { return r.id == roomId; });
+            if (idx >= 0) {
+                selectedRooms.splice(idx, 1);
+            } else {
+                selectedRooms.push({ id: roomId, roomNo: roomNo, buildingName: buildingName });
+            }
+            document.getElementById('<%= hfSelectedRoomIds.ClientID %>').value = selectedRooms.map(function(r) { return r.id; }).join(',');
+            updateRoomGrid();
+            updateSelectedTags();
+        }
+
+        function updateRoomGrid() {
+            var grid = document.getElementById('roomGrid');
+            var btns = grid.querySelectorAll('.room-btn');
+            btns.forEach(function(btn) {
+                var rid = btn.getAttribute('data-room-id');
+                var found = selectedRooms.some(function(r) { return r.id == rid; });
+                if (found) {
+                    btn.classList.add('selected');
+                } else {
+                    btn.classList.remove('selected');
+                }
+            });
+        }
+
+        function updateSelectedTags() {
+            var container = document.getElementById('selectedRoomTags');
+            container.innerHTML = '';
+            selectedRooms.forEach(function(r) {
+                var tag = document.createElement('span');
+                tag.style.cssText = 'background:rgba(73,234,206,0.15); color:var(--primary); padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;';
+                tag.textContent = r.buildingName + ' ' + r.roomNo;
+                container.appendChild(tag);
+            });
+        }
+
+        function renderRoomGrid(roomsJson) {
+            var rooms = JSON.parse(roomsJson);
+            allRooms = rooms;
+            var grid = document.getElementById('roomGrid');
+            grid.innerHTML = '';
+            rooms.forEach(function(room) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'room-btn';
+                btn.setAttribute('data-room-id', room.Id);
+                var roomNoShort = room.RoomNo.split('-')[1] || room.RoomNo;
+                btn.textContent = roomNoShort;
+                btn.onclick = function() { toggleRoom(room.Id, room.RoomNo, room.BuildingName); };
+                var found = selectedRooms.some(function(r) { return r.id == room.Id; });
+                if (found) btn.classList.add('selected');
+                grid.appendChild(btn);
+            });
+        }
+
         function showToast(msg, type) {
             var toast = document.getElementById('toast');
             toast.className = 'toast ' + type;
