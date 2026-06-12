@@ -37,13 +37,29 @@ public partial class admin_login : System.Web.UI.Page
             return;
         }
 
-        Session["AdminId"] = 1;
-        Session["AdminNo"] = adminNo;
-        Session["AdminName"] = "\u7CFB\u7EDF\u7BA1\u7406\u5458";
-        Session["AdminRoleName"] = "\u8D85\u7EA7\u7BA1\u7406\u5458";
-        Session["AdminRole"] = "1";
-        Session["Role"] = "admin";
-        Response.Redirect("/admin/dashboard.aspx");
+        // 从数据库查询管理员信息
+        DataTable dt = DBHelper.GetDataTable("SELECT Id, AdminNo, Name, Phone, Role FROM Admins WHERE AdminNo=@AdminNo AND Password=@Password AND Status=1",
+            new MySql.Data.MySqlClient.MySqlParameter("@AdminNo", adminNo),
+            new MySql.Data.MySqlClient.MySqlParameter("@Password", UserBLL.GetMD5(password)));
+
+        if (dt.Rows.Count > 0)
+        {
+            DataRow row = dt.Rows[0];
+            int role = Convert.ToInt32(row["Role"]);
+            string roleName = role == 1 ? "超级管理员" : (role == 2 ? "宿管" : "后勤");
+
+            Session["AdminId"] = row["Id"];
+            Session["AdminNo"] = row["AdminNo"].ToString();
+            Session["AdminName"] = row["Name"].ToString();
+            Session["AdminRoleName"] = roleName;
+            Session["AdminRole"] = role.ToString();
+            Session["Role"] = "admin";
+            Response.Redirect("/admin/dashboard.aspx");
+        }
+        else
+        {
+            ShowError("工号或密码错误");
+        }
     }
 
     private void ShowError(string msg)
