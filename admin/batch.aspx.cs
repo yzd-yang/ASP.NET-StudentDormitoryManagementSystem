@@ -27,7 +27,7 @@ public partial class admin_batch : System.Web.UI.Page
         DataTable dt = BatchBLL.GetBatchStats();
         if (dt.Rows.Count > 0)
         {
-            litTotalBatches.Text = (Convert.ToInt32(dt.Rows[0]["Total"]) + Convert.ToInt32(dt.Rows[0]["Active"]) + Convert.ToInt32(dt.Rows[0]["Upcoming"]) + Convert.ToInt32(dt.Rows[0]["Ended"])).ToString();
+            litTotalBatches.Text = Convert.ToInt32(dt.Rows[0]["Total"]).ToString();
             litActiveBatches.Text = Convert.ToInt32(dt.Rows[0]["Active"]).ToString();
             litUpcomingBatches.Text = Convert.ToInt32(dt.Rows[0]["Upcoming"]).ToString();
             litEndedBatches.Text = Convert.ToInt32(dt.Rows[0]["Ended"]).ToString();
