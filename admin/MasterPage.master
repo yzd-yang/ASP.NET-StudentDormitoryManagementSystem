@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" CodeFile="MasterPage.master.cs" Inherits="admin_MasterPage" %>
+<%@ Master Language="C#" CodeFile="MasterPage.master.cs" Inherits="admin_MasterPage" %>
 
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -95,9 +95,17 @@
                         <span class="material-symbols-outlined">campaign</span>
                         <span class="admin-nav-label">通知公告</span>
                     </a>
+                    <a href="/admin/batch.aspx" class="admin-nav-item <%= IsActive("batch") %>">
+                        <span class="material-symbols-outlined">groups</span>
+                        <span class="admin-nav-label">选宿批次</span>
+                    </a>
                     <a href="/admin/building.aspx" class="admin-nav-item <%= IsActive("building") %>">
                         <span class="material-symbols-outlined">meeting_room</span>
                         <span class="admin-nav-label">楼宇管理</span>
+                    </a>
+                    <a href="/admin/system.aspx" class="admin-nav-item <%= IsActive("system") %>">
+                        <span class="material-symbols-outlined">settings</span>
+                        <span class="admin-nav-label">系统管理</span>
                     </a>
                 </div>
             </nav>

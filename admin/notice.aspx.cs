@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Web;
-using System.Web.UI;
 
-public partial class admin_dashboard : System.Web.UI.Page
+public partial class admin_notice : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {

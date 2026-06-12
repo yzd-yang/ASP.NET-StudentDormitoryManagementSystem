@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="login.aspx.cs" Inherits="login" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="login.aspx.cs" Inherits="login" ResponseEncoding="utf-8" %>
 
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -292,7 +292,7 @@
                 </div>
 
                 <div class="login-links">
-                    <a href="#">
+                    <a href="/reset-password.aspx">
                         <span class="material-symbols-outlined">help_outline</span>
                         忘记密码？
                     </a>

@@ -1,4 +1,4 @@
-﻿# 智慧宿舍（SmartDorm）— MVP 核心功能开发文档
+# 智慧宿舍（SmartDorm）— MVP 核心功能开发文档
 
 ---
 
@@ -10,18 +10,19 @@
 
 | 模块 | 功能 | 优先级 | 状态 |
 |------|------|--------|------|
-| 认证 | 登录、注册、验证码 | P0 | 已完成 |
-| 学生端 | 查看宿舍信息、故障报修 | P0 | 进行中 |
-| 管理端 | 宿舍分配、报修处理、楼宇房间管理 | P0 | 进行中 |
+| 认证 | 登录、注册、验证码 | P0 | ✅ 已完成 |
+| 学生端 | 查看宿舍信息、故障报修、个人中心 | P0 | ✅ 已完成 |
+| 学生端 | 选宿批次、抢宿舍 | P0 | ✅ 已完成 |
+| 管理端 | 宿舍分配、报修处理 | P0 | ✅ 已完成 |
+| 管理端 | 通知公告管理 | P0 | ✅ 已完成 |
+| 管理端 | 选宿批次管理 | P0 | ✅ 已完成 |
+| 管理端 | 系统管理（管理员、楼宇、院系） | P0 | ✅ 已完成 |
 
-### 非 MVP 功能（后续迭代）
+### 不需要的功能
 
-- 选宿批次 / 抢宿舍
-- 通知公告
-- 仪表盘统计图表
 - 费用缴纳
-- 院系专业管理
-- 管理员账号管理
+- 访客管理
+- 操作日志/实时动态
 
 ---
 
@@ -32,8 +33,9 @@
 | 后端框架 | ASP.NET Web Forms 4.8 |
 | 编程语言 | C# |
 | 数据库 | MySQL 8.0 |
-| 数据访问 | ADO.NET + MySql.Data 6.10.9 |
+| 数据访问 | ADO.NET + MySql.Data |
 | 前端 | HTML + CSS + JavaScript + ASP.NET 服务器控件 |
+| 图标库 | Material Symbols Outlined |
 | Web 服务器 | IIS / Visual Studio IIS Express |
 
 ---
@@ -50,23 +52,26 @@ SmartDorm/
 ├── admin/
 │   ├── login.aspx               # 管理端登录
 │   ├── MasterPage.master        # 管理端母版页（左侧边栏）
-│   ├── dashboard.aspx           # 控制台/仪表盘（基础UI+统计）
-│   ├── allocation.aspx          # 宿舍分配管理（页面框架）
-│   ├── repair.aspx              # 报修管理（页面框架）
-│   └── building.aspx            # 楼宇房间管理（页面框架）
+│   ├── dashboard.aspx           # 控制台/仪表盘
+│   ├── allocation.aspx          # 宿舍分配管理
+│   ├── repair.aspx              # 报修管理
+│   ├── notice.aspx              # 通知公告管理
+│   ├── batch.aspx               # 选宿批次管理
+│   ├── building.aspx            # 楼宇管理（占位页）
+│   └── system.aspx              # 系统管理
 ├── student/
 │   ├── MasterPage.master        # 学生端母版页（底部Tab导航）
 │   ├── home.aspx                # 我的宿舍/首页
-│   ├── repair.aspx              # 故障报修（待开发）
-│   └── profile.aspx             # 个人中心（待开发）
+│   ├── repair.aspx              # 故障报修
+│   ├── profile.aspx             # 个人中心
+│   ├── batch.aspx               # 选宿批次列表
+│   └── grab-dorm.aspx           # 选/抢宿舍
 ├── Bin/
-│   └── MySql.Data.dll           # MySQL驱动（v6.10.9）
+│   └── MySql.Data.dll           # MySQL驱动
 ├── css/
 │   ├── style.css                # 全局样式
 │   ├── student.css              # 学生端样式
 │   └── admin.css                # 管理端样式
-├── js/
-│   └── common.js                # 公共脚本
 ├── Uploads/
 │   ├── avatars/                 # 头像
 │   └── repair/                  # 报修照片
@@ -75,6 +80,7 @@ SmartDorm/
 │   └── init_data.sql            # 测试数据
 ├── login.aspx                   # 公共登录页
 ├── register.aspx                # 注册页
+├── reset-password.aspx          # 重置密码页
 ├── checkcode.aspx               # 验证码
 ├── web.config                   # 配置文件
 └── Default.aspx                 # 默认页（跳转登录）
@@ -97,208 +103,115 @@ SmartDorm/
 
 ### 4.2 数据表（共11张）
 
-#### 学生表（Students）
+| 表名 | 用途 | 主要字段 |
+|------|------|----------|
+| `Students` | 学生信息 | StudentNo, Name, Phone, Password, Avatar, College, Major, Grade |
+| `Admins` | 管理员信息 | AdminNo, Name, Phone, Password, Role |
+| `Buildings` | 楼宇 | Name, FloorCount, RoomsPerFloor, Campus |
+| `Rooms` | 房间 | BuildingId, Floor, RoomNo, RoomType, BedCount |
+| `Beds` | 床位 | RoomId, BedNo, StudentId, Status |
+| `RepairOrders` | 报修工单 | OrderNo, StudentId, RoomId, RepairType, Description, Photos, Status |
+| `Notices` | 通知公告 | Title, Content, Scope, Category, IsTop, Status |
+| `SelectionBatches` | 选宿批次 | BatchName, StartTime, EndTime, CollegeLimit, MajorLimit, Status |
+| `BatchRooms` | 批次房间关联 | BatchId, RoomId |
+| `FacilityStatus` | 设施状态 | RoomId, FacilityType, Status |
+| `Departments` | 院系专业 | CollegeName, MajorName |
 
-| 字段 | 类型 | 约束 | 说明 |
-|------|------|------|------|
-| Id | INT | PK, AUTO_INCREMENT | 主键 |
-| StudentNo | VARCHAR(20) | UNIQUE, NOT NULL | 学号 |
-| Name | VARCHAR(50) | NOT NULL | 姓名 |
-| Phone | VARCHAR(11) | NOT NULL | 手机号 |
-| Password | VARCHAR(64) | NOT NULL | 密码（MD5） |
-| Avatar | VARCHAR(255) | DEFAULT NULL | 头像路径 |
-| College | VARCHAR(100) | DEFAULT NULL | 学院 |
-| Major | VARCHAR(100) | DEFAULT NULL | 专业 |
-| Grade | VARCHAR(20) | DEFAULT NULL | 年级 |
-| ClassName | VARCHAR(50) | DEFAULT NULL | 班级 |
-| Email | VARCHAR(100) | DEFAULT NULL | 邮箱 |
-| EmergencyContact | VARCHAR(50) | DEFAULT NULL | 紧急联系人 |
-| EmergencyRelation | VARCHAR(20) | DEFAULT NULL | 关系 |
-| EmergencyPhone | VARCHAR(11) | DEFAULT NULL | 紧急联系人电话 |
-| Status | TINYINT | DEFAULT 1 | 1正常 0禁用 |
-| CreateTime | DATETIME | DEFAULT CURRENT_TIMESTAMP | 注册时间 |
-
-#### 管理员表（Admins）
-
-| 字段 | 类型 | 约束 | 说明 |
-|------|------|------|------|
-| Id | INT | PK, AUTO_INCREMENT | 主键 |
-| AdminNo | VARCHAR(20) | UNIQUE, NOT NULL | 工号 |
-| Name | VARCHAR(50) | NOT NULL | 姓名 |
-| Phone | VARCHAR(11) | NOT NULL | 手机号 |
-| Password | VARCHAR(64) | NOT NULL | 密码（MD5） |
-| Role | TINYINT | NOT NULL | 1超级管理员 2宿管 3后勤 |
-| Status | TINYINT | DEFAULT 1 | 1正常 0禁用 |
-| CreateTime | DATETIME | DEFAULT CURRENT_TIMESTAMP | 创建时间 |
-
-#### 楼宇表（Buildings）
-
-| 字段 | 类型 | 约束 | 说明 |
-|------|------|------|------|
-| Id | INT | PK, AUTO_INCREMENT | 主键 |
-| Name | VARCHAR(50) | NOT NULL | 楼宇名称 |
-| FloorCount | INT | NOT NULL | 楼层数 |
-| RoomsPerFloor | INT | NOT NULL | 每层房间数 |
-| Campus | VARCHAR(50) | DEFAULT NULL | 校区 |
-| Status | TINYINT | DEFAULT 1 | 1正常 0停用 |
-| CreateTime | DATETIME | DEFAULT CURRENT_TIMESTAMP | 创建时间 |
-
-#### 房间表（Rooms）
-
-| 字段 | 类型 | 约束 | 说明 |
-|------|------|------|------|
-| Id | INT | PK, AUTO_INCREMENT | 主键 |
-| BuildingId | INT | FK → Buildings.Id | 所属楼宇 |
-| Floor | INT | NOT NULL | 楼层 |
-| RoomNo | VARCHAR(20) | NOT NULL | 房间号 |
-| RoomType | TINYINT | NOT NULL | 1双人间 2四人间 3六人间 |
-| BedCount | INT | NOT NULL | 总床位数 |
-| Status | TINYINT | DEFAULT 1 | 1正常 0停用 |
-| CreateTime | DATETIME | DEFAULT CURRENT_TIMESTAMP | 创建时间 |
-
-#### 床位表（Beds）
-
-| 字段 | 类型 | 约束 | 说明 |
-|------|------|------|------|
-| Id | INT | PK, AUTO_INCREMENT | 主键 |
-| RoomId | INT | FK → Rooms.Id | 所属房间 |
-| BedNo | VARCHAR(10) | NOT NULL | 床位号（A/B/C/D） |
-| StudentId | INT | FK → Students.Id, NULL | 入住学生 |
-| Status | TINYINT | DEFAULT 0 | 0空置 1已分配 |
-| AllocateTime | DATETIME | DEFAULT NULL | 分配时间 |
-
-#### 报修工单表（RepairOrders）
-
-| 字段 | 类型 | 约束 | 说明 |
-|------|------|------|------|
-| Id | INT | PK, AUTO_INCREMENT | 主键 |
-| OrderNo | VARCHAR(30) | UNIQUE, NOT NULL | 工单编号 |
-| StudentId | INT | FK → Students.Id | 报修学生 |
-| RoomId | INT | FK → Rooms.Id | 报修宿舍 |
-| RepairType | TINYINT | NOT NULL | 1水电 2家具家电 3网络 4其他 |
-| Description | TEXT | NOT NULL | 描述 |
-| Photos | VARCHAR(1000) | DEFAULT NULL | 照片路径JSON |
-| ExpectTime | DATETIME | DEFAULT NULL | 期望上门时间 |
-| ContactPhone | VARCHAR(11) | NOT NULL | 联系电话 |
-| Status | TINYINT | DEFAULT 1 | 1待分配 2维修中 3紧急处理 4已完成 5已驳回 |
-| AssignAdminId | INT | FK → Admins.Id, NULL | 指派技工 |
-| InternalNote | TEXT | DEFAULT NULL | 内部备注 |
-| RejectReason | VARCHAR(500) | DEFAULT NULL | 驳回原因 |
-| CreateTime | DATETIME | DEFAULT CURRENT_TIMESTAMP | 报修时间 |
-| CompleteTime | DATETIME | DEFAULT NULL | 完成时间 |
-
-#### 通知公告表（Notices）
-
-| 字段 | 类型 | 约束 | 说明 |
-|------|------|------|------|
-| Id | INT | PK, AUTO_INCREMENT | 主键 |
-| Title | VARCHAR(100) | NOT NULL | 标题 |
-| Content | TEXT | NOT NULL | 内容（富文本） |
-| Scope | TINYINT | DEFAULT 0 | 0全体 1A栋 2B栋 3C栋 |
-| Category | TINYINT | NOT NULL | 1行政通知 2安全警示 3生活服务 4活动资讯 |
-| IsTop | TINYINT | DEFAULT 0 | 0否 1是 |
-| Status | TINYINT | DEFAULT 0 | 0草稿 1已发布 2已撤回 |
-| PublishTime | DATETIME | DEFAULT NULL | 发布时间 |
-| AdminId | INT | FK → Admins.Id | 发布人 |
-| CreateTime | DATETIME | DEFAULT CURRENT_TIMESTAMP | 创建时间 |
-
-#### 选宿批次表（SelectionBatches）
-
-| 字段 | 类型 | 约束 | 说明 |
-|------|------|------|------|
-| Id | INT | PK, AUTO_INCREMENT | 主键 |
-| BatchName | VARCHAR(100) | NOT NULL | 批次名称 |
-| StartTime | DATETIME | NOT NULL | 开始时间 |
-| EndTime | DATETIME | NOT NULL | 截止时间 |
-| CollegeLimit | VARCHAR(500) | DEFAULT NULL | 学院限定JSON |
-| MajorLimit | VARCHAR(500) | DEFAULT NULL | 专业限定JSON |
-| GradeLimit | VARCHAR(20) | DEFAULT NULL | 年级限定 |
-| Status | TINYINT | DEFAULT 0 | 0待开始 1进行中 2已结束 3已暂停 |
-| AdminId | INT | FK → Admins.Id | 创建人 |
-| CreateTime | DATETIME | DEFAULT CURRENT_TIMESTAMP | 创建时间 |
-
-#### 批次房间关联表（BatchRooms）
-
-| 字段 | 类型 | 约束 | 说明 |
-|------|------|------|------|
-| Id | INT | PK, AUTO_INCREMENT | 主键 |
-| BatchId | INT | FK → SelectionBatches.Id | 批次ID |
-| RoomId | INT | FK → Rooms.Id | 房间ID |
-
-#### 设施状态表（FacilityStatus）
-
-| 字段 | 类型 | 约束 | 说明 |
-|------|------|------|------|
-| Id | INT | PK, AUTO_INCREMENT | 主键 |
-| RoomId | INT | FK → Rooms.Id | 房间ID |
-| FacilityType | TINYINT | NOT NULL | 1空调 2热水器 3照明 4网络 |
-| Status | TINYINT | DEFAULT 1 | 1正常 2报修中 3故障 |
-| UpdateTime | DATETIME | DEFAULT CURRENT_TIMESTAMP | 更新时间 |
-
-#### 院系专业表（Departments）
-
-| 字段 | 类型 | 约束 | 说明 |
-|------|------|------|------|
-| Id | INT | PK, AUTO_INCREMENT | 主键 |
-| CollegeName | VARCHAR(100) | NOT NULL | 学院名称 |
-| MajorName | VARCHAR(100) | NOT NULL | 专业名称 |
-| SortOrder | INT | DEFAULT 0 | 排序号 |
+详细字段定义见 `学生宿舍管理系统开发文档.md` 第五章。
 
 ---
 
 ## 五、已完成功能
 
-### 5.1 登录注册模块
+### 5.1 公共模块
 
-#### 登录页（login.aspx）
+#### 登录页（login.aspx）✅
 - 学号/工号 + 密码 + 验证码
 - 数据库验证，区分学生/管理员角色
 - 登录成功后跳转对应首页
 
-#### 注册页（register.aspx）
-- 学生注册：学号、手机号、密码
+#### 注册页（register.aspx）✅
+- 学生注册/老师注册标签切换
+- 学号、手机号、密码
 - 学号唯一性校验
-- 密码MD5加密存储
 
-#### 验证码（checkcode.aspx）
+#### 重置密码（reset-password.aspx）✅
+- 两步流程：验证身份 → 设置新密码
+- 验证学号/工号 + 手机号 + 验证码
+
+#### 验证码（checkcode.aspx）✅
 - GDI+ 生成4位随机字符图片
 - Session存储验证码
 
 ### 5.2 学生端
 
-#### 学生首页（student/home.aspx）
-- 显示宿舍信息卡片（校区、楼栋、房间号、床位号）
-- 显示室友列表
-- 显示设施状态
+#### 学生首页（student/home.aspx）✅
+- 宿舍信息卡片（校区、楼栋、房间号、床位号）
+- 宿舍评分（静态数据，94分优秀）
+- 室友列表
+- 设施状态（空调、热水器、照明、校园网）
+- 提交报修入口
+- 快捷工具（宿舍预约、管理规章）
+
+#### 故障报修（student/repair.aspx）✅
+- 标签切换：提交申请 / 我的报修
+- 提交表单：报修类型、描述、期望时间、联系电话、照片上传
+- 我的报修列表：已完成、处理中、待处理三种状态卡片
+
+#### 个人中心（student/profile.aspx）✅
+- 个人信息Hero卡片（头像、姓名、学号、宿舍、手机）
+- 联系信息（邮箱、紧急联系人）
+- 学业信息（学院、专业）
+- 入住状态
+
+#### 选宿批次（student/batch.aspx）✅
+- 筛选栏（批次名称、楼栋、学院、专业、状态）
+- 批次列表表格（含状态标签和操作按钮）
+- 选宿小贴士
+
+#### 选/抢宿舍（student/grab-dorm.aspx）✅
+- 倒计时区域
+- 筛选条件（空床位数）
+- 房间卡片网格（含床位选择和抢订按钮）
+- 不同房间状态（有空位、满员等）
 
 ### 5.3 管理端
 
-#### 管理端母版页（admin/MasterPage.master）
-- 左侧边栏导航
-- 用户下拉菜单
-- 导航分组和徽章
+#### 仪表盘（admin/dashboard.aspx）✅
+- 统计卡片（总房间数、在宿学生、空余床位、今日报修）
+- 7日故障报修趋势图（纯CSS柱状图）
+- 楼宇入住率分布（进度条）
+- 快捷操作面板
 
-#### 仪表盘（admin/dashboard.aspx）
-- 统计卡片（总房间、在宿学生、空余床位、待处理报修）
-- 快捷操作入口
+#### 宿舍分配管理（admin/allocation.aspx）✅
+- 筛选栏（楼栋、房间号）
+- 操作按钮（批量导入、导出表格、集中退宿）
+- 房间卡片网格（满员、空余、空置三种状态）
+- 床位分配操作
 
-#### 宿舍分配管理（admin/allocation.aspx）
-- 页面框架已创建
-- 筛选栏（楼栋下拉、房间号搜索）
-- 批量导入、导出按钮
-- 待实现：房间卡片、分配弹窗、退宿操作
+#### 报修管理（admin/repair.aspx）✅
+- 统计卡片（待处理、处理中、紧急、今日已完成）
+- 筛选栏（状态、宿舍楼、报修类型）
+- 工单列表表格
+- 右侧详情面板（学生信息、报修描述、派工处理、内部备注、驳回/完成按钮）
 
-#### 报修管理（admin/repair.aspx）
-- 页面框架已创建
-- 统计卡片（待处理、处理中、已完成、已驳回）
-- 筛选栏（状态、楼栋、类型）
-- 待实现：工单列表、详情面板、派工操作
+#### 通知公告管理（admin/notice.aspx）✅
+- 发布新公告表单（标题、范围、类别、富文本编辑器、置顶开关、发送开关）
+- 已发公告列表（标题、范围、时间、状态、操作）
+- 状态筛选（全部、已发布、草稿）
+- 分页
 
-#### 楼宇房间管理（admin/building.aspx）
-- 页面框架已创建
-- 新增楼宇、批量生成房间按钮
-- 搜索栏
-- 待实现：楼宇列表、房间生成、编辑删除
+#### 选宿批次管理（admin/batch.aspx）✅
+- 统计卡片（总批次、进行中、待开始、已结束）
+- 筛选栏
+- 批次列表表格
+- 创建新批次弹窗
+
+#### 系统管理（admin/system.aspx）✅
+- 管理员账号管理表格
+- 楼宇管理列表
+- 批量生成房间表单
+- 院系专业树形结构
 
 ---
 
@@ -307,7 +220,6 @@ SmartDorm/
 ### 6.1 DBHelper.cs
 
 ```csharp
-// 数据库访问封装
 public class DBHelper
 {
     public static MySqlConnection GetConnection()
@@ -322,7 +234,6 @@ public class DBHelper
 ### 6.2 UserBLL.cs
 
 ```csharp
-// 用户业务逻辑
 public class UserBLL
 {
     public static string GetMD5(string input)
@@ -337,7 +248,6 @@ public class UserBLL
 ### 6.3 DormBLL.cs
 
 ```csharp
-// 宿舍业务逻辑
 public class DormBLL
 {
     public static DataTable GetStudentDormInfo(int studentId)
@@ -357,7 +267,6 @@ public class DormBLL
 ### 6.4 RepairBLL.cs
 
 ```csharp
-// 报修业务逻辑
 public class RepairBLL
 {
     public static string GenerateOrderNo()
@@ -389,41 +298,25 @@ public class RepairBLL
 
 ## 八、页面鉴权
 
-### 学生端母版页
+### 学生端页面
 
 ```csharp
-// student/MasterPage.master.cs
-protected void Page_Load(object sender, EventArgs e)
+// 每个学生端页面 Page_Load 中检查
+if (Session["UserId"] == null)
 {
-    if (Session["UserId"] == null)
-    {
-        Response.Redirect("/login.aspx");
-        return;
-    }
-    string role = Session["Role"] != null ? Session["Role"].ToString() : "";
-    if (role != "student")
-    {
-        Response.Redirect("/login.aspx");
-    }
+    Response.Redirect("/login.aspx");
+    return;
 }
 ```
 
-### 管理端母版页
+### 管理端页面
 
 ```csharp
-// admin/MasterPage.master.cs
-protected void Page_Load(object sender, EventArgs e)
+// 每个管理端页面 Page_Load 中检查
+if (Session["AdminId"] == null)
 {
-    if (Session["AdminId"] == null)
-    {
-        Response.Redirect("/admin/login.aspx");
-        return;
-    }
-    string role = Session["Role"] != null ? Session["Role"].ToString() : "";
-    if (role != "admin")
-    {
-        Response.Redirect("/admin/login.aspx");
-    }
+    Response.Redirect("/admin/login.aspx");
+    return;
 }
 ```
 
@@ -433,15 +326,18 @@ protected void Page_Load(object sender, EventArgs e)
 
 | 阶段 | 内容 | 状态 |
 |------|------|------|
-| 第一阶段 | 数据库建表脚本、web.config、DBHelper | 已完成 |
-| 第二阶段 | 登录、注册、验证码 | 已完成 |
-| 第三阶段 | 学生端母版页、首页（宿舍信息展示） | 已完成 |
-| 第四阶段 | 学生端故障报修（提交+列表） | 待开发 |
-| 第五阶段 | 学生端个人中心 | 待开发 |
-| 第六阶段 | 管理端母版页、仪表盘 | 已完成 |
-| 第七阶段 | 管理端宿舍分配（页面框架已创建） | 进行中 |
-| 第八阶段 | 管理端报修管理（页面框架已创建） | 进行中 |
-| 第九阶段 | 管理端楼宇房间管理（页面框架已创建） | 进行中 |
+| 第一阶段 | 数据库建表脚本、web.config、DBHelper | ✅ 已完成 |
+| 第二阶段 | 登录、注册、验证码 | ✅ 已完成 |
+| 第三阶段 | 学生端母版页、首页（宿舍信息展示） | ✅ 已完成 |
+| 第四阶段 | 学生端故障报修（提交+列表） | ✅ 已完成 |
+| 第五阶段 | 学生端个人中心 | ✅ 已完成 |
+| 第六阶段 | 学生端选宿批次、抢宿舍 | ✅ 已完成 |
+| 第七阶段 | 管理端母版页、仪表盘 | ✅ 已完成 |
+| 第八阶段 | 管理端宿舍分配 | ✅ 已完成 |
+| 第九阶段 | 管理端报修管理 | ✅ 已完成 |
+| 第十阶段 | 管理端通知公告 | ✅ 已完成 |
+| 第十一阶段 | 管理端选宿批次管理 | ✅ 已完成 |
+| 第十二阶段 | 管理端系统管理 | ✅ 已完成 |
 
 ---
 
@@ -458,29 +354,26 @@ protected void Page_Load(object sender, EventArgs e)
 
 ---
 
-## 十一、后续迭代计划
+## 十一、待开发功能（需新建BLL）
 
-| 迭代 | 功能 | 优先级 |
-|------|------|--------|
-| V1.1 | 学生端故障报修、个人中心 | P0 |
-| V1.2 | 管理端宿舍分配功能实现 | P0 |
-| V1.3 | 管理端报修管理功能实现 | P0 |
-| V1.4 | 管理端楼宇房间管理功能实现 | P0 |
-| V1.5 | 选宿批次、抢宿舍（含并发控制） | P1 |
-| V1.6 | 通知公告管理 | P1 |
-| V1.7 | 仪表盘统计（ECharts 图表） | P2 |
-| V1.8 | 费用缴纳 | P2 |
-| V1.9 | 系统管理（管理员账号、院系专业） | P2 |
+| 功能 | 需新建的BLL | 优先级 |
+|------|------------|--------|
+| 通知公告CRUD | NoticeBLL.cs | 高 |
+| 选宿批次CRUD | BatchBLL.cs | 高 |
+| 管理员管理CRUD | AdminBLL.cs | 高 |
+| 院系专业管理 | DeptBLL.cs | 高 |
+| 老师注册 | UserBLL.RegisterAdmin | 中 |
+| 重置密码 | UserBLL.ResetPassword | 中 |
+| 宿舍评分 | DormScores表（可选） | 低 |
 
 ---
 
-## 十二、注意事项
+## 十二、编码注意事项
 
 - `.aspx` 和 `.aspx.cs` 是配对文件，改逻辑必须同时理解两者
 - `App_Code/` 下的类自动参与编译，新增文件无需手动引用
 - 学生端母版页提供底部Tab导航，管理端母版页提供左侧边栏导航
-- 图片上传路径：头像 `Uploads/avatars/`，报修照片 `Uploads/repair/`
 - 所有数据库操作必须使用参数化查询
-- MySql.Data.dll 版本为 6.10.9，兼容 .NET Framework 4.0
-- C# 代码中不要使用 `?.` 空条件运算符（.NET 4.0 不支持）
-- 中文字符串使用 Unicode 转义序列避免编码问题
+- 所有 `.aspx` 文件必须使用 UTF-8 with BOM 编码
+- `@ Page` 指令需添加 `ResponseEncoding="utf-8"`
+- `@ Master` 指令不支持 `ResponseEncoding`，由 BOM 和 web.config 保证编码
