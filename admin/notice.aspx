@@ -13,25 +13,18 @@
         .form-section-icon { padding:8px; background:var(--on-surface); border-radius:10px; color:#fff; display:flex; }
         .form-section-icon .material-symbols-outlined { font-size:20px; }
         .form-section-title h3 { font-size:18px; font-weight:700; color:var(--on-surface); }
-
         .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
         .form-group { margin-bottom:16px; }
         .form-group label { display:block; font-size:14px; font-weight:700; color:var(--on-surface); margin-bottom:8px; }
         .form-input, .form-select {
             width:100%; padding:14px 16px; border:none; border-radius:12px; background:#FFF9E6;
-            font-family:inherit; font-size:15px; color:var(--on-surface); outline:none; transition:all 0.2s;
+            font-family:inherit; font-size:15px; color:var(--on-surface); outline:none; transition:all 0.2s; box-sizing:border-box;
         }
         .form-input:focus, .form-select:focus { background:#fff; border:1px solid var(--primary); box-shadow:0 0 0 3px rgba(73,234,206,0.12); }
-
-        .editor-toolbar { display:flex; gap:6px; padding:10px; border-bottom:1px solid rgba(0,0,0,0.05); background:rgba(255,255,255,0.3); }
-        .editor-toolbar button { padding:6px; border:none; background:transparent; border-radius:6px; cursor:pointer; color:var(--on-surface-variant); }
-        .editor-toolbar button:hover { background:rgba(255,255,255,0.5); }
-        .editor-toolbar .material-symbols-outlined { font-size:20px; }
         .editor-area {
             width:100%; min-height:180px; border:none; background:transparent; padding:16px;
-            font-family:inherit; font-size:15px; color:var(--on-surface); resize:none; outline:none;
+            font-family:inherit; font-size:15px; color:var(--on-surface); resize:none; outline:none; box-sizing:border-box;
         }
-
         .toggle-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-top:1px solid rgba(0,0,0,0.05); }
         .toggle-label { font-size:14px; font-weight:600; color:var(--on-surface); }
         .toggle { position:relative; width:48px; height:26px; cursor:pointer; }
@@ -40,13 +33,11 @@
         .toggle-slider::before { content:''; position:absolute; width:20px; height:20px; border-radius:50%; background:#fff; left:3px; top:3px; transition:0.3s; }
         .toggle input:checked + .toggle-slider { background:var(--primary); }
         .toggle input:checked + .toggle-slider::before { transform:translateX(22px); }
-
         .publish-btn {
             width:100%; padding:16px; background:var(--primary); color:var(--on-primary); border:none;
             border-radius:14px; font-size:16px; font-weight:700; cursor:pointer; display:flex;
             align-items:center; justify-content:center; gap:8px; margin-top:20px; box-shadow:0 4px 16px rgba(73,234,206,0.3); font-family:inherit;
         }
-
         .notice-list-card {
             background:rgba(255,255,255,0.6); backdrop-filter:blur(12px); border-radius:20px;
             border:1px solid rgba(255,255,255,0.5); overflow:hidden;
@@ -56,7 +47,6 @@
         .tab-group-sm { display:flex; background:rgba(0,0,0,0.05); border-radius:10px; padding:3px; }
         .tab-btn-sm { padding:6px 16px; border:none; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; background:transparent; color:var(--on-surface-variant); font-family:inherit; }
         .tab-btn-sm.active { background:var(--on-surface); color:#fff; }
-
         .notice-table { width:100%; border-collapse:collapse; }
         .notice-table th { padding:14px 24px; text-align:left; font-size:13px; font-weight:700; color:var(--on-surface-variant); background:rgba(0,0,0,0.03); border-bottom:1px solid rgba(0,0,0,0.05); }
         .notice-table td { padding:16px 24px; font-size:14px; color:var(--on-surface); border-bottom:1px solid rgba(0,0,0,0.03); }
@@ -69,24 +59,27 @@
         .notice-status.published { background:rgba(73,234,206,0.15); color:#006b5c; }
         .notice-status.withdrawn { background:rgba(0,0,0,0.05); color:rgba(0,0,0,0.35); }
         .notice-status.draft { background:rgba(255,183,77,0.15); color:#e67e00; }
-        .notice-status-dot { width:6px; height:6px; border-radius:50%; }
+        .notice-status-dot { width:6px; height:6px; border-radius:50%; display:inline-block; }
         .notice-status.published .notice-status-dot { background:#006b5c; }
         .notice-status.withdrawn .notice-status-dot { background:rgba(0,0,0,0.3); }
         .notice-status.draft .notice-status-dot { background:#e67e00; }
-        .notice-actions { display:flex; gap:4px; opacity:0; transition:opacity 0.2s; }
-        .notice-table tr:hover .notice-actions { opacity:1; }
-        .notice-action-btn { padding:8px; border:none; background:transparent; border-radius:8px; cursor:pointer; color:var(--on-surface-variant); }
+        .notice-actions { display:flex; gap:4px; }
+        .notice-action-btn { padding:8px; border:none; background:transparent; border-radius:8px; cursor:pointer; color:var(--on-surface-variant); font-family:inherit; }
         .notice-action-btn:hover { background:rgba(0,0,0,0.04); }
         .notice-action-btn.delete:hover { background:rgba(186,26,26,0.08); color:var(--error); }
         .notice-action-btn .material-symbols-outlined { font-size:18px; }
-
         .pagination { display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-top:1px solid rgba(0,0,0,0.05); }
-        .pagination-info { font-size:12px; color:var(--on-surface-variant); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; }
-        .pagination-btns { display:flex; gap:6px; }
-        .pagination-btn { width:36px; height:36px; display:flex; align-items:center; justify-content:center; border:none; border-radius:10px; cursor:pointer; font-size:13px; font-weight:700; background:transparent; color:var(--on-surface-variant); }
+        .pagination-info { font-size:12px; color:var(--on-surface-variant); font-weight:600; }
+        .pagination-btns { display:flex; gap:6px; align-items:center; }
+        .pagination-btn { width:36px; height:36px; display:flex; align-items:center; justify-content:center; border:none; border-radius:10px; cursor:pointer; font-size:13px; font-weight:700; background:transparent; color:var(--on-surface-variant); font-family:inherit; }
         .pagination-btn.active { background:var(--on-surface); color:#fff; }
         .pagination-btn:hover:not(.active) { background:rgba(0,0,0,0.04); }
-
+        .empty-msg { text-align:center; padding:40px; color:var(--on-surface-variant); }
+        .empty-msg .material-symbols-outlined { font-size:48px; opacity:0.3; display:block; margin-bottom:8px; }
+        .toast { position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px); z-index:9999; padding:14px 28px; border-radius:14px; font-size:15px; font-weight:700; box-shadow:0 8px 24px rgba(0,0,0,0.15); transition:transform 0.3s ease; display:flex; align-items:center; gap:10px; }
+        .toast.show { transform:translateX(-50%) translateY(0); }
+        .toast.success { background:var(--primary); color:var(--on-primary); }
+        .toast.error { background:var(--error); color:#fff; }
         @media (max-width: 1024px) { .notice-layout { grid-template-columns:1fr; } }
     </style>
 </asp:Content>
@@ -104,49 +97,51 @@
         <div class="notice-form-card">
             <div class="form-section-title">
                 <div class="form-section-icon"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">edit_square</span></div>
-                <h3>发布新公告</h3>
+                <h3 id="formTitle">发布新公告</h3>
             </div>
+            <asp:HiddenField ID="hfNoticeId" runat="server" />
             <div class="form-group">
                 <label>公告标题</label>
-                <input class="form-input" type="text" placeholder="输入简洁明了的标题" />
+                <asp:TextBox ID="txtTitle" runat="server" CssClass="form-input" placeholder="输入简洁明了的标题" />
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>发送范围</label>
-                    <select class="form-select">
-                        <option>全体住户</option><option>A栋宿舍楼</option><option>B栋宿舍楼</option><option>C栋宿舍楼</option>
-                    </select>
+                    <asp:DropDownList ID="ddlScope" runat="server" CssClass="form-select">
+                        <asp:ListItem Value="0" Text="全体住户" />
+                        <asp:ListItem Value="1" Text="A栋宿舍楼" />
+                        <asp:ListItem Value="2" Text="B栋宿舍楼" />
+                        <asp:ListItem Value="3" Text="C栋宿舍楼" />
+                    </asp:DropDownList>
                 </div>
                 <div class="form-group">
                     <label>公告类别</label>
-                    <select class="form-select">
-                        <option>行政通知</option><option>安全警示</option><option>生活服务</option><option>活动资讯</option>
-                    </select>
+                    <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-select">
+                        <asp:ListItem Value="1" Text="行政通知" />
+                        <asp:ListItem Value="2" Text="安全警示" />
+                        <asp:ListItem Value="3" Text="生活服务" />
+                        <asp:ListItem Value="4" Text="活动资讯" />
+                    </asp:DropDownList>
                 </div>
             </div>
             <div class="form-group">
                 <label>公告内容</label>
                 <div style="border-radius:12px; overflow:hidden; border:1px solid rgba(0,0,0,0.08);">
-                    <div class="editor-toolbar">
-                        <button type="button"><span class="material-symbols-outlined">format_bold</span></button>
-                        <button type="button"><span class="material-symbols-outlined">format_italic</span></button>
-                        <button type="button"><span class="material-symbols-outlined">format_list_bulleted</span></button>
-                        <button type="button" style="margin-left:auto;"><span class="material-symbols-outlined">attach_file</span></button>
-                    </div>
                     <div style="background:#FFF9E6;">
-                        <textarea class="editor-area" placeholder="在此输入公告正文内容..."></textarea>
+                        <asp:TextBox ID="txtContent" runat="server" CssClass="editor-area" TextMode="MultiLine" placeholder="在此输入公告正文内容..." />
                     </div>
                 </div>
             </div>
             <div class="toggle-row">
                 <span class="toggle-label">是否置顶</span>
-                <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
+                <label class="toggle"><asp:CheckBox ID="chkIsTop" runat="server" /><span class="toggle-slider"></span></label>
             </div>
             <div class="toggle-row">
                 <span class="toggle-label">立即发送</span>
-                <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
+                <label class="toggle"><asp:CheckBox ID="chkSendNow" runat="server" Checked="true" /><span class="toggle-slider"></span></label>
             </div>
-            <button class="publish-btn"><span class="material-symbols-outlined">send</span> 立即发布公告</button>
+            <asp:Button ID="btnPublish" runat="server" CssClass="publish-btn" OnClick="btnPublish_Click" />
+            <asp:Button ID="btnCancelEdit" runat="server" Text="取消编辑" CssClass="publish-btn" style="background:transparent; color:var(--on-surface-variant); border:1px solid var(--outline-variant); box-shadow:none; display:none;" OnClick="btnCancelEdit_Click" />
         </div>
 
         <!-- 已发公告列表 -->
@@ -154,72 +149,70 @@
             <div class="notice-list-header">
                 <div class="notice-list-title"><span class="material-symbols-outlined" style="color:var(--on-surface-variant);">list_alt</span> 已发公告列表</div>
                 <div class="tab-group-sm">
-                    <button class="tab-btn-sm active">全部</button>
-                    <button class="tab-btn-sm">已发布</button>
-                    <button class="tab-btn-sm">草稿</button>
+                    <asp:Button ID="btnTabAll" runat="server" CssClass="tab-btn-sm active" Text="全部" OnClick="btnTabAll_Click" />
+                    <asp:Button ID="btnTabPublished" runat="server" CssClass="tab-btn-sm" Text="已发布" OnClick="btnTabPublished_Click" />
+                    <asp:Button ID="btnTabDraft" runat="server" CssClass="tab-btn-sm" Text="草稿" OnClick="btnTabDraft_Click" />
                 </div>
             </div>
-            <table class="notice-table">
-                <thead>
-                    <tr><th>标题</th><th>范围 & 类别</th><th>发布时间</th><th>状态</th><th style="text-align:right;">操作</th></tr>
-                </thead>
-                <tbody>
+            <asp:Repeater ID="rptNotices" runat="server" OnItemCommand="rptNotices_ItemCommand">
+                <HeaderTemplate>
+                    <table class="notice-table"><thead><tr><th>标题</th><th>范围 & 类别</th><th>发布时间</th><th>状态</th><th style="text-align:right;">操作</th></tr></thead><tbody>
+                </HeaderTemplate>
+                <ItemTemplate>
                     <tr>
-                        <td><div class="notice-title-cell"><span class="material-symbols-outlined" style="color:#f59e0b; font-size:20px; font-variation-settings:'FILL' 1;">keep</span> 关于冬季用电安全的紧急通知</div></td>
-                        <td><div class="notice-scope">全体住户</div><div class="notice-category">安全警示</div></td>
-                        <td><span class="notice-time">2023-11-20 14:30</span></td>
-                        <td><span class="notice-status published"><span class="notice-status-dot"></span> 已发布</span></td>
-                        <td><div class="notice-actions" style="justify-content:flex-end;">
-                            <button class="notice-action-btn" title="编辑"><span class="material-symbols-outlined">edit</span></button>
-                            <button class="notice-action-btn" title="撤回"><span class="material-symbols-outlined">undo</span></button>
-                            <button class="notice-action-btn delete" title="删除"><span class="material-symbols-outlined">delete</span></button>
-                        </div></td>
+                        <td>
+                            <div class="notice-title-cell">
+                                <%# Convert.ToInt32(Eval("IsTop")) == 1 ? "<span class='material-symbols-outlined' style='color:#f59e0b; font-size:20px; font-variation-settings:\"FILL\" 1;'>keep</span>" : "" %>
+                                <%# Eval("Title") %>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="notice-scope"><%# GetScopeText(Eval("Scope")) %></div>
+                            <div class="notice-category"><%# GetCategoryText(Eval("Category")) %></div>
+                        </td>
+                        <td>
+                            <span class="notice-time"><%# Eval("PublishTime") != DBNull.Value ? Convert.ToDateTime(Eval("PublishTime")).ToString("yyyy-MM-dd HH:mm") : "未发布" %></span>
+                        </td>
+                        <td>
+                            <span class="notice-status <%# GetStatusClass(Eval("Status")) %>">
+                                <span class="notice-status-dot"></span> <%# GetStatusText(Eval("Status")) %>
+                            </span>
+                        </td>
+                        <td>
+                            <div class="notice-actions" style="justify-content:flex-end;">
+                                <asp:LinkButton ID="btnEdit" runat="server" CommandName="EditNotice" CommandArgument='<%# Eval("Id") %>' CssClass="notice-action-btn" title="编辑"><span class="material-symbols-outlined">edit</span></asp:LinkButton>
+                                <asp:LinkButton ID="btnWithdraw" runat="server" CommandName="WithdrawNotice" CommandArgument='<%# Eval("Id") %>' CssClass="notice-action-btn" title="撤回" Visible='<%# Convert.ToInt32(Eval("Status")) == 1 %>'><span class="material-symbols-outlined">undo</span></asp:LinkButton>
+                                <asp:LinkButton ID="btnPublish" runat="server" CommandName="PublishNotice" CommandArgument='<%# Eval("Id") %>' CssClass="notice-action-btn" title="发布" Visible='<%# Convert.ToInt32(Eval("Status")) != 1 %>'><span class="material-symbols-outlined">send</span></asp:LinkButton>
+                                <asp:LinkButton ID="btnDelete" runat="server" CommandName="DeleteNotice" CommandArgument='<%# Eval("Id") %>' CssClass="notice-action-btn delete" title="删除" OnClientClick="return confirm('确定要删除该公告吗？');"><span class="material-symbols-outlined">delete</span></asp:LinkButton>
+                            </div>
+                        </td>
                     </tr>
-                    <tr>
-                        <td><div class="notice-title-cell">A栋供水管道例行检修公告</div></td>
-                        <td><div class="notice-scope">A栋宿舍楼</div><div class="notice-category">生活服务</div></td>
-                        <td><span class="notice-time">2023-11-19 09:15</span></td>
-                        <td><span class="notice-status published"><span class="notice-status-dot"></span> 已发布</span></td>
-                        <td><div class="notice-actions" style="justify-content:flex-end;">
-                            <button class="notice-action-btn"><span class="material-symbols-outlined">edit</span></button>
-                            <button class="notice-action-btn"><span class="material-symbols-outlined">undo</span></button>
-                            <button class="notice-action-btn delete"><span class="material-symbols-outlined">delete</span></button>
-                        </div></td>
-                    </tr>
-                    <tr>
-                        <td><div class="notice-title-cell">"文明寝室"评选活动细则</div></td>
-                        <td><div class="notice-scope">全体住户</div><div class="notice-category">活动资讯</div></td>
-                        <td><span class="notice-time" style="font-style:italic; color:rgba(0,0,0,0.35);">未发布</span></td>
-                        <td><span class="notice-status withdrawn"><span class="notice-status-dot"></span> 已撤回</span></td>
-                        <td><div class="notice-actions" style="justify-content:flex-end;">
-                            <button class="notice-action-btn"><span class="material-symbols-outlined">edit</span></button>
-                            <button class="notice-action-btn"><span class="material-symbols-outlined">publish</span></button>
-                            <button class="notice-action-btn delete"><span class="material-symbols-outlined">delete</span></button>
-                        </div></td>
-                    </tr>
-                    <tr>
-                        <td><div class="notice-title-cell">寒假留宿申请流程指引</div></td>
-                        <td><div class="notice-scope">全体住户</div><div class="notice-category">行政通知</div></td>
-                        <td><span class="notice-time" style="font-style:italic; color:rgba(0,0,0,0.35);">未发布</span></td>
-                        <td><span class="notice-status draft"><span class="notice-status-dot"></span> 草稿</span></td>
-                        <td><div class="notice-actions" style="justify-content:flex-end;">
-                            <button class="notice-action-btn"><span class="material-symbols-outlined">edit</span></button>
-                            <button class="notice-action-btn"><span class="material-symbols-outlined">send</span></button>
-                            <button class="notice-action-btn delete"><span class="material-symbols-outlined">delete</span></button>
-                        </div></td>
-                    </tr>
-                </tbody>
-            </table>
+                </ItemTemplate>
+                <FooterTemplate></tbody></table></FooterTemplate>
+            </asp:Repeater>
+            <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
+                <div class="empty-msg"><span class="material-symbols-outlined">campaign</span><p>暂无公告</p></div>
+            </asp:Panel>
             <div class="pagination">
-                <span class="pagination-info">Page 1 of 4 · 28 TOTAL RECORDS</span>
+                <span class="pagination-info"><asp:Literal ID="litPageInfo" runat="server" /></span>
                 <div class="pagination-btns">
-                    <button class="pagination-btn"><span class="material-symbols-outlined" style="font-size:18px;">chevron_left</span></button>
-                    <button class="pagination-btn active">1</button>
-                    <button class="pagination-btn">2</button>
-                    <button class="pagination-btn">3</button>
-                    <button class="pagination-btn"><span class="material-symbols-outlined" style="font-size:18px;">chevron_right</span></button>
+                    <asp:Button ID="btnPrev" runat="server" CssClass="pagination-btn" Text="<" OnClick="btnPrev_Click" />
+                    <asp:Literal ID="litPageBtns" runat="server" />
+                    <asp:Button ID="btnNext" runat="server" CssClass="pagination-btn" Text=">" OnClick="btnNext_Click" />
                 </div>
             </div>
         </div>
     </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script type="text/javascript">
+        function showToast(msg, type) {
+            var toast = document.getElementById('toast');
+            toast.className = 'toast ' + type;
+            toast.innerHTML = '<span class="material-symbols-outlined">' + (type === 'success' ? 'check_circle' : 'error') + '</span>' + msg;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 3000);
+        }
+    </script>
 </asp:Content>
