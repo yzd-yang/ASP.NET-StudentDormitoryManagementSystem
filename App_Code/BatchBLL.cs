@@ -4,7 +4,7 @@ using MySql.Data.MySqlClient;
 
 public class BatchBLL
 {
-    public static DataTable GetBatchList(string keyword = "", int status = -1)
+    public static DataTable GetBatchList(string keyword = "", int status = -1, string grade = "", string college = "")
     {
         string sql = @"SELECT b.*, a.Name as AdminName,
                        (SELECT COUNT(*) FROM BatchRooms WHERE BatchId=b.Id) as RoomCount
@@ -23,6 +23,16 @@ public class BatchBLL
         {
             sql += " AND b.Status=@Status";
             paramList.Add(new MySqlParameter("@Status", status));
+        }
+        if (!string.IsNullOrEmpty(grade))
+        {
+            sql += " AND b.GradeLimit=@Grade";
+            paramList.Add(new MySqlParameter("@Grade", grade));
+        }
+        if (!string.IsNullOrEmpty(college))
+        {
+            sql += " AND b.CollegeLimit LIKE @College";
+            paramList.Add(new MySqlParameter("@College", "%" + college + "%"));
         }
 
         sql += " ORDER BY b.CreateTime DESC";

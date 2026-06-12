@@ -132,8 +132,23 @@
                 <asp:ListItem Value="2" Text="已结束" />
             </asp:DropDownList>
         </div>
+        <div class="batch-filter-field">
+            <label>适用年级</label>
+            <asp:DropDownList ID="ddlFilterGrade" runat="server">
+                <asp:ListItem Value="" Text="全部年级" />
+                <asp:ListItem Value="2023级" Text="2023级" />
+                <asp:ListItem Value="2024级" Text="2024级" />
+                <asp:ListItem Value="2025级" Text="2025级" />
+            </asp:DropDownList>
+        </div>
+        <div class="batch-filter-field">
+            <label>学院</label>
+            <asp:DropDownList ID="ddlFilterCollege" runat="server">
+                <asp:ListItem Value="" Text="全部学院" />
+            </asp:DropDownList>
+        </div>
         <asp:Button ID="btnBatchSearch" runat="server" CssClass="batch-filter-btn" Text="筛选" OnClick="btnBatchSearch_Click" />
-        <button type="button" class="batch-filter-reset" onclick="document.getElementById('<%= txtBatchSearch.ClientID %>').value=''; document.getElementById('<%= ddlBatchStatus.ClientID %>').selectedIndex=0; document.getElementById('<%= btnBatchSearch.ClientID %>').click();">重置</button>
+        <button type="button" class="batch-filter-reset" onclick="document.getElementById('<%= txtBatchSearch.ClientID %>').value=''; document.getElementById('<%= ddlBatchStatus.ClientID %>').selectedIndex=0; document.getElementById('<%= ddlFilterGrade.ClientID %>').selectedIndex=0; document.getElementById('<%= ddlFilterCollege.ClientID %>').selectedIndex=0; document.getElementById('<%= btnBatchSearch.ClientID %>').click();">重置</button>
     </div>
 
     <!-- 批次列表 -->

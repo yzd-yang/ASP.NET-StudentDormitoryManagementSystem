@@ -38,8 +38,10 @@ public partial class admin_batch : System.Web.UI.Page
     {
         string keyword = txtBatchSearch.Text.Trim();
         int status = Convert.ToInt32(ddlBatchStatus.SelectedValue);
+        string grade = ddlFilterGrade.SelectedValue;
+        string college = ddlFilterCollege.SelectedValue;
 
-        DataTable dt = BatchBLL.GetBatchList(keyword, status);
+        DataTable dt = BatchBLL.GetBatchList(keyword, status, grade, college);
         if (dt.Rows.Count > 0)
         {
             rptBatches.DataSource = dt;
@@ -61,6 +63,7 @@ public partial class admin_batch : System.Web.UI.Page
         foreach (DataRow row in colleges.Rows)
         {
             ddlCollegeLimit.Items.Add(new ListItem(row["CollegeName"].ToString(), row["CollegeName"].ToString()));
+            ddlFilterCollege.Items.Add(new ListItem(row["CollegeName"].ToString(), row["CollegeName"].ToString()));
         }
 
         // 加载楼宇列表到弹窗
