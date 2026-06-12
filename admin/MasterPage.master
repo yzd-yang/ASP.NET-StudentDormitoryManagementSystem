@@ -132,7 +132,6 @@
                     <a href="/admin/repair.aspx" class="admin-nav-item <%= IsActive("repair") %>">
                         <span class="material-symbols-outlined">build</span>
                         <span class="admin-nav-label">报修管理</span>
-                        <span class="admin-nav-badge">3</span>
                     </a>
                 </div>
 
