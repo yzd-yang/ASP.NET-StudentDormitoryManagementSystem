@@ -182,7 +182,12 @@ SmartDorm/
 - 统计卡片（总房间数、在宿学生、空余床位、今日报修）- 动态数据
 - 7日故障报修趋势图（纯CSS柱状图）- 动态数据
 - 楼宇入住率分布（进度条）- 动态数据
-- 快捷操作面板（含待处理工单数、空余床位数）
+- 快捷操作面板（处理报修、宿舍分配、发布公告，含动态数字）
+
+#### 个人中心（admin/profile.aspx）✅
+- 个人信息展示（头像、姓名、角色、工号、手机号）
+- 修改基本信息（姓名、手机号）- 默认只读，点击修改后编辑
+- 修改密码（验证当前密码，新密码6-20位）
 
 #### 宿舍分配管理（admin/allocation.aspx）✅
 - 筛选栏（楼栋下拉、房间号搜索）- 动态数据
@@ -201,10 +206,11 @@ SmartDorm/
 - 分页功能
 
 #### 通知公告管理（admin/notice.aspx）✅
-- 发布新公告表单（标题、范围、类别、富文本编辑器、置顶开关、发送开关）
-- 已发公告列表（标题、范围、时间、状态、操作）
-- 状态筛选（全部、已发布、草稿）
-- 分页
+- 发布新公告表单（标题、范围、类别、内容、置顶开关、发送开关）- 动态数据
+- 已发公告列表（标题、范围、时间、状态、操作）- 动态数据
+- 状态筛选（全部、已发布、草稿）- 动态数据
+- 编辑/撤回/发布/删除功能
+- 分页功能
 
 #### 选宿批次管理（admin/batch.aspx）✅
 - 统计卡片（总批次、进行中、待开始、已结束）- 动态数据
@@ -354,11 +360,27 @@ public class BatchBLL
     public static DataTable GetBatchList(string keyword, int status, string grade, string college)
     public static DataTable GetBatchStats()
     public static bool AddBatch(string batchName, DateTime startTime, DateTime endTime, string gradeLimit, string collegeLimit, string majorLimit, int adminId, int[] roomIds)
-    public static bool UpdateBatch(int id, string batchName, DateTime startTime, DateTime endTime, string gradeLimit, string collegeLimit, string majorLimit, int status)
+    public static bool UpdateBatch(...)
     public static bool DeleteBatch(int id)
     public static DataTable GetBatchRooms(int batchId)
     public static DataTable GetBuildingsForBatch()
     public static DataTable GetRoomsForBatch(int buildingId, int floor)
+}
+```
+
+### 6.8 NoticeBLL.cs
+
+```csharp
+public class NoticeBLL
+{
+    public static DataTable GetNoticeList(string keyword, int status, int pageIndex, int pageSize)
+    public static int GetNoticeCount(string keyword, int status)
+    public static bool AddNotice(string title, string content, int scope, int category, int isTop, int status, int adminId)
+    public static bool UpdateNotice(int id, string title, string content, int scope, int category, int isTop)
+    public static bool PublishNotice(int id)
+    public static bool WithdrawNotice(int id)
+    public static bool DeleteNotice(int id)
+    public static DataTable GetNoticeById(int id)
 }
 ```
 
@@ -439,7 +461,7 @@ if (Session["AdminId"] == null)
 
 | 功能 | 需新建的BLL | 状态 |
 |------|------------|------|
-| 通知公告CRUD | NoticeBLL.cs | 待开发 |
+| 通知公告CRUD | NoticeBLL.cs | ✅ 已完成 |
 | 选宿批次CRUD | BatchBLL.cs | ✅ 已完成 |
 | 管理员管理CRUD | AdminBLL.cs | ✅ 已完成 |
 | 院系专业管理 | DeptBLL.cs | ✅ 已完成 |
