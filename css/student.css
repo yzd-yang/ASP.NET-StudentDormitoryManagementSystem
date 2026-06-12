@@ -66,9 +66,11 @@
     padding-top: 80px;
     padding-bottom: 40px;
     min-height: 100vh;
-    margin: 0 auto;
-    padding-left: 32px;
-    padding-right: 32px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding-left: 48px;
+    padding-right: 48px;
 }
 
 /* 底部 Tab 导航 */
