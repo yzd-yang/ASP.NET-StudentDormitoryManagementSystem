@@ -101,7 +101,7 @@ SmartDorm/
 </connectionStrings>
 ```
 
-### 4.2 数据表（共11张）
+### 4.2 数据表（共12张）
 
 | 表名 | 用途 | 主要字段 |
 |------|------|----------|
@@ -116,6 +116,7 @@ SmartDorm/
 | `BatchRooms` | 批次房间关联 | BatchId, RoomId |
 | `FacilityStatus` | 设施状态 | RoomId, FacilityType, Status |
 | `Departments` | 院系专业 | CollegeName, MajorName |
+| `DormScores` | 宿舍评分 | RoomId, Score, WeekStart, CleanScore, SafetyScore |
 
 详细字段定义见 `学生宿舍管理系统开发文档.md` 第五章。
 
@@ -178,10 +179,10 @@ SmartDorm/
 ### 5.3 管理端
 
 #### 仪表盘（admin/dashboard.aspx）✅
-- 统计卡片（总房间数、在宿学生、空余床位、今日报修）
-- 7日故障报修趋势图（纯CSS柱状图）
-- 楼宇入住率分布（进度条）
-- 快捷操作面板
+- 统计卡片（总房间数、在宿学生、空余床位、今日报修）- 动态数据
+- 7日故障报修趋势图（纯CSS柱状图）- 动态数据
+- 楼宇入住率分布（进度条）- 动态数据
+- 快捷操作面板（含待处理工单数、空余床位数）
 
 #### 宿舍分配管理（admin/allocation.aspx）✅
 - 筛选栏（楼栋、房间号）
@@ -261,6 +262,8 @@ public class DormBLL
     public static int GetTotalRooms()
     public static int GetTotalStudents()
     public static int GetAvailableBeds()
+    public static DataTable GetBuildingOccupancy()    // 获取各楼宇入住率数据
+    public static int GetTotalBeds()                  // 获取总床位数
 }
 ```
 
@@ -278,6 +281,9 @@ public class RepairBLL
     public static bool RejectRepairOrder(int orderId, string reason)
     public static int GetPendingRepairCount()
     public static int GetProcessingRepairCount()
+    public static int GetTodayRepairCount()           // 获取今日报修数量
+    public static int GetUrgentRepairCount()          // 获取待处理工单数
+    public static DataTable GetRepairTrendByDay(int days) // 获取近N天报修趋势
 }
 ```
 
