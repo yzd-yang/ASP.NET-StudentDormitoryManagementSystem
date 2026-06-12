@@ -147,4 +147,115 @@ public class RepairBLL
         MySqlParameter[] parameters = new MySqlParameter[] { new MySqlParameter("@Days", days) };
         return DBHelper.GetDataTable(sql, parameters);
     }
+
+    public static DataTable GetRepairList(int status = 0, int buildingId = 0, int repairType = 0, int pageIndex = 1, int pageSize = 15)
+    {
+        string sql = @"SELECT ro.*, s.Name as StudentName, s.StudentNo, s.College, r.RoomNo, r.Floor, bd.Name as BuildingName,
+                       CASE ro.RepairType WHEN 1 THEN '水电报修' WHEN 2 THEN '家具家电' WHEN 3 THEN '网络连接' WHEN 4 THEN '其他' END as TypeName,
+                       CASE ro.Status WHEN 1 THEN '待分配' WHEN 2 THEN '维修中' WHEN 3 THEN '已完成' WHEN 4 THEN '已驳回' END as StatusName,
+                       a.Name as AssignAdminName
+                       FROM RepairOrders ro
+                       LEFT JOIN Students s ON ro.StudentId = s.Id
+                       LEFT JOIN Rooms r ON ro.RoomId = r.Id
+                       LEFT JOIN Buildings bd ON r.BuildingId = bd.Id
+                       LEFT JOIN Admins a ON ro.AssignAdminId = a.Id
+                       WHERE 1=1";
+
+        var paramList = new System.Collections.Generic.List<MySqlParameter>();
+
+        if (status > 0)
+        {
+            sql += " AND ro.Status=@Status";
+            paramList.Add(new MySqlParameter("@Status", status));
+        }
+        if (buildingId > 0)
+        {
+            sql += " AND r.BuildingId=@BuildingId";
+            paramList.Add(new MySqlParameter("@BuildingId", buildingId));
+        }
+        if (repairType > 0)
+        {
+            sql += " AND ro.RepairType=@RepairType";
+            paramList.Add(new MySqlParameter("@RepairType", repairType));
+        }
+
+        sql += " ORDER BY ro.CreateTime DESC LIMIT @Offset, @PageSize";
+        paramList.Add(new MySqlParameter("@Offset", (pageIndex - 1) * pageSize));
+        paramList.Add(new MySqlParameter("@PageSize", pageSize));
+
+        return DBHelper.GetDataTable(sql, paramList.ToArray());
+    }
+
+    public static int GetRepairListCount(int status = 0, int buildingId = 0, int repairType = 0)
+    {
+        string sql = @"SELECT COUNT(*) FROM RepairOrders ro
+                       LEFT JOIN Rooms r ON ro.RoomId = r.Id
+                       WHERE 1=1";
+
+        var paramList = new System.Collections.Generic.List<MySqlParameter>();
+
+        if (status > 0)
+        {
+            sql += " AND ro.Status=@Status";
+            paramList.Add(new MySqlParameter("@Status", status));
+        }
+        if (buildingId > 0)
+        {
+            sql += " AND r.BuildingId=@BuildingId";
+            paramList.Add(new MySqlParameter("@BuildingId", buildingId));
+        }
+        if (repairType > 0)
+        {
+            sql += " AND ro.RepairType=@RepairType";
+            paramList.Add(new MySqlParameter("@RepairType", repairType));
+        }
+
+        object result = DBHelper.ExecuteScalar(sql, paramList.ToArray());
+        return result != null ? Convert.ToInt32(result) : 0;
+    }
+
+    public static DataTable GetRepairById(int id)
+    {
+        string sql = @"SELECT ro.*, s.Name as StudentName, s.StudentNo, s.College, s.Major, s.Phone as StudentPhone,
+                       r.RoomNo, r.Floor, bd.Name as BuildingName,
+                       CASE ro.RepairType WHEN 1 THEN '水电报修' WHEN 2 THEN '家具家电' WHEN 3 THEN '网络连接' WHEN 4 THEN '其他' END as TypeName,
+                       CASE ro.Status WHEN 1 THEN '待分配' WHEN 2 THEN '维修中' WHEN 3 THEN '已完成' WHEN 4 THEN '已驳回' END as StatusName,
+                       a.Name as AssignAdminName
+                       FROM RepairOrders ro
+                       LEFT JOIN Students s ON ro.StudentId = s.Id
+                       LEFT JOIN Rooms r ON ro.RoomId = r.Id
+                       LEFT JOIN Buildings bd ON r.BuildingId = bd.Id
+                       LEFT JOIN Admins a ON ro.AssignAdminId = a.Id
+                       WHERE ro.Id=@Id";
+        MySqlParameter[] parameters = new MySqlParameter[] { new MySqlParameter("@Id", id) };
+        return DBHelper.GetDataTable(sql, parameters);
+    }
+
+    public static bool UpdateInternalNote(int orderId, string note)
+    {
+        string sql = "UPDATE RepairOrders SET InternalNote=@Note WHERE Id=@Id";
+        MySqlParameter[] parameters = new MySqlParameter[]
+        {
+            new MySqlParameter("@Note", note),
+            new MySqlParameter("@Id", orderId)
+        };
+        return DBHelper.ExecuteNonQuery(sql, parameters) > 0;
+    }
+
+    public static DataTable GetRepairStats()
+    {
+        string sql = @"SELECT 
+                       SUM(CASE WHEN Status=1 THEN 1 ELSE 0 END) as Pending,
+                       SUM(CASE WHEN Status=2 THEN 1 ELSE 0 END) as Processing,
+                       SUM(CASE WHEN Status=1 THEN 1 ELSE 0 END) as Urgent,
+                       SUM(CASE WHEN Status=3 AND DATE(CompleteTime)=CURDATE() THEN 1 ELSE 0 END) as TodayCompleted
+                       FROM RepairOrders";
+        return DBHelper.GetDataTable(sql);
+    }
+
+    public static DataTable GetAdminListForAssign()
+    {
+        string sql = "SELECT Id, Name, Role, CASE Role WHEN 1 THEN '超级管理员' WHEN 2 THEN '宿管' WHEN 3 THEN '后勤' END as RoleName FROM Admins WHERE Status=1 ORDER BY Role, Name";
+        return DBHelper.GetDataTable(sql);
+    }
 }
