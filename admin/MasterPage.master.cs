@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Web;
 using System.Web.UI;
 
@@ -29,5 +29,27 @@ public partial class admin_MasterPage : System.Web.UI.MasterPage
     {
         string currentPage = Request.Url.Segments[Request.Url.Segments.Length - 1].Replace(".aspx", "");
         return currentPage.Equals(page, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+    }
+
+    protected string GetAdminName()
+    {
+        if (Session["AdminName"] != null) return Session["AdminName"].ToString();
+        return "管理员";
+    }
+
+    protected string GetAdminRoleName()
+    {
+        if (Session["AdminRoleName"] != null) return Session["AdminRoleName"].ToString();
+        return "系统管理员";
+    }
+
+    protected string GetAdminInitial()
+    {
+        string name = GetAdminName();
+        if (!string.IsNullOrEmpty(name) && name.Length > 0)
+        {
+            return name.Substring(name.Length - 1);
+        }
+        return "管";
     }
 }

@@ -1,4 +1,4 @@
-﻿/* ========== Admin Body ========== */
+/* ========== Admin Body ========== */
 .admin-body {
     background: linear-gradient(180deg, #A7F3E7 0%, #F5FFDC 40%, #FEF0FF 100%);
     background-attachment: fixed;
@@ -114,6 +114,9 @@
     justify-content: center;
     color: var(--on-primary);
     border: 1px solid rgba(0, 107, 92, 0.1);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
 }
 
 .admin-header-avatar .material-symbols-outlined {
@@ -362,6 +365,9 @@
     justify-content: center;
     color: var(--on-primary);
     flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
 }
 
 .admin-sidebar-user-avatar .material-symbols-outlined {
