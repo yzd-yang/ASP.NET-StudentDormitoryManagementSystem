@@ -62,6 +62,13 @@ public partial class admin_batch : System.Web.UI.Page
         {
             ddlCollegeLimit.Items.Add(new ListItem(row["CollegeName"].ToString(), row["CollegeName"].ToString()));
         }
+
+        // 加载楼宇列表到弹窗
+        DataTable buildings = BatchBLL.GetBuildingsForBatch();
+        foreach (DataRow row in buildings.Rows)
+        {
+            ddlModalBuilding.Items.Add(new ListItem(row["Name"].ToString() + " (" + row["Campus"] + ")", row["Id"].ToString()));
+        }
     }
 
     protected void btnBatchSearch_Click(object sender, EventArgs e)
@@ -153,6 +160,22 @@ public partial class admin_batch : System.Web.UI.Page
         int buildingId = Convert.ToInt32(ddlModalBuilding.SelectedValue);
         int floor = Convert.ToInt32(ddlModalFloor.SelectedValue);
         LoadModalRooms(buildingId, floor);
+        pnlBatchModal.Style["display"] = "flex";
+    }
+
+    protected void ddlCollegeLimit_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ddlMajorLimit.Items.Clear();
+        ddlMajorLimit.Items.Add(new ListItem("不限", ""));
+        string college = ddlCollegeLimit.SelectedValue;
+        if (!string.IsNullOrEmpty(college))
+        {
+            DataTable dt = DormBLL.GetMajorsByCollege(college);
+            foreach (DataRow row in dt.Rows)
+            {
+                ddlMajorLimit.Items.Add(new ListItem(row["MajorName"].ToString(), row["MajorName"].ToString()));
+            }
+        }
         pnlBatchModal.Style["display"] = "flex";
     }
 

@@ -217,7 +217,7 @@
                     </div>
                     <div class="form-group">
                         <label>学院限定</label>
-                        <asp:DropDownList ID="ddlCollegeLimit" runat="server" CssClass="form-select">
+                        <asp:DropDownList ID="ddlCollegeLimit" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCollegeLimit_SelectedIndexChanged">
                             <asp:ListItem Value="" Text="不限" />
                         </asp:DropDownList>
                     </div>
