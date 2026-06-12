@@ -99,6 +99,11 @@
                     <div style="font-size:14px; font-weight:700; color:var(--on-surface);"><%= GetAdminName() %></div>
                     <div style="font-size:12px; color:var(--on-surface-variant);"><%= GetAdminRoleName() %></div>
                 </div>
+                <a href="/admin/profile.aspx" class="admin-user-dropdown-item">
+                    <span class="material-symbols-outlined">person</span>
+                    <span>个人中心</span>
+                </a>
+                <div class="admin-user-dropdown-divider"></div>
                 <asp:LinkButton ID="btnLogoutTop" runat="server" OnClick="btnLogout_Click" CssClass="admin-user-dropdown-item admin-user-dropdown-logout">
                     <span class="material-symbols-outlined">logout</span>
                     <span>退出登录</span>
