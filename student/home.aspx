@@ -19,7 +19,7 @@
         .hero-section { margin-bottom: 32px; }
         .hero-wrap {
             position: relative; overflow: hidden; border-radius: 24px;
-            height: 320px; display: flex; flex-direction: column; justify-content: flex-end;
+            height: 260px; display: flex; flex-direction: column; justify-content: flex-end;
             padding: 48px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid rgba(255,255,255,0.4);
         }
         .hero-bg {
@@ -56,14 +56,14 @@
         @media (max-width: 767px) { .cards-grid { grid-template-columns: 1fr; } }
 
         /* Score card */
-        .score-card { padding: 24px; border-radius: 24px; display: flex; flex-direction: column; justify-content: space-between; }
-        .score-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
-        .score-title { font-size: 18px; font-weight: 700; color: var(--on-surface); }
-        .score-sub { font-size: 14px; color: var(--on-surface-variant); margin-top: 4px; }
-        .score-icon { font-size: 40px; color: var(--primary); transition: transform 0.2s; }
+        .score-card { padding: 20px; border-radius: 20px; display: flex; flex-direction: column; justify-content: space-between; }
+        .score-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .score-title { font-size: 16px; font-weight: 700; color: var(--on-surface); }
+        .score-sub { font-size: 13px; color: var(--on-surface-variant); margin-top: 4px; }
+        .score-icon { font-size: 36px; color: var(--primary); transition: transform 0.2s; }
         .score-card:hover .score-icon { transform: scale(1.1); }
-        .score-row { display: flex; align-items: flex-end; gap: 12px; margin-bottom: 24px; }
-        .score-num { font-size: 56px; font-weight: 800; color: var(--on-surface); line-height: 1; letter-spacing: -0.02em; }
+        .score-row { display: flex; align-items: flex-end; gap: 12px; margin-bottom: 16px; }
+        .score-num { font-size: 48px; font-weight: 800; color: var(--on-surface); line-height: 1; letter-spacing: -0.02em; }
         .score-label { color: #00a08e; font-size: 14px; font-weight: 600; }
         .score-hint { font-size: 12px; color: var(--on-surface-variant); margin-top: 2px; }
         .score-btn {
@@ -84,9 +84,9 @@
         .pay-link:hover { text-decoration: underline; }
 
         /* Facility card */
-        .facility-card { padding: 24px; border-radius: 24px; display: flex; flex-direction: column; height: 100%; }
-        .facility-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-        .facility-title { font-size: 24px; font-weight: 600; color: var(--on-surface); display: flex; align-items: center; gap: 12px; }
+        .facility-card { padding: 20px; border-radius: 20px; display: flex; flex-direction: column; height: 100%; }
+        .facility-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .facility-title { font-size: 20px; font-weight: 600; color: var(--on-surface); display: flex; align-items: center; gap: 12px; }
         .facility-sync { font-size: 12px; color: var(--on-surface-variant); }
         .facility-list { display: flex; flex-direction: column; gap: 16px; flex-grow: 1; }
         .facility-row {
@@ -115,9 +115,9 @@
         .repair-btn:hover { opacity: 0.9; }
 
         /* Roommates */
-        .roommate-section { padding: 32px; border-radius: 24px; margin-bottom: 32px; }
-        .roommate-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
-        .roommate-title { font-size: 24px; font-weight: 600; color: var(--on-surface); display: flex; align-items: center; gap: 12px; }
+        .roommate-section { padding: 24px; border-radius: 20px; margin-bottom: 32px; }
+        .roommate-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .roommate-title { font-size: 20px; font-weight: 600; color: var(--on-surface); display: flex; align-items: center; gap: 12px; }
         .roommate-action { color: var(--primary); font-size: 14px; font-weight: 600; background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 12px; font-family: inherit; }
         .roommate-action:hover { background: rgba(73,234,206,0.1); }
         .roommate-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }

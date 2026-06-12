@@ -69,8 +69,8 @@
     width: 100%;
     max-width: 100%;
     margin: 0;
-    padding-left: 64px;
-    padding-right: 64px;
+    padding-left: 32px;
+    padding-right: 32px;
 }
 
 /* 底部 Tab 导航 */
