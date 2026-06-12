@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Globalization;
 using System.Web;
@@ -109,7 +109,8 @@ public partial class admin_dashboard : System.Web.UI.Page
 
         // 获取最大值来计算比例
         int maxCount = 1;
-        if (rptTrendChart.DataSource is DataTable dt)
+        DataTable dt = rptTrendChart.DataSource as DataTable;
+        if (dt != null)
         {
             foreach (DataRow row in dt.Rows)
             {
