@@ -211,10 +211,10 @@ SmartDorm/
 - 创建新批次弹窗
 
 #### 系统管理（admin/system.aspx）✅
-- 管理员账号管理表格
-- 楼宇管理列表
-- 批量生成房间表单
-- 院系专业树形结构
+- 管理员账号管理（搜索、角色/状态筛选、新增、编辑、重置密码、删除）- 动态数据
+- 楼宇管理（列表、新增、编辑、删除）- 动态数据
+- 批量生成房间（选楼宇、类型、楼层范围、每层房间数）- 动态数据
+- 院系专业管理（树形结构、添加学院/专业、编辑、删除）- 动态数据
 
 ---
 
@@ -258,17 +258,29 @@ public class DormBLL
     public static DataTable GetBuildings()
     public static DataTable GetRoomsByBuilding(int buildingId)
     public static DataTable GetRoomBeds(int roomId)
-    public static bool AllocateBed(int bedId, int studentId)
+    public static bool AllocateBed(int bedId, int studentId)      // 分配床位（含检查学生是否已有床位）
     public static bool ReleaseBed(int bedId)
-    public static DataTable SearchStudents(string keyword)
+    public static bool HasBed(int studentId)                       // 检查学生是否有床位
+    public static DataTable SearchStudents(string keyword)         // 搜索无床位学生
+    public static DataTable SearchStudents(string keyword, string college, string major, string grade, string className) // 多条件搜索
     public static int GetTotalRooms()
     public static int GetTotalStudents()
     public static int GetAvailableBeds()
-    public static DataTable GetBuildingOccupancy()    // 获取各楼宇入住率数据
-    public static int GetTotalBeds()                  // 获取总床位数
-    public static DataTable GetAllRooms(...)           // 获取所有房间（支持筛选分页）
-    public static int GetRoomCount(...)                // 获取房间数量（支持筛选）
-    public static int GetTotalRoomCount()              // 获取总房间数
+    public static DataTable GetBuildingOccupancy()
+    public static int GetTotalBeds()
+    public static DataTable GetAllRooms(...)                       // 获取房间（支持楼层/类型/状态筛选分页）
+    public static int GetRoomCount(...)                            // 获取房间数量（支持筛选）
+    public static DataTable GetFloorsByBuilding(int buildingId)
+    public static DataTable GetAllFloors()
+    public static DataTable GetBuildingList()                      // 楼宇列表（含房间数）
+    public static bool AddBuilding(...)
+    public static bool UpdateBuilding(...)
+    public static bool DeleteBuilding(int id)
+    public static int BatchCreateRooms(...)                        // 批量生成房间（含床位）
+    public static DataTable GetColleges()
+    public static DataTable GetMajorsByCollege(string college)
+    public static DataTable GetGrades()
+    public static DataTable GetClasses(...)
 }
 ```
 
@@ -278,7 +290,7 @@ public class DormBLL
 public class RepairBLL
 {
     public static string GenerateOrderNo()
-    public static bool CreateRepairOrder(int studentId, int roomId, int repairType, string description, string expectTime, string contactPhone)
+    public static bool CreateRepairOrder(...)
     public static DataTable GetStudentRepairOrders(int studentId, int status = 0)
     public static DataTable GetAllRepairOrders(int status = 0)
     public static bool AssignRepairOrder(int orderId, int adminId)
@@ -286,9 +298,35 @@ public class RepairBLL
     public static bool RejectRepairOrder(int orderId, string reason)
     public static int GetPendingRepairCount()
     public static int GetProcessingRepairCount()
-    public static int GetTodayRepairCount()           // 获取今日报修数量
-    public static int GetUrgentRepairCount()          // 获取待处理工单数
-    public static DataTable GetRepairTrendByDay(int days) // 获取近N天报修趋势
+    public static int GetTodayRepairCount()
+    public static int GetUrgentRepairCount()
+    public static DataTable GetRepairTrendByDay(int days)
+}
+```
+
+### 6.5 AdminBLL.cs
+
+```csharp
+public class AdminBLL
+{
+    public static string GetMD5(string input)
+    public static DataTable GetAdminList(string keyword, int role, int status)
+    public static bool AddAdmin(string adminNo, string name, string phone, string password, int role)
+    public static bool UpdateAdmin(int id, string name, string phone, int role, int status)
+    public static bool ResetPassword(int id, string newPassword)
+    public static bool DeleteAdmin(int id)
+}
+```
+
+### 6.6 DeptBLL.cs
+
+```csharp
+public class DeptBLL
+{
+    public static DataTable GetDepartmentTree()
+    public static bool AddDepartment(string collegeName, string majorName)
+    public static bool UpdateDepartment(int id, string majorName)
+    public static bool DeleteDepartment(int id)
 }
 ```
 
@@ -367,15 +405,15 @@ if (Session["AdminId"] == null)
 
 ## 十一、待开发功能（需新建BLL）
 
-| 功能 | 需新建的BLL | 优先级 |
-|------|------------|--------|
-| 通知公告CRUD | NoticeBLL.cs | 高 |
-| 选宿批次CRUD | BatchBLL.cs | 高 |
-| 管理员管理CRUD | AdminBLL.cs | 高 |
-| 院系专业管理 | DeptBLL.cs | 高 |
-| 老师注册 | UserBLL.RegisterAdmin | 中 |
-| 重置密码 | UserBLL.ResetPassword | 中 |
-| 宿舍评分 | DormScores表（可选） | 低 |
+| 功能 | 需新建的BLL | 状态 |
+|------|------------|------|
+| 通知公告CRUD | NoticeBLL.cs | 待开发 |
+| 选宿批次CRUD | BatchBLL.cs | 待开发 |
+| 管理员管理CRUD | AdminBLL.cs | ✅ 已完成 |
+| 院系专业管理 | DeptBLL.cs | ✅ 已完成 |
+| 老师注册 | UserBLL.RegisterAdmin | 待开发 |
+| 重置密码 | UserBLL.ResetPassword | 待开发 |
+| 宿舍评分 | DormScores表（可选） | 低优先级 |
 
 ---
 
