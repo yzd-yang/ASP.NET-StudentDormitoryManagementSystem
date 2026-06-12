@@ -59,6 +59,15 @@ public class DormBLL
 
     public static bool AllocateBed(int bedId, int studentId)
     {
+        // 检查学生是否已有床位
+        string checkSql = "SELECT COUNT(*) FROM Beds WHERE StudentId=@StudentId AND Status=1";
+        MySqlParameter[] checkParams = new MySqlParameter[] { new MySqlParameter("@StudentId", studentId) };
+        object count = DBHelper.ExecuteScalar(checkSql, checkParams);
+        if (count != null && Convert.ToInt32(count) > 0)
+        {
+            return false; // 学生已有床位
+        }
+
         string sql = "UPDATE Beds SET StudentId=@StudentId, Status=1, AllocateTime=NOW() WHERE Id=@Id AND Status=0";
         MySqlParameter[] parameters = new MySqlParameter[]
         {
@@ -66,6 +75,14 @@ public class DormBLL
             new MySqlParameter("@Id", bedId)
         };
         return DBHelper.ExecuteNonQuery(sql, parameters) > 0;
+    }
+
+    public static bool HasBed(int studentId)
+    {
+        string sql = "SELECT COUNT(*) FROM Beds WHERE StudentId=@StudentId AND Status=1";
+        MySqlParameter[] parameters = new MySqlParameter[] { new MySqlParameter("@StudentId", studentId) };
+        object count = DBHelper.ExecuteScalar(sql, parameters);
+        return count != null && Convert.ToInt32(count) > 0;
     }
 
     public static bool ReleaseBed(int bedId)

@@ -226,7 +226,7 @@ public partial class admin_allocation : System.Web.UI.Page
             }
             else
             {
-                Page.ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('分配失败，该床位可能已被占用');", true);
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('分配失败：该学生已有宿舍床位或该床位已被占用');", true);
                 pnlAllocateModal.Style["display"] = "flex";
             }
         }
@@ -265,6 +265,12 @@ public partial class admin_allocation : System.Web.UI.Page
         if (o == 0) return "全空置";
         if (o >= t) return "已满员";
         return "空余 " + (t - o);
+    }
+
+    protected bool HasStudentBed(object studentId)
+    {
+        if (studentId == null || studentId == DBNull.Value) return false;
+        return DormBLL.HasBed(Convert.ToInt32(studentId));
     }
 
     protected override void RaisePostBackEvent(IPostBackEventHandler sourceControl, string eventArgument)
