@@ -205,12 +205,29 @@ public partial class admin_allocation : System.Web.UI.Page
         if (e.CommandName == "Select")
         {
             int studentId = Convert.ToInt32(e.CommandArgument);
-            int bedId = Convert.ToInt32(hfBedId.Value);
+            int bedId = 0;
+            if (!string.IsNullOrEmpty(hfBedId.Value))
+            {
+                bedId = Convert.ToInt32(hfBedId.Value);
+            }
 
-            if (DormBLL.AllocateBed(bedId, studentId))
+            if (bedId == 0)
+            {
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('床位ID无效，请重新选择床位');", true);
+                return;
+            }
+
+            bool result = DormBLL.AllocateBed(bedId, studentId);
+            if (result)
             {
                 pnlAllocateModal.Style["display"] = "none";
                 LoadRooms();
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('分配成功！');", true);
+            }
+            else
+            {
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('分配失败，该床位可能已被占用');", true);
+                pnlAllocateModal.Style["display"] = "flex";
             }
         }
     }
