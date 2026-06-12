@@ -51,7 +51,7 @@
         .hero-btn:hover { background: rgba(255,255,255,0.25); }
 
         /* 3列卡片网格 */
-        .cards-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 32px; }
         @media (max-width: 1024px) { .cards-grid { grid-template-columns: 1fr 1fr; } }
         @media (max-width: 767px) { .cards-grid { grid-template-columns: 1fr; } }
 
