@@ -57,8 +57,8 @@
         .batch-gen-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
         .batch-gen-row-3 { display:flex; gap:8px; }
         .batch-gen-row-3 span { display:flex; align-items:center; color:var(--on-surface-variant); }
-        .batch-gen-input { width:100%; padding:10px 14px; border:none; border-radius:10px; background:#FFF9E6; font-family:inherit; font-size:14px; outline:none; box-sizing:border-box; }
-        .batch-gen-input:focus { box-shadow:0 0 0 2px rgba(73,234,206,0.3); }
+        .batch-gen-input { width:100%; padding:12px 14px; border:1px solid var(--outline-variant); border-radius:10px; background:#FFF9E6; font-family:inherit; font-size:15px; outline:none; box-sizing:border-box; }
+        .batch-gen-input:focus { border-color:var(--primary); box-shadow:0 0 0 2px rgba(73,234,206,0.12); }
         .batch-gen-preview { padding:14px; background:rgba(232,233,236,0.4); border-radius:12px; border:1px solid rgba(0,0,0,0.04); }
         .batch-gen-preview-label { font-size:13px; font-weight:600; color:var(--on-surface-variant); margin-bottom:8px; }
         .batch-gen-summary { font-size:13px; color:var(--primary); font-weight:600; }
@@ -248,18 +248,20 @@
                         </asp:DropDownList>
                     </div>
                 </div>
-                <div class="batch-gen-row">
+                <div class="batch-gen-row" style="margin-top:8px;">
                     <div>
-                        <label style="font-size:13px; font-weight:600; color:var(--on-surface-variant); display:block; margin-bottom:6px;">起始层数 - 结束层数</label>
-                        <div class="batch-gen-row-3">
-                            <input type="number" id="txtStartFloor" runat="server" class="batch-gen-input" value="1" min="1" max="50" />
-                            <span>-</span>
-                            <input type="number" id="txtEndFloor" runat="server" class="batch-gen-input" value="6" min="1" max="50" />
-                        </div>
+                        <label style="font-size:13px; font-weight:600; color:var(--on-surface-variant); display:block; margin-bottom:6px;">起始层数</label>
+                        <input type="number" id="txtStartFloor" runat="server" class="batch-gen-input" Value="1" min="1" max="50" />
                     </div>
                     <div>
+                        <label style="font-size:13px; font-weight:600; color:var(--on-surface-variant); display:block; margin-bottom:6px;">结束层数</label>
+                        <input type="number" id="txtEndFloor" runat="server" class="batch-gen-input" Value="6" min="1" max="50" />
+                    </div>
+                </div>
+                <div class="batch-gen-row">
+                    <div>
                         <label style="font-size:13px; font-weight:600; color:var(--on-surface-variant); display:block; margin-bottom:6px;">每层房间数</label>
-                        <input type="number" id="txtRoomsPerFloor" runat="server" class="batch-gen-input" value="20" min="1" max="50" />
+                        <input type="number" id="txtRoomsPerFloor" runat="server" class="batch-gen-input" Value="20" min="1" max="50" />
                     </div>
                 </div>
                 <div class="batch-gen-preview">
