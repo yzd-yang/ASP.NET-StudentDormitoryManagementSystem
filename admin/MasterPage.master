@@ -155,6 +155,19 @@
                 dropdown.classList.remove('show');
             }
         });
+
+        // 保持滚动位置
+        (function() {
+            var scrollKey = 'scrollPos_' + window.location.pathname;
+            window.addEventListener('beforeunload', function() {
+                sessionStorage.setItem(scrollKey, window.scrollY);
+            });
+            var saved = sessionStorage.getItem(scrollKey);
+            if (saved) {
+                window.scrollTo(0, parseInt(saved));
+                sessionStorage.removeItem(scrollKey);
+            }
+        })();
     </script>
 </body>
 </html>

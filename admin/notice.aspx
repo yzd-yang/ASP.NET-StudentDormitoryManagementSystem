@@ -1,4 +1,4 @@
-<%@ Page Language="C#" MasterPageFile="~/admin/MasterPage.master" AutoEventWireup="true" CodeFile="notice.aspx.cs" Inherits="admin_notice" ResponseEncoding="utf-8" MaintainScrollPositionOnPostBack="true" %>
+<%@ Page Language="C#" MasterPageFile="~/admin/MasterPage.master" AutoEventWireup="true" CodeFile="notice.aspx.cs" Inherits="admin_notice" ResponseEncoding="utf-8" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="title" runat="server">通知公告管理 - SmartDorm</asp:Content>
 
