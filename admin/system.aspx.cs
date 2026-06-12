@@ -164,7 +164,12 @@ public partial class admin_system : System.Web.UI.Page
     {
         int id = Convert.ToInt32(e.CommandArgument);
 
-        if (e.CommandName == "EditBuilding")
+        if (e.CommandName == "ViewRooms")
+        {
+            hfSelectedBuildingId.Value = id.ToString();
+            LoadRooms(id);
+        }
+        else if (e.CommandName == "EditBuilding")
         {
             hfBuildingId.Value = id.ToString();
             DataTable dt = DormBLL.GetBuildingList();
@@ -193,6 +198,127 @@ public partial class admin_system : System.Web.UI.Page
             {
                 Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('该楼宇下有房间，无法删除','error');", true);
             }
+        }
+    }
+
+    private void LoadRooms(int buildingId)
+    {
+        DataTable dt = DormBLL.GetRoomsByBuildingForManage(buildingId);
+        if (dt.Rows.Count > 0)
+        {
+            litRoomTitle.Text = dt.Rows[0]["RoomNo"].ToString().Split('-')[0] + "座 房间管理";
+        }
+        else
+        {
+            // 获取楼宇名称
+            DataTable buildings = DormBLL.GetBuildingList();
+            foreach (DataRow row in buildings.Rows)
+            {
+                if (Convert.ToInt32(row["Id"]) == buildingId)
+                {
+                    litRoomTitle.Text = row["Name"].ToString() + " 房间管理";
+                    break;
+                }
+            }
+        }
+        rptRooms.DataSource = dt;
+        rptRooms.DataBind();
+        pnlRoomList.Visible = true;
+        pnlNoBuilding.Visible = false;
+        btnAddRoom.Visible = true;
+    }
+
+    protected void rptRooms_ItemCommand(object source, RepeaterCommandEventArgs e)
+    {
+        if (e.CommandName == "ToggleStatus")
+        {
+            string[] args = e.CommandArgument.ToString().Split(',');
+            int roomId = Convert.ToInt32(args[0]);
+            int currentStatus = Convert.ToInt32(args[1]);
+            int newStatus = currentStatus == 1 ? 0 : 1;
+
+            if (DormBLL.UpdateRoomStatus(roomId, newStatus))
+            {
+                int buildingId = Convert.ToInt32(hfSelectedBuildingId.Value);
+                LoadRooms(buildingId);
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('状态已更新','success');", true);
+            }
+        }
+        else if (e.CommandName == "DeleteRoom")
+        {
+            int roomId = Convert.ToInt32(e.CommandArgument);
+            if (DormBLL.DeleteRoom(roomId))
+            {
+                int buildingId = Convert.ToInt32(hfSelectedBuildingId.Value);
+                LoadRooms(buildingId);
+                LoadBuildings();
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('房间已删除','success');", true);
+            }
+        }
+    }
+
+    protected void btnAddRoom_Click(object sender, EventArgs e)
+    {
+        int buildingId = Convert.ToInt32(hfSelectedBuildingId.Value);
+        DataTable buildings = DormBLL.GetBuildingList();
+        foreach (DataRow row in buildings.Rows)
+        {
+            if (Convert.ToInt32(row["Id"]) == buildingId)
+            {
+                lblRoomBuilding.Text = row["Name"].ToString() + " (" + row["Campus"] + ")";
+                break;
+            }
+        }
+        txtRoomFloor.Text = "";
+        txtRoomNo.Text = "";
+        pnlRoomModal.Style["display"] = "flex";
+    }
+
+    protected void btnSaveRoom_Click(object sender, EventArgs e)
+    {
+        int buildingId = Convert.ToInt32(hfSelectedBuildingId.Value);
+        int floor = Convert.ToInt32(txtRoomFloor.Text);
+        string roomNo = txtRoomNo.Text.Trim();
+        int roomType = Convert.ToInt32(ddlRoomType.SelectedValue);
+
+        int bedCount = 2;
+        if (roomType == 2) bedCount = 4;
+        else if (roomType == 3) bedCount = 6;
+
+        if (string.IsNullOrEmpty(roomNo))
+        {
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('请输入房间号','error');", true);
+            pnlRoomModal.Style["display"] = "flex";
+            return;
+        }
+
+        if (DormBLL.AddRoom(buildingId, floor, roomNo, roomType, bedCount))
+        {
+            pnlRoomModal.Style["display"] = "none";
+            LoadRooms(buildingId);
+            LoadBuildings();
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('房间添加成功','success');", true);
+        }
+        else
+        {
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('添加失败','error');", true);
+        }
+    }
+
+    protected void btnCloseRoomModal_Click(object sender, EventArgs e)
+    {
+        pnlRoomModal.Style["display"] = "none";
+    }
+
+    protected string GetRoomType(object roomType)
+    {
+        int type = Convert.ToInt32(roomType);
+        switch (type)
+        {
+            case 1: return "双人间";
+            case 2: return "四人间";
+            case 3: return "六人间";
+            default: return "未知";
         }
     }
 

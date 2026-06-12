@@ -173,7 +173,7 @@
             <asp:Repeater ID="rptBuildings" runat="server" OnItemCommand="rptBuildings_ItemCommand">
                 <ItemTemplate>
                     <div class="building-item">
-                        <div class="building-left">
+                        <div class="building-left" style="cursor:pointer;">
                             <div class="building-icon"><span class="material-symbols-outlined">apartment</span></div>
                             <div>
                                 <div class="building-name"><%# Eval("Name") %> (<%# Eval("Campus") %>)</div>
@@ -181,6 +181,7 @@
                             </div>
                         </div>
                         <div class="building-actions">
+                            <asp:LinkButton ID="btnViewRooms" runat="server" CommandName="ViewRooms" CommandArgument='<%# Eval("Id") %>' CssClass="building-action-btn" ToolTip="查看房间"><span class="material-symbols-outlined">meeting_room</span></asp:LinkButton>
                             <asp:LinkButton ID="btnEditBuilding" runat="server" CommandName="EditBuilding" CommandArgument='<%# Eval("Id") %>' CssClass="building-action-btn"><span class="material-symbols-outlined">edit</span></asp:LinkButton>
                             <asp:LinkButton ID="btnDeleteBuilding" runat="server" CommandName="DeleteBuilding" CommandArgument='<%# Eval("Id") %>' CssClass="building-action-btn delete" OnClientClick="return confirm('确定要删除该楼宇吗？');"><span class="material-symbols-outlined">delete</span></asp:LinkButton>
                         </div>
@@ -188,6 +189,45 @@
                 </ItemTemplate>
             </asp:Repeater>
             <button type="button" class="building-add" onclick="showBuildingModal()"><span class="material-symbols-outlined">add</span> 添加新楼宇</button>
+        </div>
+
+        <!-- 房间管理 -->
+        <div class="sys-card">
+            <div class="sys-card-title">
+                <asp:Literal ID="litRoomTitle" runat="server" Text="房间管理" />
+                <asp:Button ID="btnAddRoom" runat="server" CssClass="sys-add-icon" style="font-size:13px; padding:6px 12px; border-radius:8px; font-weight:600;" Text="+ 添加房间" OnClick="btnAddRoom_Click" Visible="false" />
+            </div>
+            <asp:HiddenField ID="hfSelectedBuildingId" runat="server" />
+            <asp:Panel ID="pnlRoomList" runat="server" Visible="false">
+                <div style="max-height:400px; overflow-y:auto;">
+                    <asp:Repeater ID="rptRooms" runat="server" OnItemCommand="rptRooms_ItemCommand">
+                        <ItemTemplate>
+                            <div class="building-item">
+                                <div class="building-left">
+                                    <div class="building-icon" style="width:36px; height:36px;"><span class="material-symbols-outlined" style="font-size:18px;">door_front</span></div>
+                                    <div>
+                                        <div class="building-name"><%# Eval("RoomNo") %></div>
+                                        <div class="building-sub"><%# GetRoomType(Eval("RoomType")) %> · <%# Eval("Floor") %>层 · <%# Eval("OccupiedBeds") %>/<%# Eval("TotalBeds") %>人</div>
+                                    </div>
+                                </div>
+                                <div class="building-actions">
+                                    <span style="font-size:12px; font-weight:600; padding:3px 8px; border-radius:6px; <%# Convert.ToInt32(Eval("Status")) == 1 ? "background:rgba(73,234,206,0.12); color:#006b5c;" : "background:rgba(186,26,26,0.08); color:var(--error);" %>">
+                                        <%# Convert.ToInt32(Eval("Status")) == 1 ? "正常" : "停用" %>
+                                    </span>
+                                    <asp:LinkButton ID="btnToggleStatus" runat="server" CommandName="ToggleStatus" CommandArgument='<%# Eval("Id") + "," + Eval("Status") %>' CssClass="building-action-btn" ToolTip="切换状态"><span class="material-symbols-outlined"><%# Convert.ToInt32(Eval("Status")) == 1 ? "block" : "check_circle" %></span></asp:LinkButton>
+                                    <asp:LinkButton ID="btnDeleteRoom" runat="server" CommandName="DeleteRoom" CommandArgument='<%# Eval("Id") %>' CssClass="building-action-btn delete" OnClientClick="return confirm('确定要删除该房间吗？所有床位将被清除。');" ToolTip="删除"><span class="material-symbols-outlined">delete</span></asp:LinkButton>
+                                </div>
+                            </div>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </div>
+            </asp:Panel>
+            <asp:Panel ID="pnlNoBuilding" runat="server">
+                <div style="text-align:center; padding:40px; color:var(--on-surface-variant);">
+                    <span class="material-symbols-outlined" style="font-size:48px; opacity:0.3; display:block; margin-bottom:8px;">meeting_room</span>
+                    <p>请点击左侧楼宇查看房间</p>
+                </div>
+            </asp:Panel>
         </div>
 
         <!-- 批量生成房间 -->
@@ -336,6 +376,42 @@
             <div class="modal-footer">
                 <asp:Button ID="btnCancelBuilding" runat="server" CssClass="modal-cancel" Text="取消" OnClick="btnCloseBuildingModal_Click" />
                 <asp:Button ID="btnSaveBuilding" runat="server" CssClass="modal-confirm" Text="保存" OnClick="btnSaveBuilding_Click" />
+            </div>
+        </div>
+    </asp:Panel>
+
+    <!-- 添加房间弹窗 -->
+    <asp:Panel ID="pnlRoomModal" runat="server" CssClass="modal-overlay" Style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>添加房间</h3>
+                <asp:Button ID="btnCloseRoomModal" runat="server" CssClass="modal-close" Text="X" OnClick="btnCloseRoomModal_Click" />
+            </div>
+            <div class="modal-body">
+                <div class="modal-field">
+                    <label>所属楼宇</label>
+                    <asp:Label ID="lblRoomBuilding" runat="server" CssClass="modal-input" style="display:block; padding:12px 14px; background:#FFF9E6; border-radius:12px;" />
+                </div>
+                <div class="modal-field">
+                    <label>楼层</label>
+                    <asp:TextBox ID="txtRoomFloor" runat="server" CssClass="modal-input" TextMode="Number" placeholder="如：1" />
+                </div>
+                <div class="modal-field">
+                    <label>房间号</label>
+                    <asp:TextBox ID="txtRoomNo" runat="server" CssClass="modal-input" placeholder="如：A-301" />
+                </div>
+                <div class="modal-field">
+                    <label>房间类型</label>
+                    <asp:DropDownList ID="ddlRoomType" runat="server" CssClass="modal-select">
+                        <asp:ListItem Value="2" Text="四人间" />
+                        <asp:ListItem Value="1" Text="双人间" />
+                        <asp:ListItem Value="3" Text="六人间" />
+                    </asp:DropDownList>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <asp:Button ID="btnCancelRoom" runat="server" CssClass="modal-cancel" Text="取消" OnClick="btnCloseRoomModal_Click" />
+                <asp:Button ID="btnSaveRoom" runat="server" CssClass="modal-confirm" Text="添加" OnClick="btnSaveRoom_Click" />
             </div>
         </div>
     </asp:Panel>

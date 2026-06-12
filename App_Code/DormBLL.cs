@@ -356,6 +356,72 @@ public class DormBLL
         return DBHelper.GetDataTable(sql);
     }
 
+    public static DataTable GetRoomsByBuildingForManage(int buildingId)
+    {
+        string sql = @"SELECT r.*, 
+                       (SELECT COUNT(*) FROM Beds WHERE RoomId=r.Id AND Status=1) as OccupiedBeds,
+                       (SELECT COUNT(*) FROM Beds WHERE RoomId=r.Id) as TotalBeds
+                       FROM Rooms r WHERE r.BuildingId=@BuildingId ORDER BY r.Floor, r.RoomNo";
+        MySqlParameter[] parameters = new MySqlParameter[] { new MySqlParameter("@BuildingId", buildingId) };
+        return DBHelper.GetDataTable(sql, parameters);
+    }
+
+    public static bool AddRoom(int buildingId, int floor, string roomNo, int roomType, int bedCount)
+    {
+        string sql = "INSERT INTO Rooms (BuildingId, Floor, RoomNo, RoomType, BedCount) VALUES (@BuildingId, @Floor, @RoomNo, @RoomType, @BedCount)";
+        MySqlParameter[] parameters = new MySqlParameter[]
+        {
+            new MySqlParameter("@BuildingId", buildingId),
+            new MySqlParameter("@Floor", floor),
+            new MySqlParameter("@RoomNo", roomNo),
+            new MySqlParameter("@RoomType", roomType),
+            new MySqlParameter("@BedCount", bedCount)
+        };
+        int roomId = 0;
+        if (DBHelper.ExecuteNonQuery(sql, parameters) > 0)
+        {
+            DataTable dt = DBHelper.GetDataTable("SELECT LAST_INSERT_ID() as Id");
+            if (dt.Rows.Count > 0)
+            {
+                roomId = Convert.ToInt32(dt.Rows[0]["Id"]);
+                // 创建床位
+                for (int bed = 0; bed < bedCount; bed++)
+                {
+                    string bedNo = ((char)('A' + bed)).ToString();
+                    string bedSql = "INSERT INTO Beds (RoomId, BedNo) VALUES (@RoomId, @BedNo)";
+                    DBHelper.ExecuteNonQuery(bedSql, new MySqlParameter[] {
+                        new MySqlParameter("@RoomId", roomId),
+                        new MySqlParameter("@BedNo", bedNo)
+                    });
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static bool UpdateRoomStatus(int roomId, int status)
+    {
+        string sql = "UPDATE Rooms SET Status=@Status WHERE Id=@Id";
+        MySqlParameter[] parameters = new MySqlParameter[]
+        {
+            new MySqlParameter("@Status", status),
+            new MySqlParameter("@Id", roomId)
+        };
+        return DBHelper.ExecuteNonQuery(sql, parameters) > 0;
+    }
+
+    public static bool DeleteRoom(int roomId)
+    {
+        // 先删除床位
+        string deleteBeds = "DELETE FROM Beds WHERE RoomId=@RoomId";
+        DBHelper.ExecuteNonQuery(deleteBeds, new MySqlParameter[] { new MySqlParameter("@RoomId", roomId) });
+        
+        // 删除房间
+        string sql = "DELETE FROM Rooms WHERE Id=@Id";
+        return DBHelper.ExecuteNonQuery(sql, new MySqlParameter[] { new MySqlParameter("@Id", roomId) }) > 0;
+    }
+
     public static bool AddBuilding(string name, int floorCount, int roomsPerFloor, string campus)
     {
         string sql = "INSERT INTO Buildings (Name, FloorCount, RoomsPerFloor, Campus) VALUES (@Name, @FloorCount, @RoomsPerFloor, @Campus)";
