@@ -165,34 +165,6 @@
         </div>
     </section>
 
-    <!-- Main Content -->
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-wrap">
-            <div class="hero-bg"></div>
-            <div class="hero-overlay"></div>
-            <div class="hero-content">
-                <div>
-                    <h1 class="hero-title">北校区 3号楼</h1>
-                    <div class="hero-meta">
-                        <span class="hero-meta-item">
-                            <span class="material-symbols-outlined" style="font-size:24px;">meeting_room</span> 502-A 室
-                        </span>
-                        <span class="hero-meta-item">
-                            <span class="material-symbols-outlined" style="font-size:24px;">bed</span> 02号床位
-                        </span>
-                    </div>
-                </div>
-                <div>
-                    <a href="profile.aspx" class="hero-btn">
-                        <span class="material-symbols-outlined" style="font-size:20px;">edit</span>
-                        修改个人资料
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- 3栏卡片：评分 + 缴费 + 设施 -->
     <div class="cards-grid">
         <!-- 评分卡片 -->
