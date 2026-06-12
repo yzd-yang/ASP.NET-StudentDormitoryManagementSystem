@@ -135,10 +135,6 @@
                 <asp:TextBox ID="txtName" runat="server" CssClass="profile-input" />
             </div>
             <div class="profile-field">
-                <label class="profile-label">工号</label>
-                <asp:TextBox ID="txtAdminNo" runat="server" CssClass="profile-input" ReadOnly="true" />
-            </div>
-            <div class="profile-field">
                 <label class="profile-label">手机号</label>
                 <asp:TextBox ID="txtPhone" runat="server" CssClass="profile-input" />
             </div>

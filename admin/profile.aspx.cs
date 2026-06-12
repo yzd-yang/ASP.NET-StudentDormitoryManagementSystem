@@ -42,7 +42,6 @@ public partial class admin_profile : System.Web.UI.Page
 
             // 表单
             txtName.Text = name;
-            txtAdminNo.Text = adminNo;
             txtPhone.Text = phone;
         }
     }
