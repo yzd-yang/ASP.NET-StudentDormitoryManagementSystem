@@ -188,13 +188,19 @@ public class BatchBLL
 
     public static DataTable GetBatchRooms(int batchId)
     {
-        string sql = @"SELECT r.*, b.Name as BuildingName
+        string sql = @"SELECT r.*, b.Name as BuildingName, b.Campus
                        FROM BatchRooms br
                        JOIN Rooms r ON br.RoomId = r.Id
                        JOIN Buildings b ON r.BuildingId = b.Id
                        WHERE br.BatchId=@BatchId
                        ORDER BY b.Name, r.RoomNo";
         return DBHelper.GetDataTable(sql, new MySqlParameter[] { new MySqlParameter("@BatchId", batchId) });
+    }
+
+    public static DataTable GetBatchById(int batchId)
+    {
+        string sql = "SELECT * FROM SelectionBatches WHERE Id=@Id";
+        return DBHelper.GetDataTable(sql, new MySqlParameter[] { new MySqlParameter("@Id", batchId) });
     }
 
     public static DataTable GetBuildingsForBatch()

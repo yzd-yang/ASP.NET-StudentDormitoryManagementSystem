@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/student/MasterPage.master" AutoEventWireup="true" CodeFile="grab-dorm.aspx.cs" Inherits="student_grab_dorm" ResponseEncoding="utf-8" %>
+<%@ Page Language="C#" MasterPageFile="~/student/MasterPage.master" AutoEventWireup="true" CodeFile="grab-dorm.aspx.cs" Inherits="student_grab_dorm" ResponseEncoding="utf-8" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="title" runat="server">选宿舍 - 智慧宿舍</asp:Content>
 
@@ -12,29 +12,9 @@
             padding:16px 24px; border:1px solid rgba(255,255,255,0.4); text-align:center; min-width:220px;
         }
         .countdown-label { font-size:12px; color:var(--on-surface-variant); margin-bottom:10px; }
-        .countdown-digits { display:flex; gap:10px; justify-content:center; }
-        .countdown-num {
-            width:48px; height:48px; display:flex; align-items:center; justify-content:center;
-            background:#fff; border-radius:10px; font-size:22px; font-weight:700; color:var(--primary);
-            border:1px solid rgba(0,0,0,0.06); box-shadow:0 2px 4px rgba(0,0,0,0.04);
-        }
-        .countdown-num.pulse { animation:pulse 1s infinite; }
-        .countdown-unit { font-size:11px; color:var(--on-surface-variant); margin-top:4px; text-align:center; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        .countdown-text { font-size:24px; font-weight:800; color:var(--primary); font-variant-numeric:tabular-nums; }
 
-        .filter-section {
-            background:rgba(255,255,255,0.5); backdrop-filter:blur(8px); border-radius:16px;
-            padding:14px 18px; border:1px solid rgba(255,255,255,0.4); display:flex; gap:14px;
-            align-items:end; margin-bottom:24px; flex-wrap:wrap;
-        }
-        .filter-field { display:flex; flex-direction:column; gap:4px; flex:1; min-width:140px; }
-        .filter-field label { font-size:12px; font-weight:600; color:var(--on-surface-variant); }
-        .filter-field select, .filter-field input {
-            padding:10px 14px; border:none; border-radius:12px; background:#FFF9E6;
-            font-family:inherit; font-size:14px; color:var(--on-surface); outline:none;
-        }
-
-        .room-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:20px; }
+        .room-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:20px; }
 
         .room-card {
             background:rgba(255,255,255,0.6); backdrop-filter:blur(12px); border-radius:20px;
@@ -67,150 +47,129 @@
         .grab-btn.active { background:var(--primary); color:var(--on-primary); box-shadow:0 4px 14px rgba(73,234,206,0.35); }
         .grab-btn.disabled { background:rgba(232,233,236,0.6); color:var(--on-surface-variant); cursor:not-allowed; }
         .grab-btn.full-btn { background:rgba(232,233,236,0.6); color:var(--on-surface-variant); cursor:not-allowed; }
+
+        .empty-state { text-align:center; padding:60px 20px; color:var(--on-surface-variant); }
+        .empty-state .material-symbols-outlined { font-size:48px; opacity:0.3; display:block; margin-bottom:12px; }
     </style>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <asp:ScriptManager ID="ScriptManager1" runat="server" />
+
     <div class="grab-header">
         <div>
-            <h1>选宿舍 - 2024级新生第一批</h1>
-            <p>名额有限，请在倒计时结束前锁定您的意向寝室。</p>
+            <h1>选宿舍 - <asp:Literal ID="litBatchName" runat="server" /></h1>
+            <p>名额有限，请在倒计时结束前选定寝室。</p>
         </div>
         <div class="countdown-card">
-            <div class="countdown-label">距离本轮抢订结束还剩</div>
-            <div class="countdown-digits">
-                <div>
-                    <div class="countdown-num" id="hours">01</div>
-                    <div class="countdown-unit">时</div>
-                </div>
-                <div>
-                    <div class="countdown-num" id="minutes">57</div>
-                    <div class="countdown-unit">分</div>
-                </div>
-                <div>
-                    <div class="countdown-num pulse" id="seconds">16</div>
-                    <div class="countdown-unit">秒</div>
-                </div>
-            </div>
+            <div class="countdown-label">距离本轮选宿结束还剩</div>
+            <div class="countdown-text" id="countdownDisplay"><asp:Literal ID="litCountdown" runat="server" /></div>
         </div>
     </div>
 
-    <div class="filter-section">
-        <div class="filter-field">
-            <label>空床位</label>
-            <select><option>1个</option><option>2个</option><option>3个</option><option>4个以上</option></select>
-        </div>
-        <button class="filter-btn" style="padding:10px 24px; background:var(--primary); color:var(--on-primary); border:none; border-radius:12px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; font-family:inherit;">
-            <span class="material-symbols-outlined" style="font-size:18px;">filter_list</span> 应用筛选
-        </button>
-    </div>
+    <asp:HiddenField ID="hfEndTime" runat="server" Value="0" />
+    <asp:HiddenField ID="hfSelectedBedId" runat="server" Value="" />
 
-    <div class="room-grid">
-        <!-- 501室 -->
-        <div class="room-card">
-            <div class="room-card-header">
-                <div><div class="room-card-title">501 室</div><div class="room-card-sub">Building A · 北侧景观</div></div>
-                <span class="room-card-type">四人间</span>
-            </div>
-            <div class="bed-label">选择床位：</div>
-            <div class="bed-grid">
-                <button class="bed-btn" onclick="selectBed(this)"><span>A号床</span><span class="material-symbols-outlined">bed</span></button>
-                <button class="bed-btn occupied" disabled><span>B号床</span><span style="font-size:12px;">已占</span></button>
-                <button class="bed-btn" onclick="selectBed(this)"><span>C号床</span><span class="material-symbols-outlined">bed</span></button>
-                <button class="bed-btn occupied" disabled><span>D号床</span><span style="font-size:12px;">已占</span></button>
-            </div>
-            <button class="grab-btn disabled" disabled>立即抢订</button>
-        </div>
+    <asp:Panel ID="pnlAlreadyAllocated" runat="server" Visible="false" CssClass="empty-state">
+        <asp:Literal ID="litAlreadyAllocated" runat="server" Text="<span class='material-symbols-outlined'>bed</span>您已有宿舍，无需重复选择。<br/><a href='/student/home.aspx' style='color:var(--primary);font-weight:700;'>返回首页</a>" />
+    </asp:Panel>
 
-        <!-- 612室 -->
-        <div class="room-card">
-            <div class="room-card-header">
-                <div><div class="room-card-title">612 室</div><div class="room-card-sub">Building A · 南侧景观</div></div>
-                <span class="room-card-type">四人间</span>
-            </div>
-            <div class="bed-label">选择床位：</div>
-            <div class="bed-grid">
-                <button class="bed-btn occupied" disabled><span>A号床</span><span style="font-size:12px;">已占</span></button>
-                <button class="bed-btn occupied" disabled><span>B号床</span><span style="font-size:12px;">已占</span></button>
-                <button class="bed-btn" onclick="selectBed(this)"><span>C号床</span><span class="material-symbols-outlined">bed</span></button>
-                <button class="bed-btn occupied" disabled><span>D号床</span><span style="font-size:12px;">已占</span></button>
-            </div>
-            <button class="grab-btn disabled" disabled>立即抢订</button>
+    <asp:Panel ID="pnlRooms" runat="server">
+        <div class="room-grid">
+            <asp:Repeater ID="rptRooms" runat="server">
+                <ItemTemplate>
+                    <div class='<%# GetAvailableBeds(Convert.ToInt32(Eval("Id"))) == 0 ? "room-card full" : "room-card" %>'>
+                        <div class="room-card-header">
+                            <div>
+                                <div class="room-card-title"><%# Eval("RoomNo") %> 室</div>
+                                <div class="room-card-sub"><%# Eval("BuildingName") %> · <%# Eval("Campus") %></div>
+                            </div>
+                            <span class='<%# GetAvailableBeds(Convert.ToInt32(Eval("Id"))) == 0 ? "room-card-type full-type" : "room-card-type" %>'>
+                                <%# GetRoomTypeText(Eval("RoomType")) %>
+                            </span>
+                        </div>
+                        <div class="bed-label">选择床位：</div>
+                        <div class="bed-grid">
+                            <asp:Repeater ID="rptBeds" runat="server" DataSource='<%# GetBedsForRoom(Convert.ToInt32(Eval("Id"))) %>'>
+                                <ItemTemplate>
+                                    <%# Convert.ToInt32(Eval("Status")) == 1 ? 
+                                        "<div class='bed-btn occupied'><span>" + Eval("BedNo") + "号床</span><span style='font-size:12px;'>已占</span></div>" :
+                                        "<button type='button' class='bed-btn' onclick=\"selectBed(this, " + Eval("Id") + ")\" data-bed-id='" + Eval("Id") + "'><span>" + Eval("BedNo") + "号床</span><span class='material-symbols-outlined'>bed</span></button>"
+                                    %>
+                                </ItemTemplate>
+                            </asp:Repeater>
+                        </div>
+                        <%# GetAvailableBeds(Convert.ToInt32(Eval("Id"))) == 0 ? 
+                            "<button type='button' class='grab-btn full-btn' disabled>已满额</button>" :
+                            "<button type='button' class='grab-btn disabled' disabled onclick=\"grabBed(this)\">选定此床位</button>"
+                        %>
+                    </div>
+                </ItemTemplate>
+            </asp:Repeater>
         </div>
 
-        <!-- 808室 -->
-        <div class="room-card">
-            <div class="room-card-header">
-                <div><div class="room-card-title">808 室</div><div class="room-card-sub">Building B · 高层</div></div>
-                <span class="room-card-type">双人间</span>
-            </div>
-            <div class="bed-label">选择床位：</div>
-            <div class="bed-grid">
-                <button class="bed-btn" onclick="selectBed(this)"><span>A号床</span><span class="material-symbols-outlined">bed</span></button>
-                <button class="bed-btn" onclick="selectBed(this)"><span>B号床</span><span class="material-symbols-outlined">bed</span></button>
-            </div>
-            <button class="grab-btn disabled" disabled>立即抢订</button>
-        </div>
+        <asp:Panel ID="pnlEmpty" runat="server" Visible="false" CssClass="empty-state">
+            <span class="material-symbols-outlined">meeting_room</span>
+            <span>该批次暂无可选宿舍</span>
+        </asp:Panel>
+    </asp:Panel>
 
-        <!-- 403室（满员） -->
-        <div class="room-card full">
-            <div class="room-card-header">
-                <div><div class="room-card-title">403 室</div><div class="room-card-sub">Building C · 低层</div></div>
-                <span class="room-card-type full-type">四人间</span>
-            </div>
-            <div class="bed-label">选择床位：</div>
-            <div class="bed-grid">
-                <div class="bed-btn occupied" style="opacity:0.5;"><span>A号床</span><span style="font-size:12px;">已占</span></div>
-                <div class="bed-btn occupied" style="opacity:0.5;"><span>B号床</span><span style="font-size:12px;">已占</span></div>
-                <div class="bed-btn occupied" style="opacity:0.5;"><span>C号床</span><span style="font-size:12px;">已占</span></div>
-                <div class="bed-btn occupied" style="opacity:0.5;"><span>D号床</span><span style="font-size:12px;">已占</span></div>
-            </div>
-            <button class="grab-btn full-btn" disabled>已满额</button>
-        </div>
+    <asp:Button ID="btnGrab" runat="server" Style="display:none;" OnClick="btnGrab_Click" />
 
-        <!-- 1205室 -->
-        <div class="room-card">
-            <div class="room-card-header">
-                <div><div class="room-card-title">1205 室</div><div class="room-card-sub">Building B · 空中花园</div></div>
-                <span class="room-card-type">六人间</span>
-            </div>
-            <div class="bed-label">选择床位：</div>
-            <div class="bed-grid">
-                <button class="bed-btn occupied" disabled><span>A号床</span><span style="font-size:12px;">已占</span></button>
-                <button class="bed-btn" onclick="selectBed(this)"><span>B号床</span><span class="material-symbols-outlined">bed</span></button>
-                <button class="bed-btn" onclick="selectBed(this)"><span>C号床</span><span class="material-symbols-outlined">bed</span></button>
-                <button class="bed-btn occupied" disabled><span>D号床</span><span style="font-size:12px;">已占</span></button>
-                <button class="bed-btn" onclick="selectBed(this)"><span>E号床</span><span class="material-symbols-outlined">bed</span></button>
-                <button class="bed-btn occupied" disabled><span>F号床</span><span style="font-size:12px;">已占</span></button>
-            </div>
-            <button class="grab-btn disabled" disabled>立即抢订</button>
-        </div>
-    </div>
+    <div id="toast" class="toast"></div>
 
     <script type="text/javascript">
-        function selectBed(btn) {
+        var selectedBedId = 0;
+
+        function selectBed(btn, bedId) {
             var card = btn.closest('.room-card');
             var beds = card.querySelectorAll('.bed-btn:not(.occupied)');
             beds.forEach(function(b) { b.classList.remove('selected'); });
             btn.classList.add('selected');
+            selectedBedId = bedId;
+            document.getElementById('<%= hfSelectedBedId.ClientID %>').value = bedId;
+
             var grabBtn = card.querySelector('.grab-btn');
-            grabBtn.disabled = false;
-            grabBtn.classList.remove('disabled');
-            grabBtn.classList.add('active');
-            grabBtn.onclick = function() {
-                var room = card.querySelector('.room-card-title').innerText;
-                var bed = btn.querySelector('span').innerText;
-                alert('成功预约 ' + room + ' ' + bed + '！请在30分钟内完成选定确认。');
-            };
+            if (grabBtn && !grabBtn.classList.contains('full-btn')) {
+                grabBtn.disabled = false;
+                grabBtn.classList.remove('disabled');
+                grabBtn.classList.add('active');
+            }
         }
-        // Countdown
-        setInterval(function() {
-            var s = document.getElementById('seconds');
-            var m = document.getElementById('minutes');
-            var h = document.getElementById('hours');
-            var sec = parseInt(s.innerText) - 1;
-            if (sec < 0) { sec = 59; var min = parseInt(m.innerText) - 1; if (min < 0) { min = 59; var hr = parseInt(h.innerText) - 1; h.innerText = (hr < 10 ? '0' : '') + hr; } m.innerText = (min < 10 ? '0' : '') + min; }
-            s.innerText = (sec < 10 ? '0' : '') + sec;
-        }, 1000);
+
+        function grabBed(btn) {
+            if (selectedBedId <= 0) {
+                showToast('请先选择一个床位', 'error');
+                return;
+            }
+            // 触发服务端按钮
+            document.getElementById('<%= btnGrab.ClientID %>').click();
+        }
+
+        // 倒计时
+        var endTimeMs = parseInt(document.getElementById('<%= hfEndTime.ClientID %>').value);
+        if (endTimeMs > 0) {
+            setInterval(function() {
+                var now = new Date().getTime();
+                var diff = endTimeMs - now;
+                if (diff <= 0) {
+                    document.getElementById('countdownDisplay').innerText = '00:00:00';
+                    return;
+                }
+                var h = Math.floor(diff / 3600000);
+                var m = Math.floor((diff % 3600000) / 60000);
+                var s = Math.floor((diff % 60000) / 1000);
+                document.getElementById('countdownDisplay').innerText =
+                    (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+            }, 1000);
+        }
+
+        function showToast(msg, type) {
+            var toast = document.getElementById('toast');
+            toast.className = 'toast toast-' + type;
+            toast.innerHTML = '<span class="material-symbols-outlined">' + (type === 'success' ? 'check_circle' : 'error') + '</span>' + msg;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 3000);
+        }
     </script>
 </asp:Content>
