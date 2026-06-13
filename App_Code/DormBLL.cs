@@ -63,22 +63,32 @@ public class DormBLL
 
     public static bool AllocateBed(int bedId, int studentId)
     {
-        // 检查学生是否已有床位
-        string checkSql = "SELECT COUNT(*) FROM Beds WHERE StudentId=@StudentId AND Status=1";
-        MySqlParameter[] checkParams = new MySqlParameter[] { new MySqlParameter("@StudentId", studentId) };
-        object count = DBHelper.ExecuteScalar(checkSql, checkParams);
-        if (count != null && Convert.ToInt32(count) > 0)
-        {
-            return false; // 学生已有床位
-        }
-
+        // 1. 原子分配：UPDATE WHERE Status=0 保证同一床位不会被重复分配
         string sql = "UPDATE Beds SET StudentId=@StudentId, Status=1, AllocateTime=NOW() WHERE Id=@Id AND Status=0";
         MySqlParameter[] parameters = new MySqlParameter[]
         {
             new MySqlParameter("@StudentId", studentId),
             new MySqlParameter("@Id", bedId)
         };
-        return DBHelper.ExecuteNonQuery(sql, parameters) > 0;
+        int affected = DBHelper.ExecuteNonQuery(sql, parameters);
+
+        if (affected == 0) return false; // 床位已被占或不存在
+
+        // 2. 检查学生是否有重复床位（防极端并发）
+        string check = "SELECT COUNT(*) FROM Beds WHERE StudentId=@StudentId AND Status=1";
+        int count = Convert.ToInt32(DBHelper.ExecuteScalar(check, new MySqlParameter[] {
+            new MySqlParameter("@StudentId", studentId)
+        }));
+
+        if (count > 1)
+        {
+            // 有重复，回滚本次分配
+            DBHelper.ExecuteNonQuery("UPDATE Beds SET StudentId=NULL, Status=0, AllocateTime=NULL WHERE Id=@Id",
+                new MySqlParameter[] { new MySqlParameter("@Id", bedId) });
+            return false;
+        }
+
+        return true;
     }
 
     public static bool HasBed(int studentId)
