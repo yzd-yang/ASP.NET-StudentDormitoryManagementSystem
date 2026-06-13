@@ -332,7 +332,7 @@ public partial class admin_batch : System.Web.UI.Page
         }
         else
         {
-            if (BatchBLL.AddBatch(batchName, startTime, endTime, gradeLimit, collegeLimits, majorLimits, adminId, roomIds))
+            if (BatchBLL.AddBatch(batchName, startTime, endTime, gradeLimit, collegeLimits, majorLimits, adminId, roomIds, batchStatus))
             {
                 Session["ToastMsg"] = "创建成功";
                 Response.Redirect(Request.RawUrl);

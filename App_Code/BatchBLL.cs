@@ -50,10 +50,10 @@ public class BatchBLL
         return DBHelper.GetDataTable(sql);
     }
 
-    public static bool AddBatch(string batchName, DateTime startTime, DateTime endTime, string gradeLimit, string[] collegeLimits, string[] majorLimits, int adminId, int[] roomIds)
+    public static bool AddBatch(string batchName, DateTime startTime, DateTime endTime, string gradeLimit, string[] collegeLimits, string[] majorLimits, int adminId, int[] roomIds, int status)
     {
         string sql = @"INSERT INTO SelectionBatches (BatchName, StartTime, EndTime, GradeLimit, Status, AdminId) 
-                       VALUES (@BatchName, @StartTime, @EndTime, @GradeLimit, 0, @AdminId)";
+                       VALUES (@BatchName, @StartTime, @EndTime, @GradeLimit, @Status, @AdminId)";
 
         MySqlParameter[] parameters = new MySqlParameter[]
         {
@@ -61,6 +61,7 @@ public class BatchBLL
             new MySqlParameter("@StartTime", startTime),
             new MySqlParameter("@EndTime", endTime),
             new MySqlParameter("@GradeLimit", string.IsNullOrEmpty(gradeLimit) ? (object)DBNull.Value : gradeLimit),
+            new MySqlParameter("@Status", status),
             new MySqlParameter("@AdminId", adminId)
         };
 
