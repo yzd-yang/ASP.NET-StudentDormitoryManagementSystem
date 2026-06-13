@@ -27,13 +27,6 @@
                 </nav>
             </div>
             <div class="header-right">
-                <button type="button" class="header-icon-btn">
-                    <span class="material-symbols-outlined">search</span>
-                </button>
-                <button type="button" class="header-icon-btn">
-                    <span class="material-symbols-outlined">notifications</span>
-                </button>
-                <div class="header-divider"></div>
                 <div class="header-user-wrapper">
                     <div class="header-user" onclick="toggleUserMenu()">
                         <div class="header-user-avatar"><%= GetUserInitial() %></div>
