@@ -48,7 +48,7 @@ public partial class student_home : System.Web.UI.Page
             }
 
             string name = row["StudentName"].ToString();
-            string major = row["Major"] != DBNull.Value ? row["Major"].ToString() : "";
+            string major = row["MajorName"] != DBNull.Value ? row["MajorName"].ToString() : "";
             string grade = row["Grade"] != DBNull.Value ? row["Grade"].ToString() : "";
             litMyAvatar.Text = name.Length > 0 ? name.Substring(name.Length - 1) : "同";
             litMyName.Text = name;

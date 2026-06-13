@@ -174,7 +174,7 @@
                                         <div class="home-avatar"><%# Eval("Name").ToString().Substring(0, 1) %></div>
                                         <div class="home-roommate-info">
                                             <div class="home-roommate-name"><%# Eval("Name") %></div>
-                                            <div class="home-roommate-major"><%# Eval("Major") %> · <%# Eval("Grade") %></div>
+                                            <div class="home-roommate-major"><%# Eval("MajorName") %> · <%# Eval("Grade") %></div>
                                         </div>
                                     </div>
                                 </ItemTemplate>

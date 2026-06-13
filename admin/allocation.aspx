@@ -263,7 +263,7 @@
                                     <div class="student-avatar"><%# Eval("Name").ToString().Substring(0, 1) %></div>
                                     <div>
                                         <div class="student-name"><%# Eval("Name") %></div>
-                                        <div class="student-detail"><%# Eval("StudentNo") %> · <%# Eval("College") %> · <%# Eval("Major") %> · <%# Eval("Grade") %> <%# Eval("ClassName") %></div>
+                                        <div class="student-detail"><%# Eval("StudentNo") %> · <%# Eval("CollegeName") %> · <%# Eval("MajorName") %> · <%# Eval("Grade") %> <%# Eval("ClassName") %></div>
                                     </div>
                                 </div>
                                 <asp:LinkButton ID="btnSelectStudent" runat="server" CommandName="Select" CommandArgument='<%# Eval("Id") %>' CssClass="student-select-btn">选择</asp:LinkButton>

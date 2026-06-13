@@ -58,9 +58,8 @@ public partial class admin_batch : System.Web.UI.Page
 
     private void LoadColleges()
     {
-        DataTable dt = DeptBLL.GetDepartmentTree();
-        DataTable colleges = dt.DefaultView.ToTable(true, "CollegeName");
-        foreach (DataRow row in colleges.Rows)
+        DataTable dt = DormBLL.GetColleges();
+        foreach (DataRow row in dt.Rows)
         {
             ddlCollegeLimit.Items.Add(new ListItem(row["CollegeName"].ToString(), row["CollegeName"].ToString()));
             ddlFilterCollege.Items.Add(new ListItem(row["CollegeName"].ToString(), row["CollegeName"].ToString()));
@@ -98,13 +97,9 @@ public partial class admin_batch : System.Web.UI.Page
                     txtEndTime.Text = Convert.ToDateTime(row["EndTime"]).ToString("yyyy-MM-ddTHH:mm");
 
                     string gradeLimit = row["GradeLimit"] != DBNull.Value ? row["GradeLimit"].ToString() : "";
-                    string collegeLimit = row["CollegeLimit"] != DBNull.Value ? row["CollegeLimit"].ToString() : "";
-                    string majorLimit = row["MajorLimit"] != DBNull.Value ? row["MajorLimit"].ToString() : "";
                     int batchStatus = Convert.ToInt32(row["Status"]);
 
                     SetDropDownValue(ddlGradeLimit, gradeLimit);
-                    SetDropDownValue(ddlCollegeLimit, collegeLimit);
-                    SetDropDownValue(ddlMajorLimit, majorLimit);
                     ddlBatchStatusEdit.SelectedValue = batchStatus.ToString();
                     break;
                 }
@@ -214,6 +209,8 @@ public partial class admin_batch : System.Web.UI.Page
         string gradeLimit = ddlGradeLimit.SelectedValue;
         string collegeLimit = ddlCollegeLimit.SelectedValue;
         string majorLimit = ddlMajorLimit.SelectedValue;
+        string[] collegeLimits = !string.IsNullOrEmpty(collegeLimit) ? new string[] { collegeLimit } : null;
+        string[] majorLimits = !string.IsNullOrEmpty(majorLimit) ? new string[] { majorLimit } : null;
         int batchStatus = Convert.ToInt32(ddlBatchStatusEdit.SelectedValue);
         int adminId = Convert.ToInt32(Session["AdminId"]);
 
@@ -249,7 +246,7 @@ public partial class admin_batch : System.Web.UI.Page
         if (!string.IsNullOrEmpty(hfBatchId.Value))
         {
             int id = Convert.ToInt32(hfBatchId.Value);
-            if (BatchBLL.UpdateBatch(id, batchName, startTime, endTime, gradeLimit, collegeLimit, majorLimit, batchStatus))
+            if (BatchBLL.UpdateBatch(id, batchName, startTime, endTime, gradeLimit, collegeLimits, majorLimits, batchStatus))
             {
                 pnlBatchModal.Style["display"] = "none";
                 LoadBatches();
@@ -259,7 +256,7 @@ public partial class admin_batch : System.Web.UI.Page
         }
         else
         {
-            if (BatchBLL.AddBatch(batchName, startTime, endTime, gradeLimit, collegeLimit, majorLimit, adminId, roomIds))
+            if (BatchBLL.AddBatch(batchName, startTime, endTime, gradeLimit, collegeLimits, majorLimits, adminId, roomIds))
             {
                 pnlBatchModal.Style["display"] = "none";
                 LoadBatches();
@@ -323,17 +320,23 @@ public partial class admin_batch : System.Web.UI.Page
         return "<span class='batch-tag green'>" + gradeLimit + "</span>";
     }
 
-    protected string GetCollegeLimit(object collegeLimit)
+    protected string GetCollegeLimit(object batchIdObj)
     {
-        if (collegeLimit == null || collegeLimit == DBNull.Value || string.IsNullOrEmpty(collegeLimit.ToString()))
-            return "";
-        return "<span class='batch-tag purple'>" + collegeLimit + "</span>";
+        int batchId = Convert.ToInt32(batchIdObj);
+        DataTable dt = DBHelper.GetDataTable("SELECT CollegeName FROM BatchCollegeLimit WHERE BatchId=@Id", new MySql.Data.MySqlClient.MySqlParameter[] { new MySql.Data.MySqlClient.MySqlParameter("@Id", batchId) });
+        if (dt.Rows.Count == 0) return "";
+        var names = new System.Collections.Generic.List<string>();
+        foreach (DataRow row in dt.Rows) names.Add(row["CollegeName"].ToString());
+        return "<span class='batch-tag purple'>" + string.Join("、", names) + "</span>";
     }
 
-    protected string GetMajorLimit(object majorLimit)
+    protected string GetMajorLimit(object batchIdObj)
     {
-        if (majorLimit == null || majorLimit == DBNull.Value || string.IsNullOrEmpty(majorLimit.ToString()))
-            return "";
-        return "<span class='batch-tag green'>" + majorLimit + "</span>";
+        int batchId = Convert.ToInt32(batchIdObj);
+        DataTable dt = DBHelper.GetDataTable("SELECT MajorName FROM BatchMajorLimit WHERE BatchId=@Id", new MySql.Data.MySqlClient.MySqlParameter[] { new MySql.Data.MySqlClient.MySqlParameter("@Id", batchId) });
+        if (dt.Rows.Count == 0) return "";
+        var names = new System.Collections.Generic.List<string>();
+        foreach (DataRow row in dt.Rows) names.Add(row["MajorName"].ToString());
+        return "<span class='batch-tag green'>" + string.Join("、", names) + "</span>";
     }
 }

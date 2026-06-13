@@ -167,7 +167,7 @@
                 </div>
                 <div class="info-field">
                     <label class="info-label">年级</label>
-                    <asp:TextBox ID="txtGrade" runat="server" CssClass="info-value" placeholder="格式：2023级" />
+                    <asp:DropDownList ID="ddlGrade" runat="server" CssClass="info-value" />
                 </div>
                 <div class="info-field">
                     <label class="info-label">班级（选填）</label>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Web;
 using System.Web.UI;
@@ -24,19 +24,26 @@ public partial class student_batch : System.Web.UI.Page
         int studentId = Convert.ToInt32(Session["UserId"]);
         DataTable studentDt = UserBLL.GetStudentById(studentId);
         string grade = "", college = "", major = "";
+        bool infoComplete = false;
         if (studentDt != null && studentDt.Rows.Count > 0)
         {
             DataRow row = studentDt.Rows[0];
             grade = row["Grade"] != DBNull.Value ? row["Grade"].ToString() : "";
-            college = row["College"] != DBNull.Value ? row["College"].ToString() : "";
-            major = row["Major"] != DBNull.Value ? row["Major"].ToString() : "";
+            college = row["CollegeName"] != DBNull.Value ? row["CollegeName"].ToString() : "";
+            major = row["MajorName"] != DBNull.Value ? row["MajorName"].ToString() : "";
+            infoComplete = !string.IsNullOrEmpty(grade) && !string.IsNullOrEmpty(college) && !string.IsNullOrEmpty(major);
         }
 
         string keyword = txtKeyword.Text.Trim();
         int status = -1;
         int.TryParse(ddlStatus.SelectedValue, out status);
 
-        DataTable dt = BatchBLL.GetBatchesForStudent(grade, college, major, keyword, status);
+        // 信息不完整时不过滤年级/学院/专业，显示全部批次
+        DataTable dt = BatchBLL.GetBatchesForStudent(
+            infoComplete ? grade : null,
+            infoComplete ? college : null,
+            infoComplete ? major : null,
+            keyword, status);
         if (dt != null && dt.Rows.Count > 0)
         {
             rptBatches.DataSource = dt;
@@ -87,8 +94,8 @@ public partial class student_batch : System.Web.UI.Page
         if (dt == null || dt.Rows.Count == 0) return false;
 
         DataRow row = dt.Rows[0];
-        string college = row["College"] != DBNull.Value ? row["College"].ToString().Trim() : "";
-        string major = row["Major"] != DBNull.Value ? row["Major"].ToString().Trim() : "";
+        string college = row["CollegeName"] != DBNull.Value ? row["CollegeName"].ToString().Trim() : "";
+        string major = row["MajorName"] != DBNull.Value ? row["MajorName"].ToString().Trim() : "";
         string grade = row["Grade"] != DBNull.Value ? row["Grade"].ToString().Trim() : "";
 
         return !string.IsNullOrEmpty(college) && !string.IsNullOrEmpty(major) && !string.IsNullOrEmpty(grade);

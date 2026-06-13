@@ -524,7 +524,27 @@ public partial class admin_system : System.Web.UI.Page
             return;
         }
 
-        if (DeptBLL.AddDepartment(college, major))
+        // 查找或创建学院
+        DataTable colleges = DormBLL.GetColleges();
+        int collegeId = 0;
+        foreach (DataRow row in colleges.Rows)
+        {
+            if (row["CollegeName"].ToString() == college)
+            {
+                collegeId = Convert.ToInt32(row["Id"]);
+                break;
+            }
+        }
+        if (collegeId == 0)
+        {
+            DBHelper.ExecuteNonQuery("INSERT INTO Colleges (CollegeName) VALUES (@Name)", new MySql.Data.MySqlClient.MySqlParameter[] {
+                new MySql.Data.MySqlClient.MySqlParameter("@Name", college)
+            });
+            DataTable dt = DBHelper.GetDataTable("SELECT LAST_INSERT_ID() as Id");
+            collegeId = Convert.ToInt32(dt.Rows[0]["Id"]);
+        }
+
+        if (DeptBLL.AddDepartment(collegeId, major))
         {
             pnlDeptModal.Style["display"] = "none";
             txtCollegeName.Text = "";

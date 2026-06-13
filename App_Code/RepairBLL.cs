@@ -150,12 +150,14 @@ public class RepairBLL
 
     public static DataTable GetRepairList(int status = 0, int buildingId = 0, int repairType = 0, int pageIndex = 1, int pageSize = 15)
     {
-        string sql = @"SELECT ro.*, s.Name as StudentName, s.StudentNo, s.College, r.RoomNo, r.Floor, bd.Name as BuildingName,
+        string sql = @"SELECT ro.*, s.Name as StudentName, s.StudentNo, c.CollegeName as College, r.RoomNo, r.Floor, bd.Name as BuildingName,
                        CASE ro.RepairType WHEN 1 THEN '水电报修' WHEN 2 THEN '家具家电' WHEN 3 THEN '网络连接' WHEN 4 THEN '其他' END as TypeName,
                        CASE ro.Status WHEN 1 THEN '待分配' WHEN 2 THEN '维修中' WHEN 3 THEN '已完成' WHEN 4 THEN '已驳回' END as StatusName,
                        a.Name as AssignAdminName
                        FROM RepairOrders ro
                        LEFT JOIN Students s ON ro.StudentId = s.Id
+                       LEFT JOIN Departments d ON s.DepartmentId = d.Id
+                       LEFT JOIN Colleges c ON d.CollegeId = c.Id
                        LEFT JOIN Rooms r ON ro.RoomId = r.Id
                        LEFT JOIN Buildings bd ON r.BuildingId = bd.Id
                        LEFT JOIN Admins a ON ro.AssignAdminId = a.Id
@@ -216,13 +218,15 @@ public class RepairBLL
 
     public static DataTable GetRepairById(int id)
     {
-        string sql = @"SELECT ro.*, s.Name as StudentName, s.StudentNo, s.College, s.Major, s.Phone as StudentPhone,
+        string sql = @"SELECT ro.*, s.Name as StudentName, s.StudentNo, c.CollegeName, d.MajorName, s.Phone as StudentPhone,
                        r.RoomNo, r.Floor, bd.Name as BuildingName,
                        CASE ro.RepairType WHEN 1 THEN '水电报修' WHEN 2 THEN '家具家电' WHEN 3 THEN '网络连接' WHEN 4 THEN '其他' END as TypeName,
                        CASE ro.Status WHEN 1 THEN '待分配' WHEN 2 THEN '维修中' WHEN 3 THEN '已完成' WHEN 4 THEN '已驳回' END as StatusName,
                        a.Name as AssignAdminName
                        FROM RepairOrders ro
                        LEFT JOIN Students s ON ro.StudentId = s.Id
+                       LEFT JOIN Departments d ON s.DepartmentId = d.Id
+                       LEFT JOIN Colleges c ON d.CollegeId = c.Id
                        LEFT JOIN Rooms r ON ro.RoomId = r.Id
                        LEFT JOIN Buildings bd ON r.BuildingId = bd.Id
                        LEFT JOIN Admins a ON ro.AssignAdminId = a.Id

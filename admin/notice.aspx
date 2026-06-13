@@ -109,9 +109,6 @@
                     <label>发送范围</label>
                     <asp:DropDownList ID="ddlScope" runat="server" CssClass="form-select">
                         <asp:ListItem Value="0" Text="全体住户" />
-                        <asp:ListItem Value="1" Text="A栋宿舍楼" />
-                        <asp:ListItem Value="2" Text="B栋宿舍楼" />
-                        <asp:ListItem Value="3" Text="C栋宿舍楼" />
                     </asp:DropDownList>
                 </div>
                 <div class="form-group">
@@ -167,7 +164,7 @@
                             </div>
                         </td>
                         <td>
-                            <div class="notice-scope"><%# GetScopeText(Eval("Scope")) %></div>
+                            <div class="notice-scope"><%# GetScopeText(Eval("Id")) %></div>
                             <div class="notice-category"><%# GetCategoryText(Eval("Category")) %></div>
                         </td>
                         <td>

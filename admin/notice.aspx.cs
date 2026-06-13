@@ -30,10 +30,20 @@ public partial class admin_notice : System.Web.UI.Page
 
         if (!IsPostBack)
         {
+            LoadScopeOptions();
             LoadNotices();
         }
 
         UpdateFormButton();
+    }
+
+    private void LoadScopeOptions()
+    {
+        DataTable dt = DormBLL.GetBuildings();
+        foreach (DataRow row in dt.Rows)
+        {
+            ddlScope.Items.Add(new ListItem(row["Name"].ToString() + "宿舍楼", row["Id"].ToString()));
+        }
     }
 
     private void LoadNotices()
@@ -93,11 +103,18 @@ public partial class admin_notice : System.Web.UI.Page
     {
         string title = txtTitle.Text.Trim();
         string content = txtContent.Text.Trim();
-        int scope = Convert.ToInt32(ddlScope.SelectedValue);
         int category = Convert.ToInt32(ddlCategory.SelectedValue);
         int isTop = chkIsTop.Checked ? 1 : 0;
         int status = chkSendNow.Checked ? 1 : 0;
         int adminId = Convert.ToInt32(Session["AdminId"]);
+
+        // 获取选中的楼宇
+        int[] buildingIds = null;
+        string scopeVal = ddlScope.SelectedValue;
+        if (scopeVal != "0")
+        {
+            buildingIds = new int[] { Convert.ToInt32(scopeVal) };
+        }
 
         if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(content))
         {
@@ -108,7 +125,7 @@ public partial class admin_notice : System.Web.UI.Page
         if (!string.IsNullOrEmpty(hfNoticeId.Value))
         {
             int id = Convert.ToInt32(hfNoticeId.Value);
-            if (NoticeBLL.UpdateNotice(id, title, content, scope, category, isTop))
+            if (NoticeBLL.UpdateNotice(id, title, content, category, isTop, buildingIds))
             {
                 ClearForm();
                 LoadNotices();
@@ -117,7 +134,7 @@ public partial class admin_notice : System.Web.UI.Page
         }
         else
         {
-            if (NoticeBLL.AddNotice(title, content, scope, category, isTop, status, adminId))
+            if (NoticeBLL.AddNotice(title, content, category, isTop, status, adminId, buildingIds))
             {
                 ClearForm();
                 LoadNotices();
@@ -156,7 +173,12 @@ public partial class admin_notice : System.Web.UI.Page
                 hfNoticeId.Value = id.ToString();
                 txtTitle.Text = row["Title"].ToString();
                 txtContent.Text = row["Content"].ToString();
-                ddlScope.SelectedValue = row["Scope"].ToString();
+                // 加载通知范围
+                DataTable scopeDt = NoticeBLL.GetNoticeScope(id);
+                if (scopeDt.Rows.Count > 0)
+                    ddlScope.SelectedValue = scopeDt.Rows[0]["BuildingId"].ToString();
+                else
+                    ddlScope.SelectedIndex = 0;
                 ddlCategory.SelectedValue = row["Category"].ToString();
                 chkIsTop.Checked = Convert.ToInt32(row["IsTop"]) == 1;
                 chkSendNow.Checked = Convert.ToInt32(row["Status"]) == 1;
@@ -234,17 +256,10 @@ public partial class admin_notice : System.Web.UI.Page
         LoadNotices();
     }
 
-    protected string GetScopeText(object scope)
+    protected string GetScopeText(object noticeIdObj)
     {
-        int s = Convert.ToInt32(scope);
-        switch (s)
-        {
-            case 0: return "全体住户";
-            case 1: return "A栋宿舍楼";
-            case 2: return "B栋宿舍楼";
-            case 3: return "C栋宿舍楼";
-            default: return "全体";
-        }
+        int noticeId = Convert.ToInt32(noticeIdObj);
+        return NoticeBLL.GetNoticeScopeText(noticeId);
     }
 
     protected string GetCategoryText(object category)

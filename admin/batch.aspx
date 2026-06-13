@@ -173,8 +173,8 @@
                             <td>
                                 <div class="batch-tags">
                                     <%# GetGradeLimit(Eval("GradeLimit")) %>
-                                    <%# GetCollegeLimit(Eval("CollegeLimit")) %>
-                                    <%# GetMajorLimit(Eval("MajorLimit")) %>
+                                    <%# GetCollegeLimit(Eval("Id")) %>
+                                    <%# GetMajorLimit(Eval("Id")) %>
                                 </div>
                             </td>
                             <td><span class="batch-status-pill <%# GetStatusClass(Eval("Status")) %>"><%# GetStatusText(Eval("Status")) %></span></td>

@@ -86,22 +86,21 @@ public class UserBLL
 
     public static DataTable GetStudentById(int studentId)
     {
-        string sql = "SELECT * FROM Students WHERE Id=@Id";
+        string sql = "SELECT s.*, c.CollegeName, d.MajorName FROM Students s LEFT JOIN Departments d ON s.DepartmentId=d.Id LEFT JOIN Colleges c ON d.CollegeId=c.Id WHERE s.Id=@Id";
         MySqlParameter[] parameters = new MySqlParameter[] { new MySqlParameter("@Id", studentId) };
         return DBHelper.GetDataTable(sql, parameters);
     }
 
-    public static bool UpdateStudentInfo(int studentId, string email, string emergencyContact, string emergencyRelation, string emergencyPhone, string college, string major, string grade, string className)
+    public static bool UpdateStudentInfo(int studentId, string email, string emergencyContact, string emergencyRelation, string emergencyPhone, int departmentId, string grade, string className)
     {
-        string sql = "UPDATE Students SET Email=@Email, EmergencyContact=@EmergencyContact, EmergencyRelation=@EmergencyRelation, EmergencyPhone=@EmergencyPhone, College=@College, Major=@Major, Grade=@Grade, ClassName=@ClassName WHERE Id=@Id";
+        string sql = "UPDATE Students SET Email=@Email, EmergencyContact=@EmergencyContact, EmergencyRelation=@EmergencyRelation, EmergencyPhone=@EmergencyPhone, DepartmentId=@DepartmentId, Grade=@Grade, ClassName=@ClassName WHERE Id=@Id";
         MySqlParameter[] parameters = new MySqlParameter[]
         {
             new MySqlParameter("@Email", email),
             new MySqlParameter("@EmergencyContact", emergencyContact),
             new MySqlParameter("@EmergencyRelation", emergencyRelation),
             new MySqlParameter("@EmergencyPhone", emergencyPhone),
-            new MySqlParameter("@College", college),
-            new MySqlParameter("@Major", major),
+            new MySqlParameter("@DepartmentId", departmentId > 0 ? (object)departmentId : DBNull.Value),
             new MySqlParameter("@Grade", grade),
             new MySqlParameter("@ClassName", className),
             new MySqlParameter("@Id", studentId)

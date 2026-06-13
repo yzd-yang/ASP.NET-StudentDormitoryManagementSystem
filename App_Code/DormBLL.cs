@@ -6,9 +6,11 @@ public class DormBLL
 {
     public static DataTable GetStudentDormInfo(int studentId)
     {
-        string sql = @"SELECT s.Name as StudentName, s.StudentNo, s.College, s.Major, s.Grade,
+        string sql = @"SELECT s.Name as StudentName, s.StudentNo, c.CollegeName, d.MajorName, s.Grade,
                        bd.Campus, bd.Name as BuildingName, r.RoomNo, r.RoomType, bed.BedNo
                        FROM Students s
+                       LEFT JOIN Departments d ON s.DepartmentId = d.Id
+                       LEFT JOIN Colleges c ON d.CollegeId = c.Id
                        LEFT JOIN Beds bed ON s.Id = bed.StudentId
                        LEFT JOIN Rooms r ON bed.RoomId = r.Id
                        LEFT JOIN Buildings bd ON r.BuildingId = bd.Id
@@ -20,10 +22,12 @@ public class DormBLL
 
     public static DataTable GetRoommates(int studentId)
     {
-        string sql = @"SELECT s2.Name, s2.College, s2.Major, s2.Grade
+        string sql = @"SELECT s2.Name, c.CollegeName, d.MajorName, s2.Grade
                        FROM Beds bed1
                        JOIN Beds bed2 ON bed1.RoomId = bed2.RoomId AND bed2.StudentId IS NOT NULL
                        JOIN Students s2 ON bed2.StudentId = s2.Id
+                       LEFT JOIN Departments d ON s2.DepartmentId = d.Id
+                       LEFT JOIN Colleges c ON d.CollegeId = c.Id
                        WHERE bed1.StudentId = @StudentId AND bed2.StudentId != @StudentId";
 
         MySqlParameter[] parameters = new MySqlParameter[] { new MySqlParameter("@StudentId", studentId) };
@@ -94,9 +98,11 @@ public class DormBLL
 
     public static DataTable SearchStudents(string keyword)
     {
-        string sql = @"SELECT Id, StudentNo, Name, College, Major, Grade, ClassName
-                       FROM Students 
-                       WHERE (StudentNo LIKE @Keyword OR Name LIKE @Keyword) AND Status=1
+        string sql = @"SELECT s.Id, s.StudentNo, s.Name, c.CollegeName, d.MajorName, s.Grade, s.ClassName
+                       FROM Students s
+                       LEFT JOIN Departments d ON s.DepartmentId = d.Id
+                       LEFT JOIN Colleges c ON d.CollegeId = c.Id
+                       WHERE (s.StudentNo LIKE @Keyword OR s.Name LIKE @Keyword) AND s.Status=1
                        LIMIT 20";
         MySqlParameter[] parameters = new MySqlParameter[] { new MySqlParameter("@Keyword", "%" + keyword + "%") };
         return DBHelper.GetDataTable(sql, parameters);
@@ -104,8 +110,10 @@ public class DormBLL
 
     public static DataTable SearchStudents(string keyword, string college, string major, string grade, string className)
     {
-        string sql = @"SELECT s.Id, s.StudentNo, s.Name, s.College, s.Major, s.Grade, s.ClassName
+        string sql = @"SELECT s.Id, s.StudentNo, s.Name, c.CollegeName, d.MajorName, s.Grade, s.ClassName
                        FROM Students s
+                       LEFT JOIN Departments d ON s.DepartmentId = d.Id
+                       LEFT JOIN Colleges c ON d.CollegeId = c.Id
                        LEFT JOIN Beds b ON s.Id = b.StudentId AND b.Status = 1
                        WHERE s.Status=1 AND b.Id IS NULL";
 
@@ -115,11 +123,11 @@ public class DormBLL
         }
         if (!string.IsNullOrEmpty(college))
         {
-            sql += " AND s.College=@College";
+            sql += " AND c.CollegeName=@College";
         }
         if (!string.IsNullOrEmpty(major))
         {
-            sql += " AND s.Major=@Major";
+            sql += " AND d.MajorName=@Major";
         }
         if (!string.IsNullOrEmpty(grade))
         {
@@ -149,15 +157,26 @@ public class DormBLL
 
     public static DataTable GetColleges()
     {
-        string sql = "SELECT DISTINCT CollegeName FROM Departments ORDER BY CollegeName";
+        string sql = "SELECT Id, CollegeName FROM Colleges ORDER BY SortOrder";
         return DBHelper.GetDataTable(sql);
     }
 
     public static DataTable GetMajorsByCollege(string college)
     {
-        string sql = "SELECT DISTINCT MajorName FROM Departments WHERE CollegeName=@College ORDER BY MajorName";
+        string sql = "SELECT d.Id, d.MajorName FROM Departments d JOIN Colleges c ON d.CollegeId=c.Id WHERE c.CollegeName=@College ORDER BY d.MajorName";
         MySqlParameter[] parameters = new MySqlParameter[] { new MySqlParameter("@College", college) };
         return DBHelper.GetDataTable(sql, parameters);
+    }
+
+    public static int GetDepartmentId(string collegeName, string majorName)
+    {
+        string sql = "SELECT d.Id FROM Departments d JOIN Colleges c ON d.CollegeId=c.Id WHERE c.CollegeName=@College AND d.MajorName=@Major";
+        MySqlParameter[] parameters = new MySqlParameter[] {
+            new MySqlParameter("@College", collegeName),
+            new MySqlParameter("@Major", majorName)
+        };
+        object result = DBHelper.ExecuteScalar(sql, parameters);
+        return result != null ? Convert.ToInt32(result) : 0;
     }
 
     public static DataTable GetGrades()
@@ -168,11 +187,11 @@ public class DormBLL
 
     public static DataTable GetClasses(string college, string major, string grade)
     {
-        string sql = "SELECT DISTINCT ClassName FROM Students WHERE ClassName IS NOT NULL";
-        if (!string.IsNullOrEmpty(college)) sql += " AND College=@College";
-        if (!string.IsNullOrEmpty(major)) sql += " AND Major=@Major";
-        if (!string.IsNullOrEmpty(grade)) sql += " AND Grade=@Grade";
-        sql += " ORDER BY ClassName";
+        string sql = "SELECT DISTINCT s.ClassName FROM Students s LEFT JOIN Departments d ON s.DepartmentId=d.Id LEFT JOIN Colleges c ON d.CollegeId=c.Id WHERE s.ClassName IS NOT NULL";
+        if (!string.IsNullOrEmpty(college)) sql += " AND c.CollegeName=@College";
+        if (!string.IsNullOrEmpty(major)) sql += " AND d.MajorName=@Major";
+        if (!string.IsNullOrEmpty(grade)) sql += " AND s.Grade=@Grade";
+        sql += " ORDER BY s.ClassName";
 
         var paramList = new System.Collections.Generic.List<MySqlParameter>();
         if (!string.IsNullOrEmpty(college)) paramList.Add(new MySqlParameter("@College", college));
@@ -508,16 +527,16 @@ public class DeptBLL
 {
     public static DataTable GetDepartmentTree()
     {
-        string sql = "SELECT * FROM Departments ORDER BY CollegeName, SortOrder";
+        string sql = "SELECT d.Id, c.CollegeName, d.MajorName FROM Departments d JOIN Colleges c ON d.CollegeId=c.Id ORDER BY c.SortOrder, d.Id";
         return DBHelper.GetDataTable(sql);
     }
 
-    public static bool AddDepartment(string collegeName, string majorName)
+    public static bool AddDepartment(int collegeId, string majorName)
     {
-        string sql = "INSERT INTO Departments (CollegeName, MajorName) VALUES (@CollegeName, @MajorName)";
+        string sql = "INSERT INTO Departments (CollegeId, MajorName) VALUES (@CollegeId, @MajorName)";
         MySqlParameter[] parameters = new MySqlParameter[]
         {
-            new MySqlParameter("@CollegeName", collegeName),
+            new MySqlParameter("@CollegeId", collegeId),
             new MySqlParameter("@MajorName", majorName)
         };
         return DBHelper.ExecuteNonQuery(sql, parameters) > 0;

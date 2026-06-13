@@ -96,7 +96,6 @@
                             <th>批次名称</th>
                             <th>楼栋</th>
                             <th>适用年级</th>
-                            <th>专业限定</th>
                             <th>状态</th>
                             <th style="text-align:center;">操作</th>
                         </tr>
@@ -108,7 +107,6 @@
                     <td><span class="batch-name"><%# Eval("BatchName") %></span></td>
                     <td><%# Eval("BuildingNames") != DBNull.Value ? Eval("BuildingNames") : "全部楼栋" %></td>
                     <td><%# Eval("GradeLimit") != DBNull.Value ? Eval("GradeLimit") : "不限年级" %></td>
-                    <td><%# Eval("MajorLimit") != DBNull.Value ? Eval("MajorLimit") : "不限专业" %></td>
                     <td><span class="batch-status <%# GetStatusClass(Convert.ToInt32(Eval("Status"))) %>"><%# GetStatusText(Convert.ToInt32(Eval("Status"))) %></span></td>
                     <td style="text-align:center;">
                         <%# Convert.ToInt32(Eval("Status")) == 1 ? "<a href='grab-dorm.aspx?batchId=" + Eval("Id") + "' class='batch-btn primary' onclick='return checkInfo();'>进入选宿</a>" : "<span class='batch-btn ghost'>" + (Convert.ToInt32(Eval("Status")) == 0 ? "未开始" : "已结束") + "</span>" %>

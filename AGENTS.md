@@ -61,12 +61,11 @@ ASP.NET Web Forms 4.8 **Website 模型**（非 Web Application），无 `.sln`/`
 |------|------|
 | `DBHelper.cs` | 数据库访问封装（ExecuteNonQuery/Scalar/GetDataTable/GetReader/ExecuteTransaction） |
 | `UserBLL.cs` | 登录、注册、学生信息 |
-| `DormBLL.cs` | 宿舍/房间/床位/楼宇/院系管理 |
+| `DormBLL.cs` | 宿舍/房间/床位/楼宇管理，**`DeptBLL` 类也在此文件末尾**（院系专业 CRUD） |
 | `RepairBLL.cs` | 报修工单全生命周期 |
 | `AdminBLL.cs` | 管理员账号 CRUD |
 | `BatchBLL.cs` | 选宿批次管理 |
 | `NoticeBLL.cs` | 通知公告管理 |
-| `DeptBLL.cs` | 院系专业管理 |
 
 ## 数据库初始化
 
@@ -78,6 +77,26 @@ mysql -u root -p smartdorm < sql/init_data.sql
 ```
 
 连接字符串在 `web.config` 的 `connectionStrings` 节点，默认 `root/123456`。
+
+### 表结构要点（v3.0 范式优化后）
+
+**16 张表**，核心关联链：
+
+```
+Colleges → Departments → Students → Beds → Rooms → Buildings
+                  ↓
+         SelectionBatches → BatchCollegeLimit / BatchMajorLimit / BatchRooms
+                  ↓
+              Notices → NoticeScope → Buildings
+```
+
+关键设计决策：
+- `Students` 用 `DepartmentId` 外键（非 College/Major 文本），查询学院/专业需 JOIN `Departments` + `Colleges`
+- `SelectionBatches` 的学院/专业限制拆到 `BatchCollegeLimit`/`BatchMajorLimit` 关联表（非 JSON 字段）
+- `Notices` 的发送范围拆到 `NoticeScope` 关联表（非 Scope 枚举），无记录=全体
+- `BatchRooms(BatchId, RoomId)` 有 UNIQUE 约束
+
+BLL 层查询这些表时普遍使用三表 JOIN：`Students s JOIN Departments d ON s.DepartmentId=d.Id JOIN Colleges c ON d.CollegeId=c.Id`
 
 ## 测试账号
 

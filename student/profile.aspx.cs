@@ -45,16 +45,19 @@ public partial class student_profile : System.Web.UI.Page
         }
         txtEmergencyPhone.Text = row["EmergencyPhone"] != DBNull.Value ? MaskPhone(row["EmergencyPhone"].ToString()) : "";
 
-        txtGrade.Text = row["Grade"] != DBNull.Value ? row["Grade"].ToString() : "";
+        LoadGradeList();
+        string grade = row["Grade"] != DBNull.Value ? row["Grade"].ToString() : "";
+        if (!string.IsNullOrEmpty(grade) && ddlGrade.Items.FindByValue(grade) != null)
+            ddlGrade.SelectedValue = grade;
         txtClassName.Text = row["ClassName"] != DBNull.Value ? row["ClassName"].ToString() : "";
 
         LoadCollegeList();
-        string college = row["College"] != DBNull.Value ? row["College"].ToString() : "";
+        string college = row["CollegeName"] != DBNull.Value ? row["CollegeName"].ToString() : "";
         if (!string.IsNullOrEmpty(college))
         {
             ddlCollege.SelectedValue = college;
             LoadMajorList(college);
-            string major = row["Major"] != DBNull.Value ? row["Major"].ToString() : "";
+            string major = row["MajorName"] != DBNull.Value ? row["MajorName"].ToString() : "";
             if (!string.IsNullOrEmpty(major) && ddlMajor.Items.FindByValue(major) != null)
                 ddlMajor.SelectedValue = major;
         }
@@ -129,6 +132,18 @@ public partial class student_profile : System.Web.UI.Page
         }
     }
 
+    private void LoadGradeList()
+    {
+        ddlGrade.Items.Clear();
+        ddlGrade.Items.Add(new ListItem("-- 请选择年级 --", ""));
+        DataTable dt = DormBLL.GetGrades();
+        if (dt != null)
+        {
+            foreach (DataRow row in dt.Rows)
+                ddlGrade.Items.Add(new ListItem(row["Grade"].ToString(), row["Grade"].ToString()));
+        }
+    }
+
     protected void ddlCollege_Changed(object sender, EventArgs e)
     {
         LoadMajorList(ddlCollege.SelectedValue);
@@ -157,10 +172,23 @@ public partial class student_profile : System.Web.UI.Page
 
         string college = ddlCollege.SelectedValue;
         string major = ddlMajor.SelectedValue;
-        string grade = txtGrade.Text.Trim();
+        string grade = ddlGrade.SelectedValue;
+
+        if (string.IsNullOrEmpty(grade))
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "toast", "showToast('请选择年级','error');", true);
+            return;
+        }
+        if (string.IsNullOrEmpty(college) || string.IsNullOrEmpty(major))
+        {
+            ScriptManager.RegisterStartupScript(this, GetType(), "toast", "showToast('请选择学院和专业','error');", true);
+            return;
+        }
+
+        int departmentId = DormBLL.GetDepartmentId(college, major);
         string className = txtClassName.Text.Trim();
 
-        bool ok = UserBLL.UpdateStudentInfo(studentId, email, emergencyContact, emergencyRelation, emergencyPhone, college, major, grade, className);
+        bool ok = UserBLL.UpdateStudentInfo(studentId, email, emergencyContact, emergencyRelation, emergencyPhone, departmentId, grade, className);
         if (ok)
         {
             ScriptManager.RegisterStartupScript(this, GetType(), "toast", "showToast('保存成功','success'); exitEdit();", true);
