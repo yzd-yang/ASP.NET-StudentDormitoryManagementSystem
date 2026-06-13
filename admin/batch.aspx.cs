@@ -18,9 +18,9 @@ public partial class admin_batch : System.Web.UI.Page
         {
             LoadStats();
             LoadBatches();
-            LoadColleges();
         }
 
+        LoadColleges();
         LoadBuildingOptions();
         LoadFloorData();
         LoadMajorData();
@@ -69,6 +69,10 @@ public partial class admin_batch : System.Web.UI.Page
 
     private void LoadColleges()
     {
+        ddlCollegeLimit.Items.Clear();
+        ddlCollegeLimit.Items.Add(new ListItem("不限", ""));
+        ddlFilterCollege.Items.Clear();
+        ddlFilterCollege.Items.Add(new ListItem("全部学院", ""));
         DataTable dt = DormBLL.GetColleges();
         foreach (DataRow row in dt.Rows)
         {

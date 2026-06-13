@@ -143,9 +143,7 @@
         </div>
         <div class="batch-filter-field">
             <label>学院</label>
-            <asp:DropDownList ID="ddlFilterCollege" runat="server">
-                <asp:ListItem Value="" Text="全部学院" />
-            </asp:DropDownList>
+                        <asp:DropDownList ID="ddlFilterCollege" runat="server" />
         </div>
         <asp:Button ID="btnBatchSearch" runat="server" CssClass="batch-filter-btn" Text="筛选" OnClick="btnBatchSearch_Click" />
         <button type="button" class="batch-filter-reset" onclick="document.getElementById('<%= txtBatchSearch.ClientID %>').value=''; document.getElementById('<%= ddlBatchStatus.ClientID %>').selectedIndex=0; document.getElementById('<%= ddlFilterGrade.ClientID %>').selectedIndex=0; document.getElementById('<%= ddlFilterCollege.ClientID %>').selectedIndex=0; document.getElementById('<%= btnBatchSearch.ClientID %>').click();">重置</button>
@@ -232,9 +230,7 @@
                     </div>
                     <div class="form-group">
                         <label>学院限定</label>
-                        <asp:DropDownList ID="ddlCollegeLimit" runat="server" CssClass="form-select" onchange="onCollegeChange()">
-                            <asp:ListItem Value="" Text="不限" />
-                        </asp:DropDownList>
+                        <asp:DropDownList ID="ddlCollegeLimit" runat="server" CssClass="form-select" onchange="onCollegeChange()" />
                     </div>
                 </div>
                 <div class="form-row">
