@@ -105,10 +105,8 @@ public partial class admin_batch : System.Web.UI.Page
                     txtEndTime.Text = Convert.ToDateTime(row["EndTime"]).ToString("yyyy-MM-ddTHH:mm");
 
                     string gradeLimit = row["GradeLimit"] != DBNull.Value ? row["GradeLimit"].ToString() : "";
-                    int batchStatus = Convert.ToInt32(row["Status"]);
 
                     SetDropDownValue(ddlGradeLimit, gradeLimit);
-                    ddlBatchStatusEdit.SelectedValue = batchStatus.ToString();
                     break;
                 }
             }
@@ -277,7 +275,6 @@ public partial class admin_batch : System.Web.UI.Page
         string majorLimit = ddlMajorLimit.SelectedValue;
         string[] collegeLimits = !string.IsNullOrEmpty(collegeLimit) ? new string[] { collegeLimit } : null;
         string[] majorLimits = !string.IsNullOrEmpty(majorLimit) ? new string[] { majorLimit } : null;
-        int batchStatus = Convert.ToInt32(ddlBatchStatusEdit.SelectedValue);
         int adminId = Convert.ToInt32(Session["AdminId"]);
 
         if (string.IsNullOrEmpty(batchName))
@@ -293,6 +290,15 @@ public partial class admin_batch : System.Web.UI.Page
             pnlBatchModal.Style["display"] = "flex";
             return;
         }
+
+        // 根据时间自动判断状态
+        int batchStatus;
+        if (DateTime.Now < startTime)
+            batchStatus = 0; // 待开始
+        else if (DateTime.Now > endTime)
+            batchStatus = 2; // 已结束
+        else
+            batchStatus = 1; // 进行中
 
         // 获取选中的房间
         string selectedIds = hfSelectedRoomIds.Value;
@@ -347,7 +353,6 @@ public partial class admin_batch : System.Web.UI.Page
         ddlGradeLimit.SelectedIndex = 0;
         ddlCollegeLimit.SelectedIndex = 0;
         ddlMajorLimit.SelectedIndex = 0;
-        ddlBatchStatusEdit.SelectedIndex = 0;
         hfSelectedRoomIds.Value = "";
         ddlModalBuilding.SelectedIndex = 0;
         ddlModalFloor.Items.Clear();

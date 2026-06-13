@@ -244,14 +244,6 @@
                             <asp:ListItem Value="" Text="不限" />
                         </asp:DropDownList>
                     </div>
-                    <div class="form-group">
-                        <label>状态</label>
-                        <asp:DropDownList ID="ddlBatchStatusEdit" runat="server" CssClass="form-select">
-                            <asp:ListItem Value="0" Text="待开始" />
-                            <asp:ListItem Value="1" Text="进行中" />
-                            <asp:ListItem Value="2" Text="已结束" />
-                        </asp:DropDownList>
-                    </div>
                 </div>
                 <div class="form-group">
                     <label>宿舍范围</label>
