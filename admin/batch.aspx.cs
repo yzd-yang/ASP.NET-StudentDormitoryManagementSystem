@@ -24,6 +24,13 @@ public partial class admin_batch : System.Web.UI.Page
         LoadBuildingOptions();
         LoadFloorData();
         LoadMajorData();
+
+        if (Session["ToastMsg"] != null)
+        {
+            string msg = Session["ToastMsg"].ToString();
+            Session.Remove("ToastMsg");
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('" + msg + "','success');", true);
+        }
     }
 
     private void LoadStats()
@@ -117,9 +124,8 @@ public partial class admin_batch : System.Web.UI.Page
         {
             if (BatchBLL.DeleteBatch(id))
             {
-                LoadBatches();
-                LoadStats();
-                Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('批次已删除','success');", true);
+                Session["ToastMsg"] = "批次已删除";
+                Response.Redirect(Request.RawUrl);
             }
         }
     }
@@ -320,20 +326,16 @@ public partial class admin_batch : System.Web.UI.Page
             int id = Convert.ToInt32(hfBatchId.Value);
             if (BatchBLL.UpdateBatch(id, batchName, startTime, endTime, gradeLimit, collegeLimits, majorLimits, batchStatus))
             {
-                pnlBatchModal.Style["display"] = "none";
-                LoadBatches();
-                LoadStats();
-                Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('修改成功','success');", true);
+                Session["ToastMsg"] = "修改成功";
+                Response.Redirect(Request.RawUrl);
             }
         }
         else
         {
             if (BatchBLL.AddBatch(batchName, startTime, endTime, gradeLimit, collegeLimits, majorLimits, adminId, roomIds))
             {
-                pnlBatchModal.Style["display"] = "none";
-                LoadBatches();
-                LoadStats();
-                Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('创建成功','success');", true);
+                Session["ToastMsg"] = "创建成功";
+                Response.Redirect(Request.RawUrl);
             }
             else
             {
