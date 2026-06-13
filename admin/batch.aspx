@@ -76,6 +76,7 @@
         }
         .room-btn:hover { background:rgba(73,234,206,0.2); }
         .room-btn.selected { background:var(--primary); color:var(--on-primary); font-weight:700; box-shadow:0 2px 8px rgba(73,234,206,0.3); }
+        .room-btn.disabled { background:rgba(186,26,26,0.1); color:rgba(186,26,26,0.6); cursor:not-allowed; border-color:rgba(186,26,26,0.2); }
 
         .toast { position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px); z-index:9999; padding:14px 28px; border-radius:14px; font-size:15px; font-weight:700; box-shadow:0 8px 24px rgba(0,0,0,0.15); transition:transform 0.3s ease; display:flex; align-items:center; gap:10px; }
         .toast.show { transform:translateX(-50%) translateY(0); }
@@ -322,12 +323,17 @@
             filtered.forEach(function(r) {
                 var btn = document.createElement('button');
                 btn.type = 'button';
-                btn.className = 'room-btn';
                 btn.setAttribute('data-room-id', r.Id);
                 btn.textContent = r.No;
-                var found = selectedRooms.some(function(s) { return s.id == r.Id; });
-                if (found) btn.classList.add('selected');
-                btn.onclick = function() { toggleRoom(r.Id, r.No); };
+                if (r.R === 1) {
+                    btn.className = 'room-btn disabled';
+                    btn.disabled = true;
+                } else {
+                    btn.className = 'room-btn';
+                    var found = selectedRooms.some(function(s) { return s.id == r.Id; });
+                    if (found) btn.classList.add('selected');
+                    btn.onclick = function() { toggleRoom(r.Id, r.No); };
+                }
                 grid.appendChild(btn);
             });
         }

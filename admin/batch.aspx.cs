@@ -147,6 +147,22 @@ public partial class admin_batch : System.Web.UI.Page
 
     private void LoadBatchData()
     {
+        // 查询不可选房间：待开始/进行中批次的房间 + 已结束/已暂停批次中已满的房间
+        string reservedSql = @"
+            SELECT DISTINCT br.RoomId FROM BatchRooms br
+            JOIN SelectionBatches sb ON br.BatchId = sb.Id
+            WHERE sb.Status IN (0, 1)
+            UNION
+            SELECT DISTINCT br.RoomId FROM BatchRooms br
+            JOIN SelectionBatches sb ON br.BatchId = sb.Id
+            JOIN Rooms r ON br.RoomId = r.Id
+            WHERE sb.Status IN (2, 3)
+              AND (SELECT COUNT(*) FROM Beds WHERE RoomId = r.Id AND Status = 0) = 0";
+        DataTable reservedDt = DBHelper.GetDataTable(reservedSql);
+        var reservedIds = new System.Collections.Generic.HashSet<int>();
+        foreach (DataRow row in reservedDt.Rows)
+            reservedIds.Add(Convert.ToInt32(row["RoomId"]));
+
         // 楼栋+楼层+房间
         DataTable buildings = BatchBLL.GetBuildingsForBatch();
         string buildingJson = "{";
@@ -168,9 +184,11 @@ public partial class admin_batch : System.Web.UI.Page
             for (int i = 0; i < rooms.Rows.Count; i++)
             {
                 if (i > 0) buildingJson += ",";
-                buildingJson += "{\"Id\":" + rooms.Rows[i]["Id"]
+                int roomId = Convert.ToInt32(rooms.Rows[i]["Id"]);
+                buildingJson += "{\"Id\":" + roomId
                     + ",\"No\":\"" + rooms.Rows[i]["RoomNo"] + "\""
-                    + ",\"F\":" + rooms.Rows[i]["Floor"] + "}";
+                    + ",\"F\":" + rooms.Rows[i]["Floor"]
+                    + ",\"R\":" + (reservedIds.Contains(roomId) ? "1" : "0") + "}";
             }
             buildingJson += "]}";
         }
