@@ -293,20 +293,48 @@
 
         function onBuildingChange() {
             var buildingId = document.getElementById('<%= ddlModalBuilding.ClientID %>').value;
-            if (buildingId > 0) {
-                // 通过PageMethods获取楼层和房间
-                document.getElementById('<%= ddlModalFloor.ClientID %>').innerHTML = '<option value="0">全部楼层</option>';
-                document.getElementById('roomGrid').innerHTML = '';
-                selectedRooms = [];
-                updateSelectedTags();
-                document.getElementById('<%= hfSelectedRoomIds.ClientID %>').value = '';
-                // 触发PostBack加载楼层
-                __doPostBack('<%= ddlModalBuilding.UniqueID %>', '');
+            var floorSelect = document.getElementById('<%= ddlModalFloor.ClientID %>');
+            floorSelect.innerHTML = '<option value="0">全部楼层</option>';
+            document.getElementById('roomGrid').innerHTML = '';
+            selectedRooms = [];
+            updateSelectedTags();
+            document.getElementById('<%= hfSelectedRoomIds.ClientID %>').value = '';
+
+            if (buildingId > 0 && floorData[buildingId]) {
+                var floors = floorData[buildingId];
+                for (var i = 0; i < floors.length; i++) {
+                    var opt = document.createElement('option');
+                    opt.value = floors[i];
+                    opt.text = floors[i] + '层';
+                    floorSelect.appendChild(opt);
+                }
+                // 加载房间
+                loadRooms(buildingId, 0);
             }
         }
 
         function onFloorChange() {
-            __doPostBack('<%= ddlModalFloor.UniqueID %>', '');
+            var buildingId = document.getElementById('<%= ddlModalBuilding.ClientID %>').value;
+            var floor = document.getElementById('<%= ddlModalFloor.ClientID %>').value;
+            loadRooms(buildingId, parseInt(floor));
+        }
+
+        function loadRooms(buildingId, floor) {
+            var rooms = roomData[buildingId] || [];
+            var filtered = floor > 0 ? rooms.filter(function(r) { return r.Floor == floor; }) : rooms;
+            var buildingName = filtered.length > 0 ? filtered[0].BuildingName : '';
+            var grid = document.getElementById('roomGrid');
+            grid.innerHTML = '';
+            filtered.forEach(function(r) {
+                var found = selectedRooms.some(function(s) { return s.id == r.Id; });
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'room-btn' + (found ? ' selected' : '');
+                btn.setAttribute('data-room-id', r.Id);
+                btn.innerText = r.RoomNo;
+                btn.onclick = function() { toggleRoom(r.Id, r.RoomNo, r.BuildingName); };
+                grid.appendChild(btn);
+            });
         }
 
         function toggleRoom(roomId, roomNo, buildingName) {

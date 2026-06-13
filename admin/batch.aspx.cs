@@ -19,6 +19,7 @@ public partial class admin_batch : System.Web.UI.Page
             LoadStats();
             LoadBatches();
             LoadColleges();
+            LoadFloorData();
         }
     }
 
@@ -128,6 +129,51 @@ public partial class admin_batch : System.Web.UI.Page
                 return;
             }
         }
+    }
+
+    private void LoadFloorData()
+    {
+        DataTable buildings = BatchBLL.GetBuildingsForBatch();
+
+        // 楼层数据
+        string floorJson = "{";
+        // 房间数据
+        string roomJson = "{";
+        bool first = true;
+        foreach (DataRow b in buildings.Rows)
+        {
+            if (!first) { floorJson += ","; roomJson += ","; }
+            first = false;
+            int bid = Convert.ToInt32(b["Id"]);
+            string bname = b["Name"].ToString();
+
+            // 楼层
+            DataTable floors = DormBLL.GetFloorsByBuilding(bid);
+            floorJson += bid + ":[";
+            for (int i = 0; i < floors.Rows.Count; i++)
+            {
+                if (i > 0) floorJson += ",";
+                floorJson += floors.Rows[i]["Floor"].ToString();
+            }
+            floorJson += "]";
+
+            // 房间
+            DataTable rooms = BatchBLL.GetRoomsForBatch(bid, 0);
+            roomJson += bid + ":[";
+            for (int i = 0; i < rooms.Rows.Count; i++)
+            {
+                if (i > 0) roomJson += ",";
+                roomJson += "{\"Id\":" + rooms.Rows[i]["Id"]
+                    + ",\"RoomNo\":\"" + rooms.Rows[i]["RoomNo"] + "\""
+                    + ",\"Floor\":" + rooms.Rows[i]["Floor"]
+                    + ",\"BuildingName\":\"" + bname + "\"}";
+            }
+            roomJson += "]";
+        }
+        floorJson += "}";
+        roomJson += "}";
+
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "floorData", "var floorData=" + floorJson + ";var roomData=" + roomJson + ";", true);
     }
 
     protected void ddlModalBuilding_SelectedIndexChanged(object sender, EventArgs e)
