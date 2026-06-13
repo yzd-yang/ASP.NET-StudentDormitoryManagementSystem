@@ -270,8 +270,8 @@ public partial class admin_batch : System.Web.UI.Page
     protected void btnSaveBatch_Click(object sender, EventArgs e)
     {
         string batchName = txtBatchName.Text.Trim();
-        DateTime startTime = Convert.ToDateTime(txtStartTime.Text);
-        DateTime endTime = Convert.ToDateTime(txtEndTime.Text);
+        DateTime startTime = DateTime.ParseExact(txtStartTime.Text, "yyyy-MM-ddTHH:mm", System.Globalization.CultureInfo.InvariantCulture);
+        DateTime endTime = DateTime.ParseExact(txtEndTime.Text, "yyyy-MM-ddTHH:mm", System.Globalization.CultureInfo.InvariantCulture);
         string gradeLimit = ddlGradeLimit.SelectedValue;
         string collegeLimit = ddlCollegeLimit.SelectedValue;
         string majorLimit = ddlMajorLimit.SelectedValue;
