@@ -113,9 +113,29 @@ BLL 层查询这些表时普遍使用三表 JOIN：`Students s JOIN Departments 
 - 学生端移动端优先（<768px），管理端桌面优先（≥1024px）
 - 毛玻璃卡片效果：半透明白色 + `backdrop-filter: blur`
 
+## 选宿批次页面交互模式（`admin/batch.aspx`）
+
+弹窗内联动下拉框采用 **RegisterStartupScript 预加载 + JS 按需读取** 方案：
+
+```
+Page_Load → 查 DB → 构建 JSON → RegisterStartupScript 注入 JS 变量
+                                       ↓
+                            var _bd={"1":{"floors":[1,2,...],"rooms":[...]},...};
+                            var _md={"信息工程学院":["计算机科学与技术",...],...};
+                                       ↓
+选择学院/楼栋/楼层 → JS 直接读 _bd/_md → 填充下拉框+渲染房间
+```
+
+- **不要用 HiddenField 存数据**：回发后值丢失
+- **不要用 AutoPostBack**：弹窗内回发会导致模态框状态丢失
+- **不要用 AJAX handler**：本项目不需要额外的 .ashx 接口
+- 每次回发 `RegisterStartupScript` 都会重新注入，确保数据始终可用
+- 选中房间用 `hfSelectedRoomIds` HiddenField 传递给服务端保存
+
 ## 常见陷阱
 
 1. **CS0103 控件不存在**：`.aspx` 中删除了服务器控件但 `.aspx.cs` 仍引用，或反过来
 2. **中文乱码**：三要素缺一不可——BOM + `ResponseEncoding` + web.config globalization
 3. **抢宿舍并发**：使用数据库事务 + `SELECT ... FOR UPDATE` 行锁
 4. **图片上传路径**：头像 `Uploads/avatars/`，报修照片 `Uploads/repair/`，限制 jpg/png、5MB
+5. **弹窗内联动下拉框**：不要用 AutoPostBack 或 HiddenField，用 RegisterStartupScript 预加载 + JS 按需读取（详见"选宿批次页面交互模式"）
