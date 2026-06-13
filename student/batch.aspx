@@ -8,7 +8,7 @@
         .batch-header h1 { font-size:32px; font-weight:800; color:var(--on-surface); }
         .batch-header p { font-size:16px; color:var(--on-surface-variant); margin-top:6px; }
 
-        .filter-bar { background:rgba(255,255,255,0.5); backdrop-filter:blur(8px); border-radius:16px; padding:16px; border:1px solid rgba(255,255,255,0.4); margin-bottom:20px; display:grid; grid-template-columns:repeat(4,1fr) auto; gap:12px; align-items:end; }
+        .filter-bar { background:rgba(255,255,255,0.5); backdrop-filter:blur(8px); border-radius:16px; padding:16px; border:1px solid rgba(255,255,255,0.4); margin-bottom:20px; display:grid; grid-template-columns:1fr 1fr auto; gap:12px; align-items:end; }
         .filter-group { display:flex; flex-direction:column; gap:4px; }
         .filter-label { font-size:12px; font-weight:600; color:var(--on-surface-variant); }
         .filter-select, .filter-input {
@@ -31,16 +31,22 @@
         .batch-table td { padding:14px 20px; font-size:14px; color:var(--on-surface); border-bottom:1px solid rgba(0,0,0,0.03); }
         .batch-table tr:hover td { background:rgba(73,234,206,0.04); }
         .batch-name { font-weight:700; }
-        .batch-status { padding:4px 14px; border-radius:20px; font-size:13px; font-weight:700; }
+        .batch-status { padding:4px 14px; border-radius:20px; font-size:13px; font-weight:700; display:inline-block; }
         .batch-status.active { background:var(--primary); color:var(--on-primary); animation:pulse 2s infinite; }
         .batch-status.upcoming { background:rgba(232,233,236,0.8); color:var(--on-surface-variant); }
+        .batch-status.ended { background:rgba(186,26,26,0.08); color:var(--on-surface-variant); }
+        .batch-status.paused { background:rgba(251,192,45,0.15); color:#b58900; }
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
         .batch-btn {
             padding:8px 18px; border:none; border-radius:10px; font-size:13px; font-weight:700;
-            cursor:pointer; transition:all 0.2s; font-family:inherit;
+            cursor:pointer; transition:all 0.2s; font-family:inherit; text-decoration:none; display:inline-block;
         }
         .batch-btn.primary { background:var(--primary); color:var(--on-primary); }
-        .batch-btn.ghost { background:rgba(232,233,236,0.6); color:var(--on-surface-variant); }
+        .batch-btn.ghost { background:rgba(232,233,236,0.6); color:var(--on-surface-variant); cursor:default; }
+        .batch-limit { font-size:12px; color:var(--on-surface-variant); margin-top:2px; }
+
+        .batch-empty { text-align:center; padding:60px 20px; color:var(--on-surface-variant); }
+        .batch-empty .material-symbols-outlined { font-size:48px; opacity:0.3; display:block; margin-bottom:12px; }
 
         .tip-card {
             background:rgba(255,255,255,0.5); backdrop-filter:blur(8px); border-radius:16px;
@@ -51,7 +57,10 @@
         .tip-icon .material-symbols-outlined { font-size:36px; color:var(--primary); }
         .tip-title { font-size:18px; font-weight:700; color:var(--primary); margin-bottom:6px; }
         .tip-text { font-size:14px; color:var(--on-surface-variant); line-height:1.6; }
-        .tip-link { color:var(--primary); font-size:14px; font-weight:600; text-decoration:underline; text-underline-offset:4px; margin-top:8px; display:inline-block; }
+
+        .info-modal { display:none; position:fixed; inset:0; z-index:999; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); align-items:center; justify-content:center; }
+        .info-modal.show { display:flex; }
+        .info-modal-box { background:#fff; border-radius:20px; padding:32px; max-width:380px; width:90%; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.2); }
     </style>
 </asp:Content>
 
@@ -64,68 +73,58 @@
     <div class="filter-bar">
         <div class="filter-group">
             <span class="filter-label">批次名称</span>
-            <input class="filter-input" type="text" placeholder="搜索批次..." />
-        </div>
-        <div class="filter-group">
-            <span class="filter-label">楼栋</span>
-            <select class="filter-select">
-                <option>全部楼栋</option><option>南区1号楼</option><option>南区2号楼</option><option>北区5号楼</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <span class="filter-label">适用学院</span>
-            <select class="filter-select">
-                <option>全部学院</option><option>信息工程学院</option><option>商学院</option><option>外国语学院</option>
-            </select>
+            <asp:TextBox ID="txtKeyword" runat="server" CssClass="filter-input" placeholder="搜索批次..." />
         </div>
         <div class="filter-group">
             <span class="filter-label">状态</span>
-            <select class="filter-select">
-                <option>全部状态</option><option>进行中</option><option>即将开始</option><option>已结束</option>
-            </select>
+            <asp:DropDownList ID="ddlStatus" runat="server" CssClass="filter-select">
+                <asp:ListItem Text="全部状态" Value="-1" />
+                <asp:ListItem Text="进行中" Value="1" />
+                <asp:ListItem Text="待开始" Value="0" />
+                <asp:ListItem Text="已结束" Value="2" />
+            </asp:DropDownList>
         </div>
-        <button class="filter-btn"><span class="material-symbols-outlined" style="font-size:18px;">filter_list</span> 筛选</button>
+        <asp:Button ID="btnFilter" runat="server" CssClass="filter-btn" Text=" 筛选" OnClick="btnFilter_Click" />
     </div>
 
     <div class="batch-table">
-        <table>
-            <thead>
+        <asp:Repeater ID="rptBatches" runat="server">
+            <HeaderTemplate>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>批次名称</th>
+                            <th>楼栋</th>
+                            <th>适用年级</th>
+                            <th>专业限定</th>
+                            <th>状态</th>
+                            <th style="text-align:center;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            </HeaderTemplate>
+            <ItemTemplate>
                 <tr>
-                    <th>批次名称</th>
-                    <th>楼栋</th>
-                    <th>适用年级</th>
-                    <th>专业限定</th>
-                    <th>状态</th>
-                    <th style="text-align:center;">操作</th>
+                    <td><span class="batch-name"><%# Eval("BatchName") %></span></td>
+                    <td><%# Eval("BuildingNames") != DBNull.Value ? Eval("BuildingNames") : "全部楼栋" %></td>
+                    <td><%# Eval("GradeLimit") != DBNull.Value ? Eval("GradeLimit") : "不限年级" %></td>
+                    <td><%# Eval("MajorLimit") != DBNull.Value ? Eval("MajorLimit") : "不限专业" %></td>
+                    <td><span class="batch-status <%# GetStatusClass(Convert.ToInt32(Eval("Status"))) %>"><%# GetStatusText(Convert.ToInt32(Eval("Status"))) %></span></td>
+                    <td style="text-align:center;">
+                        <%# Convert.ToInt32(Eval("Status")) == 1 ? "<a href='grab-dorm.aspx?batchId=" + Eval("Id") + "' class='batch-btn primary' onclick='return checkInfo();'>进入选宿</a>" : "<span class='batch-btn ghost'>" + (Convert.ToInt32(Eval("Status")) == 0 ? "未开始" : "已结束") + "</span>" %>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><span class="batch-name">2024级新生第一批 (男生)</span></td>
-                    <td>南区 1-5号楼</td>
-                    <td>2024级</td>
-                    <td>不限专业</td>
-                    <td><span class="batch-status active">进行中</span></td>
-                    <td style="text-align:center;"><a href="grab-dorm.aspx" class="batch-btn primary" onclick="return checkInfo();">进入选宿</a></td>
-                </tr>
-                <tr>
-                    <td><span class="batch-name">2024级新生第二批 (女生)</span></td>
-                    <td>北区 1-3号楼</td>
-                    <td>2024级</td>
-                    <td>信息工程学院</td>
-                    <td><span class="batch-status upcoming">即将开始</span></td>
-                    <td style="text-align:center;"><button class="batch-btn ghost">查看详情</button></td>
-                </tr>
-                <tr>
-                    <td><span class="batch-name">2023级老生补选</span></td>
-                    <td>A座、B座</td>
-                    <td>2023级</td>
-                    <td>不限专业</td>
-                    <td><span class="batch-status upcoming">已结束</span></td>
-                    <td style="text-align:center;"><button class="batch-btn ghost">查看详情</button></td>
-                </tr>
-            </tbody>
-        </table>
+            </ItemTemplate>
+            <FooterTemplate>
+                    </tbody>
+                </table>
+            </FooterTemplate>
+        </asp:Repeater>
+
+        <asp:Panel ID="pnlEmpty" runat="server" Visible="false" CssClass="batch-empty">
+            <span class="material-symbols-outlined">meeting_room</span>
+            <span>暂无可参与的选宿批次</span>
+        </asp:Panel>
     </div>
 
     <div class="tip-card">
@@ -133,12 +132,11 @@
         <div>
             <div class="tip-title">选宿小贴士</div>
             <div class="tip-text">请确保您的网络环境稳定，提前了解心仪宿舍楼层及配置。若遇到问题，可点击右上角"帮助"或联系宿管中心。</div>
-            <a href="#" class="tip-link">了解更多规则</a>
         </div>
     </div>
 
-    <div id="infoModal" style="display:none; position:fixed; inset:0; z-index:999; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
-        <div style="background:#fff; border-radius:20px; padding:32px; max-width:380px; width:90%; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.2);">
+    <div id="infoModal" class="info-modal">
+        <div class="info-modal-box">
             <span class="material-symbols-outlined" style="font-size:48px; color:var(--primary); margin-bottom:12px;">info</span>
             <h3 style="font-size:18px; font-weight:700; color:var(--on-surface); margin-bottom:8px;">请先完善个人信息</h3>
             <p style="font-size:14px; color:var(--on-surface-variant); margin-bottom:24px; line-height:1.6;">选宿前需要填写所属学院、专业名称和年级信息，请先前往个人中心完善资料。</p>
@@ -153,13 +151,13 @@
         var infoComplete = <%= IsInfoComplete() ? "true" : "false" %>;
         function checkInfo() {
             if (!infoComplete) {
-                document.getElementById('infoModal').style.display = 'flex';
+                document.getElementById('infoModal').classList.add('show');
                 return false;
             }
             return true;
         }
         function closeModal() {
-            document.getElementById('infoModal').style.display = 'none';
+            document.getElementById('infoModal').classList.remove('show');
         }
     </script>
 </asp:Content>

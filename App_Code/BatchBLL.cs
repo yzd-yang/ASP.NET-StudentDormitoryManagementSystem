@@ -164,4 +164,35 @@ public class BatchBLL
                        FROM SelectionBatches";
         return DBHelper.GetDataTable(sql);
     }
+
+    public static DataTable GetBatchesForStudent(string studentGrade, string studentCollege, string studentMajor, string keyword = "", int status = -1)
+    {
+        string sql = @"SELECT b.*, 
+                       (SELECT COUNT(*) FROM BatchRooms WHERE BatchId=b.Id) as RoomCount,
+                       (SELECT GROUP_CONCAT(DISTINCT bd.Name SEPARATOR '、') FROM BatchRooms br JOIN Rooms r ON br.RoomId=r.Id JOIN Buildings bd ON r.BuildingId=bd.Id WHERE br.BatchId=b.Id) as BuildingNames
+                       FROM SelectionBatches b
+                       WHERE 1=1
+                       AND (b.GradeLimit IS NULL OR b.GradeLimit=@Grade)
+                       AND (b.CollegeLimit IS NULL OR b.CollegeLimit LIKE @College)
+                       AND (b.MajorLimit IS NULL OR b.MajorLimit LIKE @Major)";
+
+        var paramList = new System.Collections.Generic.List<MySqlParameter>();
+        paramList.Add(new MySqlParameter("@Grade", studentGrade));
+        paramList.Add(new MySqlParameter("@College", "%" + studentCollege + "%"));
+        paramList.Add(new MySqlParameter("@Major", "%" + studentMajor + "%"));
+
+        if (!string.IsNullOrEmpty(keyword))
+        {
+            sql += " AND b.BatchName LIKE @Keyword";
+            paramList.Add(new MySqlParameter("@Keyword", "%" + keyword + "%"));
+        }
+        if (status >= 0)
+        {
+            sql += " AND b.Status=@Status";
+            paramList.Add(new MySqlParameter("@Status", status));
+        }
+
+        sql += " ORDER BY b.Status ASC, b.CreateTime DESC";
+        return DBHelper.GetDataTable(sql, paramList.ToArray());
+    }
 }
