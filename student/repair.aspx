@@ -131,7 +131,7 @@
 
     <!-- 我的报修 -->
     <div id="tab-list" style="display:none;">
-        <asp:Repeater ID="rptRepairs" runat="server">
+        <asp:Repeater ID="rptRepairs" runat="server" OnItemCommand="rptRepairs_ItemCommand">
             <ItemTemplate>
                 <div class="repair-card" style='<%# GetStatusBorderClass(Eval("Status")) %>'>
                     <div class="repair-card-header">
@@ -159,8 +159,7 @@
                             <asp:LinkButton ID="btnCancel" runat="server" CommandName="CancelRepair" CommandArgument='<%# Eval("Id") %>'
                                 Visible='<%# Convert.ToInt32(Eval("Status")) == 1 %>'
                                 CssClass="repair-card-action" style="color:var(--error);text-decoration:none;font-size:13px;font-weight:700;display:flex;align-items:center;gap:4px;"
-                                OnClientClick="return confirm('确定取消该报修申请吗？');"
-                                OnCommand="rptRepairs_ItemCommand">
+                                OnClientClick="return confirm('确定取消该报修申请吗？');">
                                 <span class="material-symbols-outlined" style="font-size:16px;">cancel</span> 取消
                             </asp:LinkButton>
                         </div>
