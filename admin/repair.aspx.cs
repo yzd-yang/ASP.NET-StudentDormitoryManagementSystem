@@ -127,6 +127,26 @@ public partial class admin_repair : System.Web.UI.Page
         litDetailPhone.Text = row["StudentPhone"].ToString();
         litDetailType.Text = row["TypeName"].ToString();
         litDetailDesc.Text = row["Description"].ToString();
+
+        // 照片
+        string photos = row["Photos"] != DBNull.Value ? row["Photos"].ToString() : "";
+        if (!string.IsNullOrEmpty(photos))
+        {
+            string[] paths = photos.Split(',');
+            string html = "<div style='display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;'>";
+            foreach (string path in paths)
+            {
+                if (!string.IsNullOrEmpty(path.Trim()))
+                    html += "<img src='" + path.Trim() + "' style='width:120px;height:120px;object-fit:cover;border-radius:12px;cursor:pointer;border:1px solid rgba(0,0,0,0.06);' onclick='window.open(this.src)' />";
+            }
+            html += "</div>";
+            litPhotos.Text = html;
+        }
+        else
+        {
+            litPhotos.Text = "<div style='color:var(--on-surface-variant);font-size:14px;padding:16px 0;'>未上传照片</div>";
+        }
+
         txtNote.Text = row["InternalNote"] != DBNull.Value ? row["InternalNote"].ToString() : "";
 
         // 根据状态显示/隐藏按钮

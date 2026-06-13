@@ -195,7 +195,7 @@
         </div>
         <div class="detail-body">
             <div class="detail-section-title">现场照片</div>
-            <div class="detail-photo"><span class="material-symbols-outlined" style="font-size:48px;">image</span></div>
+            <asp:Literal ID="litPhotos" runat="server" />
 
             <div class="detail-info-grid">
                 <div class="detail-info-item"><div class="detail-info-label">学生姓名</div><div class="detail-info-value"><asp:Literal ID="litDetailName" runat="server" /></div></div>
