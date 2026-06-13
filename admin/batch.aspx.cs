@@ -134,46 +134,36 @@ public partial class admin_batch : System.Web.UI.Page
     private void LoadFloorData()
     {
         DataTable buildings = BatchBLL.GetBuildingsForBatch();
-
-        // 楼层数据
-        string floorJson = "{";
-        // 房间数据
-        string roomJson = "{";
+        string json = "{";
         bool first = true;
         foreach (DataRow b in buildings.Rows)
         {
-            if (!first) { floorJson += ","; roomJson += ","; }
+            if (!first) json += ",";
             first = false;
             int bid = Convert.ToInt32(b["Id"]);
             string bname = b["Name"].ToString();
 
-            // 楼层
             DataTable floors = DormBLL.GetFloorsByBuilding(bid);
-            floorJson += bid + ":[";
+            DataTable rooms = BatchBLL.GetRoomsForBatch(bid, 0);
+
+            json += "\"" + bid + "\":{\"floors\":[";
             for (int i = 0; i < floors.Rows.Count; i++)
             {
-                if (i > 0) floorJson += ",";
-                floorJson += floors.Rows[i]["Floor"].ToString();
+                if (i > 0) json += ",";
+                json += floors.Rows[i]["Floor"];
             }
-            floorJson += "]";
-
-            // 房间
-            DataTable rooms = BatchBLL.GetRoomsForBatch(bid, 0);
-            roomJson += bid + ":[";
+            json += "],\"rooms\":[";
             for (int i = 0; i < rooms.Rows.Count; i++)
             {
-                if (i > 0) roomJson += ",";
-                roomJson += "{\"Id\":" + rooms.Rows[i]["Id"]
-                    + ",\"RoomNo\":\"" + rooms.Rows[i]["RoomNo"] + "\""
-                    + ",\"Floor\":" + rooms.Rows[i]["Floor"]
-                    + ",\"BuildingName\":\"" + bname + "\"}";
+                if (i > 0) json += ",";
+                json += "{\"Id\":" + rooms.Rows[i]["Id"]
+                    + ",\"No\":\"" + rooms.Rows[i]["RoomNo"] + "\""
+                    + ",\"F\":" + rooms.Rows[i]["Floor"] + "}";
             }
-            roomJson += "]";
+            json += "]}";
         }
-        floorJson += "}";
-        roomJson += "}";
-
-        Page.ClientScript.RegisterStartupScript(this.GetType(), "floorData", "var floorData=" + floorJson + ";var roomData=" + roomJson + ";", true);
+        json += "}";
+        hfFloorData.Value = json;
     }
 
     protected void ddlModalBuilding_SelectedIndexChanged(object sender, EventArgs e)

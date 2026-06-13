@@ -272,6 +272,7 @@
                         <span id="selectedRoomTags"></span>
                     </div>
                     <asp:HiddenField ID="hfSelectedRoomIds" runat="server" Value="" />
+                    <asp:HiddenField ID="hfFloorData" runat="server" Value="" />
                 </div>
             </div>
             <div class="modal-footer">
@@ -286,8 +287,15 @@
     <script type="text/javascript">
         var selectedRooms = [];
         var allRooms = [];
+        var buildingData = {};
+
+        function loadData() {
+            var raw = document.getElementById('<%= hfFloorData.ClientID %>').value;
+            if (raw) buildingData = JSON.parse(raw);
+        }
 
         function showCreateModal() {
+            loadData();
             document.getElementById('<%= pnlBatchModal.ClientID %>').style.display = 'flex';
         }
 
@@ -300,49 +308,48 @@
             updateSelectedTags();
             document.getElementById('<%= hfSelectedRoomIds.ClientID %>').value = '';
 
-            if (buildingId > 0 && floorData[buildingId]) {
-                var floors = floorData[buildingId];
-                for (var i = 0; i < floors.length; i++) {
+            if (buildingId > 0 && buildingData[buildingId]) {
+                buildingData[buildingId].floors.forEach(function(f) {
                     var opt = document.createElement('option');
-                    opt.value = floors[i];
-                    opt.text = floors[i] + '层';
+                    opt.value = f;
+                    opt.text = f + '层';
                     floorSelect.appendChild(opt);
-                }
-                // 加载房间
+                });
                 loadRooms(buildingId, 0);
             }
         }
 
         function onFloorChange() {
             var buildingId = document.getElementById('<%= ddlModalBuilding.ClientID %>').value;
-            var floor = document.getElementById('<%= ddlModalFloor.ClientID %>').value;
-            loadRooms(buildingId, parseInt(floor));
+            var floor = parseInt(document.getElementById('<%= ddlModalFloor.ClientID %>').value);
+            loadRooms(buildingId, floor);
         }
 
         function loadRooms(buildingId, floor) {
-            var rooms = roomData[buildingId] || [];
-            var filtered = floor > 0 ? rooms.filter(function(r) { return r.Floor == floor; }) : rooms;
-            var buildingName = filtered.length > 0 ? filtered[0].BuildingName : '';
             var grid = document.getElementById('roomGrid');
             grid.innerHTML = '';
+            if (!buildingData[buildingId]) return;
+            var rooms = buildingData[buildingId].rooms;
+            var filtered = floor > 0 ? rooms.filter(function(r) { return r.F == floor; }) : rooms;
             filtered.forEach(function(r) {
-                var found = selectedRooms.some(function(s) { return s.id == r.Id; });
                 var btn = document.createElement('button');
                 btn.type = 'button';
-                btn.className = 'room-btn' + (found ? ' selected' : '');
+                btn.className = 'room-btn';
                 btn.setAttribute('data-room-id', r.Id);
-                btn.innerText = r.RoomNo;
-                btn.onclick = function() { toggleRoom(r.Id, r.RoomNo, r.BuildingName); };
+                btn.textContent = r.No;
+                var found = selectedRooms.some(function(s) { return s.id == r.Id; });
+                if (found) btn.classList.add('selected');
+                btn.onclick = function() { toggleRoom(r.Id, r.No); };
                 grid.appendChild(btn);
             });
         }
 
-        function toggleRoom(roomId, roomNo, buildingName) {
+        function toggleRoom(roomId, roomNo) {
             var idx = selectedRooms.findIndex(function(r) { return r.id == roomId; });
             if (idx >= 0) {
                 selectedRooms.splice(idx, 1);
             } else {
-                selectedRooms.push({ id: roomId, roomNo: roomNo, buildingName: buildingName });
+                selectedRooms.push({ id: roomId, roomNo: roomNo });
             }
             document.getElementById('<%= hfSelectedRoomIds.ClientID %>').value = selectedRooms.map(function(r) { return r.id; }).join(',');
             updateRoomGrid();
@@ -371,25 +378,6 @@
                 tag.style.cssText = 'background:rgba(73,234,206,0.15); color:var(--primary); padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;';
                 tag.textContent = r.buildingName + ' ' + r.roomNo;
                 container.appendChild(tag);
-            });
-        }
-
-        function renderRoomGrid(roomsJson) {
-            var rooms = JSON.parse(roomsJson);
-            allRooms = rooms;
-            var grid = document.getElementById('roomGrid');
-            grid.innerHTML = '';
-            rooms.forEach(function(room) {
-                var btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'room-btn';
-                btn.setAttribute('data-room-id', room.Id);
-                var roomNoShort = room.RoomNo.split('-')[1] || room.RoomNo;
-                btn.textContent = roomNoShort;
-                btn.onclick = function() { toggleRoom(room.Id, room.RoomNo, room.BuildingName); };
-                var found = selectedRooms.some(function(r) { return r.id == room.Id; });
-                if (found) btn.classList.add('selected');
-                grid.appendChild(btn);
             });
         }
 
