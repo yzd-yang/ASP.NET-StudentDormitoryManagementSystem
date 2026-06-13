@@ -1,4 +1,4 @@
-﻿# NuGet Packages
+# NuGet Packages
 packages/
 
 # Visual Studio
@@ -20,3 +20,7 @@ Desktop.ini
 
 # macOS
 .DS_Store
+
+# 上传的报修图片
+Uploads/repair/images/*
+!Uploads/repair/images/.gitkeep

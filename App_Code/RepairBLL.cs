@@ -27,6 +27,25 @@ public class RepairBLL
         return DBHelper.ExecuteNonQuery(sql, parameters) > 0;
     }
 
+    public static bool CreateRepairOrderWithPhotos(int studentId, int roomId, int repairType, string description, string expectTime, string contactPhone, string photos)
+    {
+        string orderNo = GenerateOrderNo();
+        string sql = @"INSERT INTO RepairOrders (OrderNo, StudentId, RoomId, RepairType, Description, Photos, ExpectTime, ContactPhone, Status) 
+                       VALUES (@OrderNo, @StudentId, @RoomId, @RepairType, @Description, @Photos, @ExpectTime, @ContactPhone, 1)";
+        MySqlParameter[] parameters = new MySqlParameter[]
+        {
+            new MySqlParameter("@OrderNo", orderNo),
+            new MySqlParameter("@StudentId", studentId),
+            new MySqlParameter("@RoomId", roomId),
+            new MySqlParameter("@RepairType", repairType),
+            new MySqlParameter("@Description", description),
+            new MySqlParameter("@Photos", string.IsNullOrEmpty(photos) ? (object)DBNull.Value : photos),
+            new MySqlParameter("@ExpectTime", string.IsNullOrEmpty(expectTime) ? (object)DBNull.Value : expectTime),
+            new MySqlParameter("@ContactPhone", contactPhone)
+        };
+        return DBHelper.ExecuteNonQuery(sql, parameters) > 0;
+    }
+
     public static DataTable GetStudentRepairOrders(int studentId, int status = 0)
     {
         string sql = @"SELECT ro.*, r.RoomNo, bd.Name as BuildingName,

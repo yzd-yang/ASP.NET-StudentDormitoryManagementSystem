@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/student/MasterPage.master" AutoEventWireup="true" CodeFile="repair.aspx.cs" Inherits="student_repair" ResponseEncoding="utf-8" %>
+<%@ Page Language="C#" MasterPageFile="~/student/MasterPage.master" AutoEventWireup="true" CodeFile="repair.aspx.cs" Inherits="student_repair" ResponseEncoding="utf-8" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="title" runat="server">故障报修 - 智慧宿舍</asp:Content>
 
@@ -14,21 +14,23 @@
         .form-full { grid-column:1/-1; }
         .form-label { display:block; font-size:14px; font-weight:700; color:var(--on-surface); margin-bottom:8px; }
         .form-label .required { color:var(--error); }
-        .form-select, .form-textarea {
+        .form-select, .form-textarea, .form-input {
             width:100%; padding:14px 16px; border:1px solid var(--outline-variant); border-radius:14px;
-            background:#fff; font-family:inherit; font-size:15px; color:var(--on-surface); outline:none; transition:all 0.2s;
+            background:#fff; font-family:inherit; font-size:15px; color:var(--on-surface); outline:none; transition:all 0.2s; box-sizing:border-box;
         }
-        .form-select:focus, .form-textarea:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(73,234,206,0.12); }
+        .form-select:focus, .form-textarea:focus, .form-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(73,234,206,0.12); }
         .form-textarea { min-height:120px; resize:none; }
 
         .upload-area {
-            border:2px dashed var(--outline-variant); border-radius:16px; padding:32px; text-align:center;
-            cursor:pointer; transition:all 0.2s; background:rgba(255,255,255,0.3);
+            border:2px dashed var(--outline-variant); border-radius:16px; padding:24px; text-align:center;
+            cursor:pointer; transition:all 0.2s; background:rgba(255,255,255,0.3); position:relative;
         }
         .upload-area:hover { border-color:var(--primary); background:rgba(73,234,206,0.04); }
-        .upload-icon { font-size:40px; color:var(--outline-variant); margin-bottom:8px; }
+        .upload-icon { font-size:36px; color:var(--outline-variant); margin-bottom:8px; }
         .upload-text { font-size:14px; font-weight:600; color:var(--on-surface); }
         .upload-hint { font-size:12px; color:var(--on-surface-variant); margin-top:4px; }
+        .upload-preview { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+        .upload-preview img { width:60px; height:60px; object-fit:cover; border-radius:8px; border:1px solid var(--outline-variant); }
 
         .submit-btn {
             width:100%; padding:16px; background:var(--primary); color:var(--on-primary); border:none;
@@ -53,23 +55,20 @@
         .status-pending { background:rgba(251,192,45,0.12); color:#b58900; }
         .repair-card-footer { display:flex; justify-content:space-between; align-items:center; padding-top:12px; border-top:1px solid rgba(0,0,0,0.05); margin-top:12px; }
         .repair-card-time { font-size:12px; color:var(--on-surface-variant); display:flex; align-items:center; gap:4px; }
-        .repair-card-action { font-size:13px; font-weight:700; color:var(--primary); cursor:pointer; text-decoration:none; display:flex; align-items:center; gap:4px; }
-        .repair-card-action:hover { text-decoration:underline; }
-        .repair-card-action.cancel { color:var(--error); }
-        .repair-card-note { background:rgba(73,234,206,0.05); border:1px solid rgba(73,234,206,0.1); border-radius:12px; padding:12px; margin-bottom:12px; }
-        .repair-card-note p { font-size:14px; color:var(--on-surface-variant); font-style:italic; }
-        .repair-card-notice { display:flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; background:rgba(59,130,246,0.05); border:1px solid rgba(59,130,246,0.1); margin-bottom:12px; font-size:14px; color:#3b82f6; }
         .section-empty { text-align:center; padding:40px; color:var(--on-surface-variant); }
         .section-empty .material-symbols-outlined { font-size:48px; opacity:0.3; display:block; margin-bottom:8px; }
+        .dorm-info { display:flex; align-items:center; gap:8px; padding:10px 14px; background:rgba(73,234,206,0.06); border-radius:12px; margin-bottom:16px; font-size:14px; color:var(--on-surface); font-weight:600; }
     </style>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <!-- 标签切换 -->
+    <asp:ScriptManager ID="ScriptManager1" runat="server" />
+    <asp:HiddenField ID="hfRoomId" runat="server" Value="0" />
+
     <div class="tab-bar">
         <div class="tab-group">
-            <button class="tab-btn active" onclick="switchTab('new')">提交申请</button>
-            <button class="tab-btn" onclick="switchTab('list')">我的报修</button>
+            <button type="button" class="tab-btn active" onclick="switchTab('new')">提交申请</button>
+            <button type="button" class="tab-btn" onclick="switchTab('list')">我的报修</button>
         </div>
     </div>
 
@@ -86,108 +85,88 @@
                 </div>
             </div>
 
+            <div class="dorm-info">
+                <span class="material-symbols-outlined" style="font-size:18px;">home</span>
+                报修宿舍：<asp:Literal ID="litDormInfo" runat="server" />
+            </div>
+
             <div class="form-row">
                 <div class="form-full">
                     <label class="form-label">报修类型 <span class="required">*</span></label>
-                    <select class="form-select">
-                        <option>水电报修</option>
-                        <option>家具家电</option>
-                        <option>网络连接</option>
-                        <option>其他问题</option>
-                    </select>
+                    <asp:DropDownList ID="ddlRepairType" runat="server" CssClass="form-select">
+                        <asp:ListItem Value="1" Text="水电报修" />
+                        <asp:ListItem Value="2" Text="家具家电" />
+                        <asp:ListItem Value="3" Text="网络连接" />
+                        <asp:ListItem Value="4" Text="其他问题" />
+                    </asp:DropDownList>
                 </div>
                 <div class="form-full">
                     <label class="form-label">详细描述 <span class="required">*</span></label>
-                    <textarea class="form-textarea" placeholder="请详细描述故障现象、具体位置以及出现时间..."></textarea>
+                    <asp:TextBox ID="txtDescription" runat="server" CssClass="form-textarea" TextMode="MultiLine" placeholder="请详细描述故障现象、具体位置以及出现时间..." />
                 </div>
                 <div>
                     <label class="form-label">期望上门时间</label>
-                    <input type="datetime-local" class="form-select" />
+                    <asp:TextBox ID="txtExpectTime" runat="server" CssClass="form-input" TextMode="DateTimeLocal" />
                 </div>
                 <div>
                     <label class="form-label">联系电话 <span class="required">*</span></label>
-                    <input type="tel" class="form-select" placeholder="请输入您的手机号" />
+                    <asp:TextBox ID="txtContactPhone" runat="server" CssClass="form-input" placeholder="请输入您的手机号" />
                 </div>
                 <div class="form-full">
-                    <label class="form-label">上传现场照片</label>
-                    <div class="upload-area">
+                    <label class="form-label">上传现场照片（可选，最多3张）</label>
+                    <div class="upload-area" onclick="document.getElementById('<%= fuPhotos.ClientID %>').click();">
                         <span class="material-symbols-outlined upload-icon">add_a_photo</span>
-                        <div class="upload-text">点击或将图片拖拽至此上传</div>
-                        <div class="upload-hint">支持 JPG, PNG 格式，每张不超过 5MB</div>
+                        <div class="upload-text">点击上传照片</div>
+                        <div class="upload-hint">支持 JPG/PNG 格式，每张不超过 5MB</div>
+                        <div id="previewArea" class="upload-preview"></div>
                     </div>
+                    <asp:FileUpload ID="fuPhotos" runat="server" style="display:none;" accept="image/*" AllowMultiple="true" onchange="previewImages(this);" />
                 </div>
             </div>
-            <button class="submit-btn" type="button">
-                <span class="material-symbols-outlined" style="font-size:20px;">send</span>
-                提交报修申请
-            </button>
+
+            <asp:Button ID="btnSubmit" runat="server" CssClass="submit-btn" Text="提交报修申请" OnClick="btnSubmit_Click" />
             <p style="text-align:center; font-size:12px; color:var(--on-surface-variant); margin-top:12px; font-style:italic;">提交后可在"我的报修"中实时查看处理进度</p>
         </div>
     </div>
 
     <!-- 我的报修 -->
     <div id="tab-list" style="display:none;">
-        <!-- 已完成 -->
-        <div class="repair-card" style="border-left:4px solid #49EACE;">
-            <div class="repair-card-header">
-                <div class="repair-card-left">
-                    <div class="repair-card-icon"><span class="material-symbols-outlined" style="color:var(--primary);">water_drop</span></div>
-                    <div>
-                        <div class="repair-card-title">洗手间龙头漏水</div>
-                        <div class="repair-card-no">订单编号: RE-2023091001</div>
+        <asp:Repeater ID="rptRepairs" runat="server">
+            <ItemTemplate>
+                <div class="repair-card" style='<%# GetStatusBorderClass(Eval("Status")) %>'>
+                    <div class="repair-card-header">
+                        <div class="repair-card-left">
+                            <div class="repair-card-icon">
+                                <span class="material-symbols-outlined" style='<%# GetRepairIconColor(Eval("RepairType")) %>'><%# GetRepairIcon(Eval("RepairType")) %></span>
+                            </div>
+                            <div>
+                                <div class="repair-card-title"><%# Eval("TypeName") %></div>
+                                <div class="repair-card-no">订单编号: <%# Eval("OrderNo") %></div>
+                            </div>
+                        </div>
+                        <span class="repair-status <%# GetStatusCssClass(Eval("Status")) %>"><%# Eval("StatusName") %></span>
+                    </div>
+                    <div style="font-size:14px; color:var(--on-surface); margin-bottom:8px;"><%# Eval("Description") %></div>
+                    <%# GetPhotosHtml(Eval("Photos")) %>
+                    <%# Eval("InternalNote") != DBNull.Value && !string.IsNullOrEmpty(Eval("InternalNote").ToString()) ? "<div style='background:rgba(73,234,206,0.05);border:1px solid rgba(73,234,206,0.1);border-radius:12px;padding:10px;margin-top:8px;'><p style='font-size:13px;color:var(--on-surface-variant);margin:0;font-style:italic;'>维修备注：" + Eval("InternalNote") + "</p></div>" : "" %>
+                    <div class="repair-card-footer">
+                        <span class="repair-card-time">
+                            <span class="material-symbols-outlined" style="font-size:14px;">calendar_today</span>
+                            <%# Convert.ToDateTime(Eval("CreateTime")).ToString("yyyy-MM-dd HH:mm") %>
+                        </span>
+                        <span style="font-size:12px; color:var(--on-surface-variant);"><%# Eval("BuildingName") %> <%# Eval("RoomNo") %></span>
                     </div>
                 </div>
-                <span class="repair-status status-completed">已完成</span>
-            </div>
-            <div class="repair-card-note">
-                <p>" 维修师傅已于 09-11 14:30 修复水龙头并更换密封圈。 "</p>
-            </div>
-            <div class="repair-card-footer">
-                <span class="repair-card-time"><span class="material-symbols-outlined" style="font-size:14px;">calendar_today</span> 2023-09-10 10:20</span>
-                <button class="btn btn-primary" style="padding:8px 20px; font-size:13px; border-radius:10px;">立即评价</button>
-            </div>
-        </div>
+            </ItemTemplate>
+        </asp:Repeater>
 
-        <!-- 处理中 -->
-        <div class="repair-card" style="border-left:4px solid #3b82f6;">
-            <div class="repair-card-header">
-                <div class="repair-card-left">
-                    <div class="repair-card-icon"><span class="material-symbols-outlined" style="color:#3b82f6;">router</span></div>
-                    <div>
-                        <div class="repair-card-title">寝室WiFi无法连接</div>
-                        <div class="repair-card-no">订单编号: RE-2023091244</div>
-                    </div>
-                </div>
-                <span class="repair-status status-processing">处理中</span>
-            </div>
-            <div class="repair-card-notice">
-                <span class="material-symbols-outlined" style="font-size:20px;">engineering</span>
-                维修人员 张师傅 (139-0000-0000) 正在赶往现场
-            </div>
-            <div class="repair-card-footer">
-                <span class="repair-card-time"><span class="material-symbols-outlined" style="font-size:14px;">calendar_today</span> 2023-09-12 16:45</span>
-                <a href="#" class="repair-card-action">查看进度详情 <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span></a>
-            </div>
-        </div>
-
-        <!-- 待处理 -->
-        <div class="repair-card" style="border-left:4px solid #fbc02d;">
-            <div class="repair-card-header">
-                <div class="repair-card-left">
-                    <div class="repair-card-icon"><span class="material-symbols-outlined" style="color:#b58900;">chair</span></div>
-                    <div>
-                        <div class="repair-card-title">书桌抽屉滑轨损坏</div>
-                        <div class="repair-card-no">订单编号: RE-2023091302</div>
-                    </div>
-                </div>
-                <span class="repair-status status-pending">待处理</span>
-            </div>
-            <div class="repair-card-footer">
-                <span class="repair-card-time"><span class="material-symbols-outlined" style="font-size:14px;">calendar_today</span> 2023-09-13 09:12</span>
-                <a href="#" class="repair-card-action cancel"><span class="material-symbols-outlined" style="font-size:16px;">cancel</span> 取消申请</a>
-            </div>
-        </div>
+        <asp:Panel ID="pnlEmpty" runat="server" Visible="false" CssClass="section-empty">
+            <span class="material-symbols-outlined">build</span>
+            <span>暂无报修记录</span>
+        </asp:Panel>
     </div>
+
+    <div id="toast" class="toast"></div>
 
     <script type="text/javascript">
         function switchTab(tab) {
@@ -204,6 +183,39 @@
                 listSection.style.display = 'block';
                 btns[1].classList.add('active');
             }
+        }
+
+        function previewImages(input) {
+            var preview = document.getElementById('previewArea');
+            preview.innerHTML = '';
+            if (input.files.length > 3) {
+                showToast('最多上传3张照片', 'error');
+                input.value = '';
+                return;
+            }
+            for (var i = 0; i < input.files.length; i++) {
+                var file = input.files[i];
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('单张图片不能超过5MB', 'error');
+                    input.value = '';
+                    return;
+                }
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function showToast(msg, type) {
+            var toast = document.getElementById('toast');
+            toast.className = 'toast toast-' + type;
+            toast.innerHTML = '<span class="material-symbols-outlined">' + (type === 'success' ? 'check_circle' : 'error') + '</span>' + msg;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 3000);
         }
     </script>
 </asp:Content>
