@@ -154,7 +154,16 @@
                             <span class="material-symbols-outlined" style="font-size:14px;">calendar_today</span>
                             <%# Convert.ToDateTime(Eval("CreateTime")).ToString("yyyy-MM-dd HH:mm") %>
                         </span>
-                        <span style="font-size:12px; color:var(--on-surface-variant);"><%# Eval("BuildingName") %> <%# Eval("RoomNo") %></span>
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <span style="font-size:12px; color:var(--on-surface-variant);"><%# Eval("BuildingName") %> <%# Eval("RoomNo") %></span>
+                            <asp:LinkButton ID="btnCancel" runat="server" CommandName="CancelRepair" CommandArgument='<%# Eval("Id") %>'
+                                Visible='<%# Convert.ToInt32(Eval("Status")) == 1 %>'
+                                CssClass="repair-card-action" style="color:var(--error);text-decoration:none;font-size:13px;font-weight:700;display:flex;align-items:center;gap:4px;"
+                                OnClientClick="return confirm('确定取消该报修申请吗？');"
+                                OnCommand="rptRepairs_ItemCommand">
+                                <span class="material-symbols-outlined" style="font-size:16px;">cancel</span> 取消
+                            </asp:LinkButton>
+                        </div>
                     </div>
                 </div>
             </ItemTemplate>

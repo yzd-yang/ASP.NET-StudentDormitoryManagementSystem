@@ -46,6 +46,17 @@ public class RepairBLL
         return DBHelper.ExecuteNonQuery(sql, parameters) > 0;
     }
 
+    public static bool DeleteRepairOrder(int orderId, int studentId)
+    {
+        string sql = "DELETE FROM RepairOrders WHERE Id=@Id AND StudentId=@StudentId AND Status=1";
+        MySqlParameter[] parameters = new MySqlParameter[]
+        {
+            new MySqlParameter("@Id", orderId),
+            new MySqlParameter("@StudentId", studentId)
+        };
+        return DBHelper.ExecuteNonQuery(sql, parameters) > 0;
+    }
+
     public static DataTable GetStudentRepairOrders(int studentId, int status = 0)
     {
         string sql = @"SELECT ro.*, r.RoomNo, bd.Name as BuildingName,

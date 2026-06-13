@@ -90,6 +90,24 @@ public partial class student_repair : System.Web.UI.Page
         }
     }
 
+    protected void rptRepairs_ItemCommand(object source, RepeaterCommandEventArgs e)
+    {
+        if (e.CommandName == "CancelRepair")
+        {
+            int orderId = Convert.ToInt32(e.CommandArgument);
+            if (RepairBLL.DeleteRepairOrder(orderId, studentId))
+            {
+                ShowToast("已取消报修申请", "success");
+                LoadRepairOrders();
+                ScriptManager.RegisterStartupScript(this, GetType(), "switchToList", "switchTab('list');", true);
+            }
+            else
+            {
+                ShowToast("取消失败，只有待处理的申请可取消", "error");
+            }
+        }
+    }
+
     protected void btnSubmit_Click(object sender, EventArgs e)
     {
         int repairType = Convert.ToInt32(ddlRepairType.SelectedValue);
