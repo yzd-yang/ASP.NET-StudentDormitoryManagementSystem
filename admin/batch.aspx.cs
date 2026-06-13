@@ -19,8 +19,10 @@ public partial class admin_batch : System.Web.UI.Page
             LoadStats();
             LoadBatches();
             LoadColleges();
-            LoadFloorData();
         }
+
+        LoadBuildingOptions();
+        LoadFloorData();
     }
 
     private void LoadStats()
@@ -65,8 +67,10 @@ public partial class admin_batch : System.Web.UI.Page
             ddlCollegeLimit.Items.Add(new ListItem(row["CollegeName"].ToString(), row["CollegeName"].ToString()));
             ddlFilterCollege.Items.Add(new ListItem(row["CollegeName"].ToString(), row["CollegeName"].ToString()));
         }
+    }
 
-        // 加载楼宇列表到弹窗HTML select
+    private void LoadBuildingOptions()
+    {
         ddlModalBuilding.Items.Clear();
         ddlModalBuilding.Items.Add(new ListItem("选择楼栋", "0"));
         DataTable buildings = BatchBLL.GetBuildingsForBatch();
