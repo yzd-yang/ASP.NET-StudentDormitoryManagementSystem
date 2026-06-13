@@ -22,8 +22,7 @@ public partial class admin_batch : System.Web.UI.Page
 
         LoadColleges();
         LoadBuildingOptions();
-        LoadFloorData();
-        LoadMajorData();
+        LoadBatchData();
 
         if (Session["ToastMsg"] != null)
         {
@@ -146,62 +145,59 @@ public partial class admin_batch : System.Web.UI.Page
         }
     }
 
-    private void LoadFloorData()
+    private void LoadBatchData()
     {
+        // 楼栋+楼层+房间
         DataTable buildings = BatchBLL.GetBuildingsForBatch();
-        string json = "{";
+        string buildingJson = "{";
         bool first = true;
         foreach (DataRow b in buildings.Rows)
         {
-            if (!first) json += ",";
+            if (!first) buildingJson += ",";
             first = false;
             int bid = Convert.ToInt32(b["Id"]);
-            string bname = b["Name"].ToString();
-
             DataTable floors = DormBLL.GetFloorsByBuilding(bid);
             DataTable rooms = BatchBLL.GetRoomsForBatch(bid, 0);
-
-            json += "\"" + bid + "\":{\"floors\":[";
+            buildingJson += "\"" + bid + "\":{\"floors\":[";
             for (int i = 0; i < floors.Rows.Count; i++)
             {
-                if (i > 0) json += ",";
-                json += floors.Rows[i]["Floor"];
+                if (i > 0) buildingJson += ",";
+                buildingJson += floors.Rows[i]["Floor"];
             }
-            json += "],\"rooms\":[";
+            buildingJson += "],\"rooms\":[";
             for (int i = 0; i < rooms.Rows.Count; i++)
             {
-                if (i > 0) json += ",";
-                json += "{\"Id\":" + rooms.Rows[i]["Id"]
+                if (i > 0) buildingJson += ",";
+                buildingJson += "{\"Id\":" + rooms.Rows[i]["Id"]
                     + ",\"No\":\"" + rooms.Rows[i]["RoomNo"] + "\""
                     + ",\"F\":" + rooms.Rows[i]["Floor"] + "}";
             }
-            json += "]}";
+            buildingJson += "]}";
         }
-        json += "}";
-        hfFloorData.Value = json;
-    }
+        buildingJson += "}";
 
-    private void LoadMajorData()
-    {
+        // 学院+专业
         DataTable colleges = DormBLL.GetColleges();
-        string json = "{";
-        bool first = true;
+        string majorJson = "{";
+        first = true;
         foreach (DataRow c in colleges.Rows)
         {
-            if (!first) json += ",";
+            if (!first) majorJson += ",";
             first = false;
             string collegeName = c["CollegeName"].ToString();
             DataTable majors = DormBLL.GetMajorsByCollege(collegeName);
-            json += "\"" + collegeName.Replace("\"", "\\\"") + "\":[";
+            majorJson += "\"" + collegeName.Replace("\"", "\\\"") + "\":[";
             for (int i = 0; i < majors.Rows.Count; i++)
             {
-                if (i > 0) json += ",";
-                json += "\"" + majors.Rows[i]["MajorName"].ToString().Replace("\"", "\\\"") + "\"";
+                if (i > 0) majorJson += ",";
+                majorJson += "\"" + majors.Rows[i]["MajorName"].ToString().Replace("\"", "\\\"") + "\"";
             }
-            json += "]";
+            majorJson += "]";
         }
-        json += "}";
-        hfMajorData.Value = json;
+        majorJson += "}";
+
+        string script = "var _bd=" + buildingJson + ";var _md=" + majorJson + ";";
+        Page.ClientScript.RegisterStartupScript(this.GetType(), "batchData", script, true);
     }
 
     protected void ddlModalBuilding_SelectedIndexChanged(object sender, EventArgs e)

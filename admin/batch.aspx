@@ -256,8 +256,6 @@
                         <span id="selectedRoomTags"></span>
                     </div>
                     <asp:HiddenField ID="hfSelectedRoomIds" runat="server" Value="" />
-                    <asp:HiddenField ID="hfFloorData" runat="server" Value="" />
-                    <asp:HiddenField ID="hfMajorData" runat="server" Value="" />
                 </div>
             </div>
             <div class="modal-footer">
@@ -271,20 +269,23 @@
 
     <script type="text/javascript">
         var selectedRooms = [];
-        var allRooms = [];
-        var buildingData = {};
-        var majorData = {};
-
-        function loadData() {
-            var raw = document.getElementById('<%= hfFloorData.ClientID %>').value;
-            if (raw) buildingData = JSON.parse(raw);
-            var majorRaw = document.getElementById('<%= hfMajorData.ClientID %>').value;
-            if (majorRaw) majorData = JSON.parse(majorRaw);
-        }
 
         function showCreateModal() {
-            loadData();
             document.getElementById('<%= pnlBatchModal.ClientID %>').style.display = 'flex';
+        }
+
+        function onCollegeChange() {
+            var college = document.getElementById('<%= ddlCollegeLimit.ClientID %>').value;
+            var majorDdl = document.getElementById('<%= ddlMajorLimit.ClientID %>');
+            majorDdl.innerHTML = '<option value="">不限</option>';
+            if (college && _md[college]) {
+                _md[college].forEach(function(m) {
+                    var opt = document.createElement('option');
+                    opt.value = m;
+                    opt.text = m;
+                    majorDdl.appendChild(opt);
+                });
+            }
         }
 
         function onBuildingChange() {
@@ -295,29 +296,28 @@
             selectedRooms = [];
             updateSelectedTags();
             document.getElementById('<%= hfSelectedRoomIds.ClientID %>').value = '';
-
-            if (buildingId > 0 && buildingData[buildingId]) {
-                buildingData[buildingId].floors.forEach(function(f) {
+            if (buildingId > 0 && _bd[buildingId]) {
+                _bd[buildingId].floors.forEach(function(f) {
                     var opt = document.createElement('option');
                     opt.value = f;
                     opt.text = f + '层';
                     floorSelect.appendChild(opt);
                 });
-                loadRooms(buildingId, 0);
+                renderRooms(buildingId, 0);
             }
         }
 
         function onFloorChange() {
             var buildingId = document.getElementById('<%= ddlModalBuilding.ClientID %>').value;
             var floor = parseInt(document.getElementById('<%= ddlModalFloor.ClientID %>').value);
-            loadRooms(buildingId, floor);
+            renderRooms(buildingId, floor);
         }
 
-        function loadRooms(buildingId, floor) {
+        function renderRooms(buildingId, floor) {
             var grid = document.getElementById('roomGrid');
             grid.innerHTML = '';
-            if (!buildingData[buildingId]) return;
-            var rooms = buildingData[buildingId].rooms;
+            if (!_bd[buildingId]) return;
+            var rooms = _bd[buildingId].rooms;
             var filtered = floor > 0 ? rooms.filter(function(r) { return r.F == floor; }) : rooms;
             filtered.forEach(function(r) {
                 var btn = document.createElement('button');
@@ -330,20 +330,6 @@
                 btn.onclick = function() { toggleRoom(r.Id, r.No); };
                 grid.appendChild(btn);
             });
-        }
-
-        function onCollegeChange() {
-            var college = document.getElementById('<%= ddlCollegeLimit.ClientID %>').value;
-            var majorDdl = document.getElementById('<%= ddlMajorLimit.ClientID %>');
-            majorDdl.innerHTML = '<option value="">不限</option>';
-            if (college && majorData[college]) {
-                majorData[college].forEach(function(m) {
-                    var opt = document.createElement('option');
-                    opt.value = m;
-                    opt.text = m;
-                    majorDdl.appendChild(opt);
-                });
-            }
         }
 
         function toggleRoom(roomId, roomNo) {
