@@ -170,10 +170,11 @@ SmartDorm/
 - 编辑状态通过 JS 控制，避免 ASP.NET ReadOnly 阻止回发数据
 
 #### 选宿批次（student/batch.aspx）✅
+- 根据学生年级/学院/专业自动筛选可参与批次（`BatchBLL.GetBatchesForStudent`）
+- 批次列表从数据库加载，显示名称、楼栋、适用年级、专业限定、状态
+- 筛选栏支持按关键字和状态筛选
+- 进行中批次可点击"进入选宿"，点击前校验必填信息
 - 无床位学生顶部导航显示"选宿"按钮
-- 点击"进入选宿"校验学院/专业/年级是否填写，未填写弹窗引导
-- 筛选栏（批次名称、楼栋、学院、专业、状态）
-- 批次列表表格（含状态标签和操作按钮）
 
 #### 选/抢宿舍（student/grab-dorm.aspx）✅
 - 倒计时区域
@@ -364,6 +365,7 @@ public class BatchBLL
 {
     public static DataTable GetBatchList(string keyword, int status, string grade, string college)
     public static DataTable GetBatchStats()
+    public static DataTable GetBatchesForStudent(string studentGrade, string studentCollege, string studentMajor, string keyword, int status)
     public static bool AddBatch(string batchName, DateTime startTime, DateTime endTime, string gradeLimit, string collegeLimit, string majorLimit, int adminId, int[] roomIds)
     public static bool UpdateBatch(...)
     public static bool DeleteBatch(int id)
