@@ -30,8 +30,8 @@ public class RepairBLL
     public static DataTable GetStudentRepairOrders(int studentId, int status = 0)
     {
         string sql = @"SELECT ro.*, r.RoomNo, bd.Name as BuildingName,
-                       CASE ro.RepairType WHEN 1 THEN '\u6C34\u7535\u62A5\u4FEE' WHEN 2 THEN '\u5BB6\u5177\u5BB6\u7535' WHEN 3 THEN '\u7F51\u7EDC\u8FDE\u63A5' WHEN 4 THEN '\u5176\u4ED6' END as TypeName,
-                       CASE ro.Status WHEN 1 THEN '\u5F85\u5206\u914D' WHEN 2 THEN '\u7EF4\u4FEE\u4E2D' WHEN 3 THEN '\u5DF2\u5B8C\u6210' WHEN 4 THEN '\u5DF2\u9A73\u56DE' END as StatusName
+                       CASE ro.RepairType WHEN 1 THEN '水电报修' WHEN 2 THEN '家具家电' WHEN 3 THEN '网络连接' WHEN 4 THEN '其他' END as TypeName,
+                       CASE ro.Status WHEN 1 THEN '待分配' WHEN 2 THEN '维修中' WHEN 3 THEN '已完成' WHEN 4 THEN '已驳回' END as StatusName
                        FROM RepairOrders ro
                        LEFT JOIN Rooms r ON ro.RoomId = r.Id
                        LEFT JOIN Buildings bd ON r.BuildingId = bd.Id
@@ -63,8 +63,8 @@ public class RepairBLL
     public static DataTable GetAllRepairOrders(int status = 0)
     {
         string sql = @"SELECT ro.*, s.Name as StudentName, s.StudentNo, r.RoomNo, bd.Name as BuildingName,
-                       CASE ro.RepairType WHEN 1 THEN '\u6C34\u7535\u62A5\u4FEE' WHEN 2 THEN '\u5BB6\u5177\u5BB6\u7535' WHEN 3 THEN '\u7F51\u7EDC\u8FDE\u63A5' WHEN 4 THEN '\u5176\u4ED6' END as TypeName,
-                       CASE ro.Status WHEN 1 THEN '\u5F85\u5206\u914D' WHEN 2 THEN '\u7EF4\u4FEE\u4E2D' WHEN 3 THEN '\u5DF2\u5B8C\u6210' WHEN 4 THEN '\u5DF2\u9A73\u56DE' END as StatusName
+                       CASE ro.RepairType WHEN 1 THEN '水电报修' WHEN 2 THEN '家具家电' WHEN 3 THEN '网络连接' WHEN 4 THEN '其他' END as TypeName,
+                       CASE ro.Status WHEN 1 THEN '待分配' WHEN 2 THEN '维修中' WHEN 3 THEN '已完成' WHEN 4 THEN '已驳回' END as StatusName
                        FROM RepairOrders ro
                        LEFT JOIN Students s ON ro.StudentId = s.Id
                        LEFT JOIN Rooms r ON ro.RoomId = r.Id

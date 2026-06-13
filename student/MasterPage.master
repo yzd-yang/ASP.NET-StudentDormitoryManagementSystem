@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <link href="/css/style.css" rel="stylesheet" />
-    <link href="/css/student.css?v=20260612-home-layout" rel="stylesheet" />
+    <link href="/css/student.css?v=20260613-dropdown" rel="stylesheet" />
     <asp:ContentPlaceHolder ID="head" runat="server" />
 </head>
 <body>
@@ -20,9 +20,6 @@
                 <a href="/student/home.aspx" class="header-brand">SmartDorm</a>
                 <nav class="header-nav">
                     <a href="/student/home.aspx" class="<%= IsActive("home") %>">我的宿舍</a>
-                    <a href="/student/repair.aspx" class="<%= IsActive("repair") %>">故障报修</a>
-                    <a href="/student/batch.aspx" class="<%= IsActive("batch") %>">选宿</a>
-                    <a href="/student/profile.aspx" class="<%= IsActive("profile") %>">个人中心</a>
                 </nav>
             </div>
             <div class="header-right">
@@ -33,10 +30,28 @@
                     <span class="material-symbols-outlined">notifications</span>
                 </button>
                 <div class="header-divider"></div>
-                <a href="/student/profile.aspx" class="header-user">
-                    <div class="header-user-avatar"><%= GetUserInitial() %></div>
-                    <span class="header-user-name"><%= GetUserName() %></span>
-                </a>
+                <div class="header-user-wrapper">
+                    <div class="header-user" onclick="toggleUserMenu()">
+                        <div class="header-user-avatar"><%= GetUserInitial() %></div>
+                        <span class="header-user-name"><%= GetUserName() %></span>
+                        <span class="material-symbols-outlined header-user-arrow">expand_more</span>
+                    </div>
+                    <div id="userDropdown" class="header-user-dropdown">
+                        <div style="padding:12px 16px; border-bottom:1px solid rgba(0,0,0,0.05);">
+                            <div style="font-size:14px; font-weight:700; color:var(--on-surface);"><%= GetUserName() %></div>
+                            <div style="font-size:12px; color:var(--on-surface-variant);">学生</div>
+                        </div>
+                        <a href="/student/profile.aspx" class="header-user-dropdown-item">
+                            <span class="material-symbols-outlined">person</span>
+                            <span>个人中心</span>
+                        </a>
+                        <div class="header-user-dropdown-divider"></div>
+                        <asp:LinkButton ID="btnLogoutTop" runat="server" OnClick="btnLogout_Click" CssClass="header-user-dropdown-item header-user-dropdown-logout">
+                            <span class="material-symbols-outlined">logout</span>
+                            <span>退出登录</span>
+                        </asp:LinkButton>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -79,5 +94,19 @@
         </footer>
 
     </form>
+
+    <script type="text/javascript">
+        function toggleUserMenu() {
+            var dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+        document.addEventListener('click', function(e) {
+            var wrapper = document.querySelector('.header-user-wrapper');
+            var dropdown = document.getElementById('userDropdown');
+            if (wrapper && !wrapper.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/student/MasterPage.master" AutoEventWireup="true" CodeFile="profile.aspx.cs" Inherits="student_profile" ResponseEncoding="utf-8" %>
+<%@ Page Language="C#" MasterPageFile="~/student/MasterPage.master" AutoEventWireup="true" CodeFile="profile.aspx.cs" Inherits="student_profile" ResponseEncoding="utf-8" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="title" runat="server">个人中心 - 智慧宿舍</asp:Content>
 
@@ -15,17 +15,10 @@
         .profile-hero-content { display:flex; gap:20px; align-items:start; position:relative; z-index:1; }
         .profile-avatar-wrap { position:relative; flex-shrink:0; }
         .profile-avatar {
-            width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.6);
+            width:100px; height:100px; border-radius:50%; background:linear-gradient(135deg, var(--primary), var(--primary-dark));
             display:flex; align-items:center; justify-content:center; border:3px solid #fff;
-            box-shadow:0 4px 16px rgba(0,0,0,0.08); overflow:hidden;
+            box-shadow:0 4px 16px rgba(0,0,0,0.08); color:var(--on-primary); font-size:36px; font-weight:800;
         }
-        .profile-avatar .material-symbols-outlined { font-size:52px; color:var(--outline-variant); }
-        .profile-edit-btn {
-            position:absolute; bottom:0; right:0; width:32px; height:32px; border-radius:50%;
-            background:var(--primary); color:var(--on-primary); display:flex; align-items:center;
-            justify-content:center; border:2px solid #fff; box-shadow:0 2px 8px rgba(0,0,0,0.12); cursor:pointer;
-        }
-        .profile-edit-btn .material-symbols-outlined { font-size:16px; }
         .profile-info { flex:1; }
         .profile-name { font-size:24px; font-weight:800; color:var(--on-surface); }
         .profile-student-no { font-size:14px; color:var(--on-surface-variant); margin-top:2px; }
@@ -46,9 +39,10 @@
             padding:20px; border:1px solid rgba(255,255,255,0.5); margin-bottom:16px;
         }
         .info-card-header {
-            display:flex; align-items:center; gap:10px; padding-bottom:14px;
+            display:flex; align-items:center; justify-content:space-between; gap:10px; padding-bottom:14px;
             border-bottom:1px solid rgba(0,0,0,0.05); margin-bottom:16px;
         }
+        .info-card-header-left { display:flex; align-items:center; gap:10px; }
         .info-card-header .material-symbols-outlined { color:var(--primary); font-size:24px; }
         .info-card-title { font-size:16px; font-weight:700; color:var(--on-surface); }
         .info-field { margin-bottom:14px; }
@@ -57,8 +51,26 @@
         .info-value {
             width:100%; padding:12px 14px; background:#FFF9E6; border:1px solid transparent;
             border-radius:12px; font-size:15px; color:var(--on-surface); outline:none; transition:all 0.2s;
+            font-family:inherit;
         }
         .info-value:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(73,234,206,0.12); background:#fff; }
+        .info-value[readonly] { background:rgba(255,249,230,0.5); cursor:default; }
+        .info-value[readonly]:focus { border-color:transparent; box-shadow:none; background:rgba(255,249,230,0.5); }
+        select.info-value { cursor:pointer; appearance:auto; }
+        select.info-value:disabled { background:rgba(255,249,230,0.5); cursor:default; opacity:1; }
+
+        .edit-actions { display:none; gap:10px; margin-top:16px; justify-content:flex-end; }
+        .edit-actions.show { display:flex; }
+        .btn-save {
+            padding:10px 24px; background:var(--primary); color:var(--on-primary); border:none; border-radius:12px;
+            font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.2s;
+        }
+        .btn-save:hover { box-shadow:0 4px 16px rgba(73,234,206,0.5); }
+        .btn-cancel {
+            padding:10px 24px; background:transparent; color:var(--on-surface-variant); border:1px solid var(--outline-variant);
+            border-radius:12px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.2s;
+        }
+        .btn-cancel:hover { background:rgba(0,0,0,0.04); }
 
         .status-bar {
             background:rgba(255,255,255,0.6); backdrop-filter:blur(12px); border-radius:20px;
@@ -74,32 +86,37 @@
         .status-bar-title { font-size:16px; font-weight:700; color:var(--on-surface); }
         .status-bar-sub { font-size:14px; color:var(--on-surface-variant); margin-top:2px; }
         .status-bar-right { text-align:right; }
-        .status-badge { display:inline-block; padding:4px 14px; border-radius:20px; font-size:13px; font-weight:700; background:rgba(221,231,197,0.6); color:var(--on-surface); }
+        .status-badge { display:inline-block; padding:4px 14px; border-radius:20px; font-size:13px; font-weight:700; }
+        .status-badge.allocated { background:rgba(73,234,206,0.15); color:#006b5c; }
+        .status-badge.unallocated { background:rgba(251,192,45,0.15); color:#b58900; }
         .status-bar-value { font-size:18px; font-weight:700; color:var(--primary); margin-top:6px; }
 
-        .footer-links { margin-top:24px; padding-top:16px; border-top:1px solid rgba(0,0,0,0.05); display:flex; justify-content:center; gap:24px; }
-        .footer-link { font-size:13px; color:var(--on-surface-variant); text-decoration:none; transition:color 0.2s; }
-        .footer-link:hover { color:var(--primary); }
+        .toast-msg {
+            position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px);
+            padding:12px 24px; border-radius:12px; font-size:14px; font-weight:600; z-index:9999;
+            transition:transform 0.3s ease; box-shadow:0 4px 12px rgba(0,0,0,0.15);
+        }
+        .toast-msg.show { transform:translateX(-50%) translateY(0); }
+        .toast-msg.success { background:var(--primary); color:var(--on-primary); }
+        .toast-msg.error { background:var(--error); color:#fff; }
     </style>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <!-- 个人信息 Hero -->
+    <asp:ScriptManager ID="ScriptManager1" runat="server" />
+
     <div class="profile-hero">
         <div class="profile-hero-content">
             <div class="profile-avatar-wrap">
-                <div class="profile-avatar">
-                    <span class="material-symbols-outlined">person</span>
-                </div>
-                <div class="profile-edit-btn"><span class="material-symbols-outlined">edit</span></div>
+                <div class="profile-avatar"><asp:Literal ID="litAvatar" runat="server" /></div>
             </div>
             <div class="profile-info">
                 <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap; gap:12px;">
                     <div>
-                        <div class="profile-name">张小明</div>
-                        <div class="profile-student-no">学号: 2024****001</div>
+                        <div class="profile-name"><asp:Literal ID="litName" runat="server" /></div>
+                        <div class="profile-student-no">学号: <asp:Literal ID="litStudentNo" runat="server" /></div>
                     </div>
-                    <button class="profile-edit-btn-lg">
+                    <button type="button" class="profile-edit-btn-lg" onclick="enterEdit()">
                         <span class="material-symbols-outlined" style="font-size:18px;">edit_square</span>
                         编辑资料
                     </button>
@@ -107,70 +124,108 @@
                 <div class="profile-meta">
                     <div class="profile-meta-item">
                         <span class="material-symbols-outlined">apartment</span>
-                        宿舍: <strong>南区1号楼 301</strong>
+                        宿舍: <strong><asp:Literal ID="litDorm" runat="server" /></strong>
                     </div>
                     <div class="profile-meta-item">
                         <span class="material-symbols-outlined">smartphone</span>
-                        手机: <strong>188****5678</strong>
+                        手机: <strong><asp:Literal ID="litPhone" runat="server" /></strong>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 联系信息 -->
-    <div class="info-card">
-        <div class="info-card-header">
-            <span class="material-symbols-outlined">contact_mail</span>
-            <span class="info-card-title">联系信息</span>
-        </div>
-        <div class="info-field">
-            <label class="info-label">电子邮箱</label>
-            <input class="info-value" type="email" value="zhang.xiaoming@university.edu" readonly />
-        </div>
-        <div class="info-field">
-            <label class="info-label">紧急联系人</label>
-            <input class="info-value" type="text" value="张大明 (父亲) - 139****1234" readonly />
-        </div>
-    </div>
-
-    <!-- 学业信息 -->
-    <div class="info-card">
-        <div class="info-card-header">
-            <span class="material-symbols-outlined">school</span>
-            <span class="info-card-title">学业信息</span>
-        </div>
-        <div class="info-field">
-            <label class="info-label">所属学院</label>
-            <input class="info-value" type="text" value="计算机科学与技术学院" readonly />
-        </div>
-        <div class="info-field">
-            <label class="info-label">专业名称</label>
-            <input class="info-value" type="text" value="软件工程" readonly />
-        </div>
-    </div>
-
-    <!-- 入住状态 -->
-    <div class="status-bar">
-        <div class="status-bar-left">
-            <div class="status-bar-icon">
-                <span class="material-symbols-outlined" data-icon="bed" style="font-variation-settings:'FILL' 1;">bed</span>
+    <asp:UpdatePanel ID="upProfile" runat="server">
+        <ContentTemplate>
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-card-header-left">
+                        <span class="material-symbols-outlined">badge</span>
+                        <span class="info-card-title">个人信息</span>
+                    </div>
+                </div>
+                <div class="info-field">
+                    <label class="info-label">电子邮箱</label>
+                    <asp:TextBox ID="txtEmail" runat="server" CssClass="info-value" ReadOnly="true" />
+                </div>
+                <div class="info-field">
+                    <label class="info-label">紧急联系人</label>
+                    <asp:TextBox ID="txtEmergencyContact" runat="server" CssClass="info-value" ReadOnly="true" placeholder="姓名 (关系)" />
+                </div>
+                <div class="info-field">
+                    <label class="info-label">紧急联系人电话</label>
+                    <asp:TextBox ID="txtEmergencyPhone" runat="server" CssClass="info-value" ReadOnly="true" placeholder="11位手机号" />
+                </div>
+                <div class="info-field">
+                    <label class="info-label">所属学院</label>
+                    <asp:DropDownList ID="ddlCollege" runat="server" CssClass="info-value" Enabled="false" AutoPostBack="true" OnSelectedIndexChanged="ddlCollege_Changed" />
+                </div>
+                <div class="info-field">
+                    <label class="info-label">专业名称</label>
+                    <asp:DropDownList ID="ddlMajor" runat="server" CssClass="info-value" Enabled="false" />
+                </div>
+                <div class="info-field">
+                    <label class="info-label">年级</label>
+                    <asp:TextBox ID="txtGrade" runat="server" CssClass="info-value" ReadOnly="true" placeholder="格式：2023级" />
+                </div>
+                <div id="editActions" class="edit-actions">
+                    <asp:Button ID="btnCancel" runat="server" Text="取消" CssClass="btn-cancel" OnClick="btnCancel_Click" CausesValidation="false" />
+                    <asp:Button ID="btnSave" runat="server" Text="保存" CssClass="btn-save" OnClick="btnSave_Click" />
+                </div>
             </div>
-            <div>
-                <div class="status-bar-title">当前入住状态</div>
-                <div class="status-bar-sub">2024 秋季学期</div>
-            </div>
-        </div>
-        <div class="status-bar-right">
-            <span class="status-badge">已分配</span>
-            <div class="status-bar-value">南区1号楼 301</div>
-        </div>
-    </div>
 
-    <!-- 页脚链接 -->
-    <div class="footer-links">
-        <a href="#" class="footer-link">隐私政策</a>
-        <a href="#" class="footer-link">服务协议</a>
-        <a href="#" class="footer-link">联系支持</a>
-    </div>
+            <div class="status-bar">
+                <div class="status-bar-left">
+                    <div class="status-bar-icon">
+                        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">bed</span>
+                    </div>
+                    <div>
+                        <div class="status-bar-title">当前入住状态</div>
+                        <div class="status-bar-sub"><asp:Literal ID="litSemester" runat="server" /></div>
+                    </div>
+                </div>
+                <div class="status-bar-right">
+                    <span class="status-badge" id="spanStatus" runat="server"><asp:Literal ID="litStatus" runat="server" /></span>
+                    <div class="status-bar-value"><asp:Literal ID="litStatusDorm" runat="server" /></div>
+                </div>
+            </div>
+
+            <div id="toastMsg" class="toast-msg"></div>
+        </ContentTemplate>
+    </asp:UpdatePanel>
+
+    <script type="text/javascript">
+        function enterEdit() {
+            var fields = document.querySelectorAll('#<%= upProfile.ClientID %> input.info-value');
+            for (var i = 0; i < fields.length; i++) {
+                fields[i].removeAttribute('readonly');
+                fields[i].style.background = '#fff';
+            }
+            var selects = document.querySelectorAll('#<%= upProfile.ClientID %> select.info-value');
+            for (var i = 0; i < selects.length; i++) {
+                selects[i].disabled = false;
+            }
+            document.getElementById('editActions').classList.add('show');
+        }
+
+        function exitEdit() {
+            var fields = document.querySelectorAll('#<%= upProfile.ClientID %> input.info-value');
+            for (var i = 0; i < fields.length; i++) {
+                fields[i].setAttribute('readonly', 'readonly');
+                fields[i].style.background = '';
+            }
+            var selects = document.querySelectorAll('#<%= upProfile.ClientID %> select.info-value');
+            for (var i = 0; i < selects.length; i++) {
+                selects[i].disabled = true;
+            }
+            document.getElementById('editActions').classList.remove('show');
+        }
+
+        function showToast(msg, type) {
+            var el = document.getElementById('toastMsg');
+            el.textContent = msg;
+            el.className = 'toast-msg ' + type + ' show';
+            setTimeout(function () { el.classList.remove('show'); }, 2500);
+        }
+    </script>
 </asp:Content>

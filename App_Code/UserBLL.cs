@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
@@ -67,14 +67,18 @@ public class UserBLL
         return DBHelper.GetDataTable(sql, parameters);
     }
 
-    public static bool UpdateStudentInfo(int studentId, string email, string emergencyContact, string emergencyPhone)
+    public static bool UpdateStudentInfo(int studentId, string email, string emergencyContact, string emergencyRelation, string emergencyPhone, string college, string major, string grade)
     {
-        string sql = "UPDATE Students SET Email=@Email, EmergencyContact=@EmergencyContact, EmergencyPhone=@EmergencyPhone WHERE Id=@Id";
+        string sql = "UPDATE Students SET Email=@Email, EmergencyContact=@EmergencyContact, EmergencyRelation=@EmergencyRelation, EmergencyPhone=@EmergencyPhone, College=@College, Major=@Major, Grade=@Grade WHERE Id=@Id";
         MySqlParameter[] parameters = new MySqlParameter[]
         {
             new MySqlParameter("@Email", email),
             new MySqlParameter("@EmergencyContact", emergencyContact),
+            new MySqlParameter("@EmergencyRelation", emergencyRelation),
             new MySqlParameter("@EmergencyPhone", emergencyPhone),
+            new MySqlParameter("@College", college),
+            new MySqlParameter("@Major", major),
+            new MySqlParameter("@Grade", grade),
             new MySqlParameter("@Id", studentId)
         };
 

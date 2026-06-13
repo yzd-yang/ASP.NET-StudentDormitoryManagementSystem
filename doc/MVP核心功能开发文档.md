@@ -62,6 +62,7 @@ SmartDorm/
 ├── student/
 │   ├── MasterPage.master        # 学生端母版页（底部Tab导航）
 │   ├── home.aspx                # 我的宿舍/首页
+│   ├── notice-detail.aspx       # 公告详情
 │   ├── repair.aspx              # 故障报修
 │   ├── profile.aspx             # 个人中心
 │   ├── batch.aspx               # 选宿批次列表
@@ -147,12 +148,12 @@ SmartDorm/
 ### 5.2 学生端
 
 #### 学生首页（student/home.aspx）✅
-- 宿舍信息卡片（校区、楼栋、房间号、床位号）
-- 宿舍评分（静态数据，94分优秀）
-- 室友列表
-- 设施状态（空调、热水器、照明、校园网）
-- 提交报修入口
-- 快捷工具（宿舍预约、管理规章）
+- 宿舍信息（校区、楼栋、房间号、床位号）— 动态数据
+- 我的室友列表 — 动态数据
+- 我的报修列表（类型、描述、状态）— 动态数据
+- 通知公告（最新5条，点击查看详情）— 动态数据
+- 快捷工具（报修申请）
+- 新增公告详情页（student/notice-detail.aspx）
 
 #### 故障报修（student/repair.aspx）✅
 - 标签切换：提交申请 / 我的报修
@@ -160,10 +161,11 @@ SmartDorm/
 - 我的报修列表：已完成、处理中、待处理三种状态卡片
 
 #### 个人中心（student/profile.aspx）✅
-- 个人信息Hero卡片（头像、姓名、学号、宿舍、手机）
-- 联系信息（邮箱、紧急联系人）
-- 学业信息（学院、专业）
-- 入住状态
+- 个人信息Hero卡片（头像、姓名、学号、宿舍、手机）— 动态数据
+- 个人信息卡片（邮箱、紧急联系人、学院下拉、专业下拉联动、年级）— 动态数据
+- 点击"编辑资料"进入编辑模式，保存/取消无刷新（UpdatePanel）
+- 入住状态栏（已分配/未分配）
+- 学院和专业使用 DropDownList，数据来自 Departments 表
 
 #### 选宿批次（student/batch.aspx）✅
 - 筛选栏（批次名称、楼栋、学院、专业、状态）
@@ -255,7 +257,7 @@ public class UserBLL
     public static DataTable Login(string userNo, string password)
     public static bool RegisterStudent(string studentNo, string name, string phone, string password)
     public static DataTable GetStudentById(int studentId)
-    public static bool UpdateStudentInfo(int studentId, string email, string emergencyContact, string emergencyPhone)
+    public static bool UpdateStudentInfo(int studentId, string email, string emergencyContact, string emergencyRelation, string emergencyPhone, string college, string major, string grade)
     public static DataTable GetAdminById(int adminId)
 }
 ```
