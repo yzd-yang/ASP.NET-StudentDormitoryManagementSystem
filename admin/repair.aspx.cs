@@ -56,7 +56,6 @@ public partial class admin_repair : System.Web.UI.Page
         {
             litPending.Text = Convert.ToInt32(dt.Rows[0]["Pending"]).ToString();
             litProcessing.Text = Convert.ToInt32(dt.Rows[0]["Processing"]).ToString();
-            litUrgent.Text = Convert.ToInt32(dt.Rows[0]["Urgent"]).ToString();
             litTodayCompleted.Text = Convert.ToInt32(dt.Rows[0]["TodayCompleted"]).ToString();
         }
     }

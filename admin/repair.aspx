@@ -130,10 +130,6 @@
             <div class="repair-stat-value"><asp:Literal ID="litProcessing" runat="server" Text="0" /></div>
         </div>
         <div class="repair-stat">
-            <div class="repair-stat-header"><span class="repair-stat-label">紧急报修</span><div class="repair-stat-icon" style="background:rgba(186,26,26,0.06);"><span class="material-symbols-outlined" style="color:var(--error);">priority_high</span></div></div>
-            <div class="repair-stat-value"><asp:Literal ID="litUrgent" runat="server" Text="0" /></div>
-        </div>
-        <div class="repair-stat">
             <div class="repair-stat-header"><span class="repair-stat-label">今日已完成</span><div class="repair-stat-icon" style="background:rgba(73,234,206,0.1);"><span class="material-symbols-outlined" style="color:var(--primary);">task_alt</span></div></div>
             <div class="repair-stat-value"><asp:Literal ID="litTodayCompleted" runat="server" Text="0" /></div>
         </div>
