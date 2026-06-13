@@ -23,6 +23,12 @@ public partial class student_repair : System.Web.UI.Page
         {
             LoadStudentInfo();
             LoadRepairOrders();
+
+            // 支持 ?tab=list 参数直接打开"我的报修"标签
+            if (Request.QueryString["tab"] == "list")
+            {
+                ScriptManager.RegisterStartupScript(this, GetType(), "switchToList", "switchTab('list');", true);
+            }
         }
     }
 

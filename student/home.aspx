@@ -195,7 +195,7 @@
                             <span class="material-symbols-outlined">build</span>
                             我的报修
                         </h2>
-                        <a href="repair.aspx" class="home-text-action">报修申请</a>
+                        <a href="repair.aspx?tab=list" class="home-text-action">查看全部</a>
                     </div>
                     <div class="home-repair-list">
                         <asp:Repeater ID="rptRepairs" runat="server">
