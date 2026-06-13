@@ -198,7 +198,7 @@ public partial class admin_batch : System.Web.UI.Page
 
     protected void ddlModalBuilding_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int buildingId = Convert.ToInt32(ddlModalBuilding.Value);
+        int buildingId = Convert.ToInt32(ddlModalBuilding.SelectedValue);
         ddlModalFloor.Items.Clear();
         ddlModalFloor.Items.Add(new ListItem("全部楼层", "0"));
 
@@ -220,8 +220,8 @@ public partial class admin_batch : System.Web.UI.Page
 
     protected void ddlModalFloor_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int buildingId = Convert.ToInt32(ddlModalBuilding.Value);
-        int floor = Convert.ToInt32(ddlModalFloor.Value);
+        int buildingId = Convert.ToInt32(ddlModalBuilding.SelectedValue);
+        int floor = Convert.ToInt32(ddlModalFloor.SelectedValue);
         LoadRoomsForJS(buildingId, floor);
         pnlBatchModal.Style["display"] = "flex";
     }
