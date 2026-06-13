@@ -23,6 +23,7 @@ public partial class admin_batch : System.Web.UI.Page
 
         LoadBuildingOptions();
         LoadFloorData();
+        LoadMajorData();
     }
 
     private void LoadStats()
@@ -78,6 +79,8 @@ public partial class admin_batch : System.Web.UI.Page
         {
             ddlModalBuilding.Items.Add(new ListItem(row["Name"].ToString() + " (" + row["Campus"].ToString() + ")", row["Id"].ToString()));
         }
+        ddlModalFloor.Items.Clear();
+        ddlModalFloor.Items.Add(new ListItem("全部楼层", "0"));
     }
 
     protected void btnBatchSearch_Click(object sender, EventArgs e)
@@ -168,6 +171,29 @@ public partial class admin_batch : System.Web.UI.Page
         }
         json += "}";
         hfFloorData.Value = json;
+    }
+
+    private void LoadMajorData()
+    {
+        DataTable colleges = DormBLL.GetColleges();
+        string json = "{";
+        bool first = true;
+        foreach (DataRow c in colleges.Rows)
+        {
+            if (!first) json += ",";
+            first = false;
+            string collegeName = c["CollegeName"].ToString();
+            DataTable majors = DormBLL.GetMajorsByCollege(collegeName);
+            json += "\"" + collegeName.Replace("\"", "\\\"") + "\":[";
+            for (int i = 0; i < majors.Rows.Count; i++)
+            {
+                if (i > 0) json += ",";
+                json += "\"" + majors.Rows[i]["MajorName"].ToString().Replace("\"", "\\\"") + "\"";
+            }
+            json += "]";
+        }
+        json += "}";
+        hfMajorData.Value = json;
     }
 
     protected void ddlModalBuilding_SelectedIndexChanged(object sender, EventArgs e)

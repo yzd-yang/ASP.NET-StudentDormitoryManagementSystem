@@ -232,7 +232,7 @@
                     </div>
                     <div class="form-group">
                         <label>学院限定</label>
-                        <asp:DropDownList ID="ddlCollegeLimit" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCollegeLimit_SelectedIndexChanged">
+                        <asp:DropDownList ID="ddlCollegeLimit" runat="server" CssClass="form-select" onchange="onCollegeChange()">
                             <asp:ListItem Value="" Text="不限" />
                         </asp:DropDownList>
                     </div>
@@ -256,12 +256,8 @@
                 <div class="form-group">
                     <label>宿舍范围</label>
                     <div style="display:flex; gap:12px; margin-bottom:12px;">
-                        <select id="ddlModalBuilding" runat="server" class="form-select" onchange="onBuildingChange()">
-                            <option value="0">选择楼栋</option>
-                        </select>
-                        <select id="ddlModalFloor" runat="server" class="form-select" onchange="onFloorChange()">
-                            <option value="0">全部楼层</option>
-                        </select>
+                        <asp:DropDownList ID="ddlModalBuilding" runat="server" CssClass="form-select" onchange="onBuildingChange()" />
+                        <asp:DropDownList ID="ddlModalFloor" runat="server" CssClass="form-select" onchange="onFloorChange()" />
                     </div>
                     <div style="background:var(--surface-container-low); border-radius:14px; padding:14px; border:1px solid rgba(0,0,0,0.04);">
                         <p style="font-size:12px; color:var(--on-surface-variant); margin-bottom:10px;">点击宿舍号可添加/移除宿舍范围</p>
@@ -273,6 +269,7 @@
                     </div>
                     <asp:HiddenField ID="hfSelectedRoomIds" runat="server" Value="" />
                     <asp:HiddenField ID="hfFloorData" runat="server" Value="" />
+                    <asp:HiddenField ID="hfMajorData" runat="server" Value="" />
                 </div>
             </div>
             <div class="modal-footer">
@@ -288,10 +285,13 @@
         var selectedRooms = [];
         var allRooms = [];
         var buildingData = {};
+        var majorData = {};
 
         function loadData() {
             var raw = document.getElementById('<%= hfFloorData.ClientID %>').value;
             if (raw) buildingData = JSON.parse(raw);
+            var majorRaw = document.getElementById('<%= hfMajorData.ClientID %>').value;
+            if (majorRaw) majorData = JSON.parse(majorRaw);
         }
 
         function showCreateModal() {
@@ -342,6 +342,20 @@
                 btn.onclick = function() { toggleRoom(r.Id, r.No); };
                 grid.appendChild(btn);
             });
+        }
+
+        function onCollegeChange() {
+            var college = document.getElementById('<%= ddlCollegeLimit.ClientID %>').value;
+            var majorDdl = document.getElementById('<%= ddlMajorLimit.ClientID %>');
+            majorDdl.innerHTML = '<option value="">不限</option>';
+            if (college && majorData[college]) {
+                majorData[college].forEach(function(m) {
+                    var opt = document.createElement('option');
+                    opt.value = m;
+                    opt.text = m;
+                    majorDdl.appendChild(opt);
+                });
+            }
         }
 
         function toggleRoom(roomId, roomNo) {
