@@ -125,10 +125,10 @@ public partial class admin_dashboard : System.Web.UI.Page
     protected string GetBarColor(object countObj)
     {
         int count = Convert.ToInt32(countObj);
-        if (count == 0) return "background:rgba(73,234,206,0.1);";
-        if (count >= 20) return "background:rgba(73,234,206,0.6);";
-        if (count >= 10) return "background:rgba(73,234,206,0.4);";
-        return "background:rgba(73,234,206,0.25);";
+        if (count == 0) return "rgba(73,234,206,0.1)";
+        if (count >= 20) return "rgba(73,234,206,0.6)";
+        if (count >= 10) return "rgba(73,234,206,0.4)";
+        return "rgba(73,234,206,0.25)";
     }
 
     private void LoadOccupancy()
