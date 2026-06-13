@@ -131,6 +131,7 @@ Page_Load → 查 DB → 构建 JSON → RegisterStartupScript 注入 JS 变量
 - **不要用 AJAX handler**：本项目不需要额外的 .ashx 接口
 - 每次回发 `RegisterStartupScript` 都会重新注入，确保数据始终可用
 - 选中房间用 `hfSelectedRoomIds` HiddenField 传递给服务端保存
+- 房间数据含 `R` 字段：`1`=不可选（已被其他批次占用或已满），`0`=可选
 
 ## 常见陷阱
 
