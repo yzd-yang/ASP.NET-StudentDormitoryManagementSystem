@@ -390,7 +390,7 @@
             selectedRooms.forEach(function(r) {
                 var tag = document.createElement('span');
                 tag.style.cssText = 'background:rgba(73,234,206,0.15); color:var(--primary); padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;';
-                tag.textContent = r.buildingName + ' ' + r.roomNo;
+                tag.textContent = r.roomNo;
                 container.appendChild(tag);
             });
         }
