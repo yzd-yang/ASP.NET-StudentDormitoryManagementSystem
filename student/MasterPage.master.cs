@@ -50,4 +50,11 @@ public partial class student_MasterPage : System.Web.UI.MasterPage
         }
         return "同";
     }
+
+    protected bool HasBed()
+    {
+        if (Session["UserId"] == null) return false;
+        int studentId = Convert.ToInt32(Session["UserId"]);
+        return DormBLL.HasBed(studentId);
+    }
 }

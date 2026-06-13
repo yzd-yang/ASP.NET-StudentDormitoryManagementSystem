@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="register.aspx.cs" Inherits="register" ResponseEncoding="utf-8" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="register.aspx.cs" Inherits="register" ResponseEncoding="utf-8" %>
 
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -28,9 +28,6 @@
         }
         .reg-card-title { font-size:22px; font-weight:700; color:var(--on-surface); margin-bottom:4px; }
         .reg-card-desc { font-size:14px; color:var(--on-surface-variant); margin-bottom:24px; }
-        .reg-tabs { display:flex; border-bottom:2px solid rgba(0,0,0,0.05); margin-bottom:24px; }
-        .reg-tab { flex:1; padding:12px; text-align:center; font-size:14px; font-weight:700; cursor:pointer; border:none; background:transparent; font-family:inherit; color:var(--on-surface-variant); border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.2s; }
-        .reg-tab.active { color:var(--primary); border-bottom-color:var(--primary); }
         .input-group {
             position:relative; display:flex; align-items:center; border:1px solid var(--outline-variant);
             border-radius:16px; background:rgba(255,255,255,0.5); padding:0 16px; transition:all 0.2s; margin-bottom:16px;
@@ -59,6 +56,8 @@
         .reg-badges { display:flex; justify-content:center; gap:12px; margin-top:12px; }
         .reg-badge { font-size:12px; font-weight:500; padding:6px 14px; border-radius:9999px; background:rgba(255,255,255,0.4); backdrop-filter:blur(8px); border:1px solid rgba(186,202,197,0.3); color:var(--on-surface-variant); display:flex; align-items:center; gap:4px; }
         .reg-badge .material-symbols-outlined { font-size:14px; color:var(--primary); }
+        .error-msg { display:none; padding:12px 16px; border-radius:12px; font-size:14px; font-weight:600; margin-bottom:16px; background:rgba(186,26,26,0.08); color:var(--error); border:1px solid rgba(186,26,26,0.15); }
+        .error-msg.show { display:block; }
     </style>
 </head>
 <body>
@@ -71,40 +70,35 @@
             </div>
 
             <div class="reg-card">
-                <div class="reg-card-title">账号注册</div>
+                <div class="reg-card-title">学生注册</div>
                 <div class="reg-card-desc">加入智慧宿舍，开启便捷校园生活</div>
 
-                <div class="reg-tabs">
-                    <button type="button" class="reg-tab active" onclick="switchRegTab('student')">学生注册</button>
-                    <button type="button" class="reg-tab" onclick="switchRegTab('teacher')">老师注册</button>
-                </div>
-
                 <div>
-                    <label class="form-label" id="regIdLabel">学号</label>
+                    <label class="form-label">学号</label>
                     <div class="input-group">
                         <span class="material-symbols-outlined">badge</span>
-                        <input type="text" placeholder="请输入您的学号或工号" />
+                        <input type="text" id="txtUserNo" runat="server" placeholder="请输入学号" />
                     </div>
                 </div>
                 <div>
                     <label class="form-label">手机号</label>
                     <div class="input-group">
                         <span class="material-symbols-outlined">smartphone</span>
-                        <input type="tel" placeholder="请输入手机号" />
+                        <input type="tel" id="txtPhone" runat="server" placeholder="请输入手机号" />
                     </div>
                 </div>
                 <div>
                     <label class="form-label">密码</label>
                     <div class="input-group">
                         <span class="material-symbols-outlined">lock</span>
-                        <input type="password" placeholder="请输入密码" />
+                        <input type="password" id="txtPassword" runat="server" placeholder="请输入密码" />
                     </div>
                 </div>
                 <div>
                     <label class="form-label">确认密码</label>
                     <div class="input-group">
                         <span class="material-symbols-outlined">lock_reset</span>
-                        <input type="password" placeholder="请再次输入密码" />
+                        <input type="password" id="txtConfirmPassword" runat="server" placeholder="请再次输入密码" />
                     </div>
                 </div>
 
@@ -113,6 +107,7 @@
                     <label for="agreement">我已阅读并同意 <a href="#">用户服务协议</a> 与 <a href="#">隐私政策</a></label>
                 </div>
 
+                <asp:Label ID="lblError" runat="server" CssClass="error-msg" />
                 <asp:Button ID="btnRegister" runat="server" Text="立即注册" CssClass="reg-btn" OnClick="btnRegister_Click" />
 
                 <div class="reg-links">
@@ -130,20 +125,5 @@
             </div>
         </div>
     </form>
-
-    <script type="text/javascript">
-        function switchRegTab(type) {
-            var tabs = document.querySelectorAll('.reg-tab');
-            tabs.forEach(function(t) { t.classList.remove('active'); });
-            var label = document.getElementById('regIdLabel');
-            if (type === 'student') {
-                tabs[0].classList.add('active');
-                label.innerText = '学号';
-            } else {
-                tabs[1].classList.add('active');
-                label.innerText = '工号';
-            }
-        }
-    </script>
 </body>
 </html>

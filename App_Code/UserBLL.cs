@@ -38,6 +38,30 @@ public class UserBLL
         return DBHelper.GetDataTable(sql, parameters);
     }
 
+    public static DataTable LoginStudent(string userNo, string password)
+    {
+        string md5Pwd = GetMD5(password);
+        string sql = "SELECT Id, StudentNo as UserNo, Name, 'student' as Role FROM Students WHERE StudentNo=@UserNo AND Password=@Password AND Status=1";
+        MySqlParameter[] parameters = new MySqlParameter[]
+        {
+            new MySqlParameter("@UserNo", userNo),
+            new MySqlParameter("@Password", md5Pwd)
+        };
+        return DBHelper.GetDataTable(sql, parameters);
+    }
+
+    public static DataTable LoginAdmin(string userNo, string password)
+    {
+        string md5Pwd = GetMD5(password);
+        string sql = "SELECT Id, AdminNo as UserNo, Name, Role, 'admin' as RoleType FROM Admins WHERE AdminNo=@UserNo AND Password=@Password AND Status=1";
+        MySqlParameter[] parameters = new MySqlParameter[]
+        {
+            new MySqlParameter("@UserNo", userNo),
+            new MySqlParameter("@Password", md5Pwd)
+        };
+        return DBHelper.GetDataTable(sql, parameters);
+    }
+
     public static bool RegisterStudent(string studentNo, string name, string phone, string password)
     {
         string checkSql = "SELECT COUNT(*) FROM Students WHERE StudentNo=@StudentNo";
@@ -67,9 +91,9 @@ public class UserBLL
         return DBHelper.GetDataTable(sql, parameters);
     }
 
-    public static bool UpdateStudentInfo(int studentId, string email, string emergencyContact, string emergencyRelation, string emergencyPhone, string college, string major, string grade)
+    public static bool UpdateStudentInfo(int studentId, string email, string emergencyContact, string emergencyRelation, string emergencyPhone, string college, string major, string grade, string className)
     {
-        string sql = "UPDATE Students SET Email=@Email, EmergencyContact=@EmergencyContact, EmergencyRelation=@EmergencyRelation, EmergencyPhone=@EmergencyPhone, College=@College, Major=@Major, Grade=@Grade WHERE Id=@Id";
+        string sql = "UPDATE Students SET Email=@Email, EmergencyContact=@EmergencyContact, EmergencyRelation=@EmergencyRelation, EmergencyPhone=@EmergencyPhone, College=@College, Major=@Major, Grade=@Grade, ClassName=@ClassName WHERE Id=@Id";
         MySqlParameter[] parameters = new MySqlParameter[]
         {
             new MySqlParameter("@Email", email),
@@ -79,6 +103,7 @@ public class UserBLL
             new MySqlParameter("@College", college),
             new MySqlParameter("@Major", major),
             new MySqlParameter("@Grade", grade),
+            new MySqlParameter("@ClassName", className),
             new MySqlParameter("@Id", studentId)
         };
 

@@ -46,6 +46,7 @@ public partial class student_profile : System.Web.UI.Page
         txtEmergencyPhone.Text = row["EmergencyPhone"] != DBNull.Value ? MaskPhone(row["EmergencyPhone"].ToString()) : "";
 
         txtGrade.Text = row["Grade"] != DBNull.Value ? row["Grade"].ToString() : "";
+        txtClassName.Text = row["ClassName"] != DBNull.Value ? row["ClassName"].ToString() : "";
 
         LoadCollegeList();
         string college = row["College"] != DBNull.Value ? row["College"].ToString() : "";
@@ -157,8 +158,9 @@ public partial class student_profile : System.Web.UI.Page
         string college = ddlCollege.SelectedValue;
         string major = ddlMajor.SelectedValue;
         string grade = txtGrade.Text.Trim();
+        string className = txtClassName.Text.Trim();
 
-        bool ok = UserBLL.UpdateStudentInfo(studentId, email, emergencyContact, emergencyRelation, emergencyPhone, college, major, grade);
+        bool ok = UserBLL.UpdateStudentInfo(studentId, email, emergencyContact, emergencyRelation, emergencyPhone, college, major, grade, className);
         if (ok)
         {
             ScriptManager.RegisterStartupScript(this, GetType(), "toast", "showToast('保存成功','success'); exitEdit();", true);

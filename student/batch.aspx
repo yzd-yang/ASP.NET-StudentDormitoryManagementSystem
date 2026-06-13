@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/student/MasterPage.master" AutoEventWireup="true" CodeFile="batch.aspx.cs" Inherits="student_batch" ResponseEncoding="utf-8" %>
+<%@ Page Language="C#" MasterPageFile="~/student/MasterPage.master" AutoEventWireup="true" CodeFile="batch.aspx.cs" Inherits="student_batch" ResponseEncoding="utf-8" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="title" runat="server">选宿批次 - 智慧宿舍</asp:Content>
 
@@ -106,7 +106,7 @@
                     <td>2024级</td>
                     <td>不限专业</td>
                     <td><span class="batch-status active">进行中</span></td>
-                    <td style="text-align:center;"><a href="grab-dorm.aspx" class="batch-btn primary">进入选宿</a></td>
+                    <td style="text-align:center;"><a href="grab-dorm.aspx" class="batch-btn primary" onclick="return checkInfo();">进入选宿</a></td>
                 </tr>
                 <tr>
                     <td><span class="batch-name">2024级新生第二批 (女生)</span></td>
@@ -136,4 +136,30 @@
             <a href="#" class="tip-link">了解更多规则</a>
         </div>
     </div>
+
+    <div id="infoModal" style="display:none; position:fixed; inset:0; z-index:999; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
+        <div style="background:#fff; border-radius:20px; padding:32px; max-width:380px; width:90%; text-align:center; box-shadow:0 20px 50px rgba(0,0,0,0.2);">
+            <span class="material-symbols-outlined" style="font-size:48px; color:var(--primary); margin-bottom:12px;">info</span>
+            <h3 style="font-size:18px; font-weight:700; color:var(--on-surface); margin-bottom:8px;">请先完善个人信息</h3>
+            <p style="font-size:14px; color:var(--on-surface-variant); margin-bottom:24px; line-height:1.6;">选宿前需要填写所属学院、专业名称和年级信息，请先前往个人中心完善资料。</p>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button type="button" onclick="closeModal()" style="padding:10px 24px; border:1px solid var(--outline-variant); border-radius:12px; background:transparent; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit;">取消</button>
+                <a href="profile.aspx" style="padding:10px 24px; background:var(--primary); color:var(--on-primary); border-radius:12px; font-size:14px; font-weight:700; text-decoration:none;">去填写</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var infoComplete = <%= IsInfoComplete() ? "true" : "false" %>;
+        function checkInfo() {
+            if (!infoComplete) {
+                document.getElementById('infoModal').style.display = 'flex';
+                return false;
+            }
+            return true;
+        }
+        function closeModal() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+    </script>
 </asp:Content>

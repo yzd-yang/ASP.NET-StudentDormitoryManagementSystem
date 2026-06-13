@@ -116,10 +116,6 @@
                         <div class="profile-name"><asp:Literal ID="litName" runat="server" /></div>
                         <div class="profile-student-no">学号: <asp:Literal ID="litStudentNo" runat="server" /></div>
                     </div>
-                    <button type="button" class="profile-edit-btn-lg" onclick="enterEdit()">
-                        <span class="material-symbols-outlined" style="font-size:18px;">edit_square</span>
-                        编辑资料
-                    </button>
                 </div>
                 <div class="profile-meta">
                     <div class="profile-meta-item">
@@ -137,36 +133,45 @@
 
     <asp:UpdatePanel ID="upProfile" runat="server">
         <ContentTemplate>
+            <asp:HiddenField ID="hfEditing" runat="server" Value="0" />
             <div class="info-card">
                 <div class="info-card-header">
                     <div class="info-card-header-left">
                         <span class="material-symbols-outlined">badge</span>
                         <span class="info-card-title">个人信息</span>
                     </div>
+                    <button type="button" class="profile-edit-btn-lg" onclick="enterEdit()">
+                        <span class="material-symbols-outlined" style="font-size:18px;">edit_square</span>
+                        编辑资料
+                    </button>
                 </div>
                 <div class="info-field">
                     <label class="info-label">电子邮箱</label>
-                    <asp:TextBox ID="txtEmail" runat="server" CssClass="info-value" ReadOnly="true" />
+                    <asp:TextBox ID="txtEmail" runat="server" CssClass="info-value" />
                 </div>
                 <div class="info-field">
                     <label class="info-label">紧急联系人</label>
-                    <asp:TextBox ID="txtEmergencyContact" runat="server" CssClass="info-value" ReadOnly="true" placeholder="姓名 (关系)" />
+                    <asp:TextBox ID="txtEmergencyContact" runat="server" CssClass="info-value" placeholder="姓名 (关系)" />
                 </div>
                 <div class="info-field">
                     <label class="info-label">紧急联系人电话</label>
-                    <asp:TextBox ID="txtEmergencyPhone" runat="server" CssClass="info-value" ReadOnly="true" placeholder="11位手机号" />
+                    <asp:TextBox ID="txtEmergencyPhone" runat="server" CssClass="info-value" placeholder="11位手机号" />
                 </div>
                 <div class="info-field">
                     <label class="info-label">所属学院</label>
-                    <asp:DropDownList ID="ddlCollege" runat="server" CssClass="info-value" Enabled="false" AutoPostBack="true" OnSelectedIndexChanged="ddlCollege_Changed" />
+                    <asp:DropDownList ID="ddlCollege" runat="server" CssClass="info-value" AutoPostBack="true" OnSelectedIndexChanged="ddlCollege_Changed" />
                 </div>
                 <div class="info-field">
                     <label class="info-label">专业名称</label>
-                    <asp:DropDownList ID="ddlMajor" runat="server" CssClass="info-value" Enabled="false" />
+                    <asp:DropDownList ID="ddlMajor" runat="server" CssClass="info-value" />
                 </div>
                 <div class="info-field">
                     <label class="info-label">年级</label>
-                    <asp:TextBox ID="txtGrade" runat="server" CssClass="info-value" ReadOnly="true" placeholder="格式：2023级" />
+                    <asp:TextBox ID="txtGrade" runat="server" CssClass="info-value" placeholder="格式：2023级" />
+                </div>
+                <div class="info-field">
+                    <label class="info-label">班级（选填）</label>
+                    <asp:TextBox ID="txtClassName" runat="server" CssClass="info-value" placeholder="例如：计科2301" />
                 </div>
                 <div id="editActions" class="edit-actions">
                     <asp:Button ID="btnCancel" runat="server" Text="取消" CssClass="btn-cancel" OnClick="btnCancel_Click" CausesValidation="false" />
@@ -195,6 +200,18 @@
     </asp:UpdatePanel>
 
     <script type="text/javascript">
+        function setReadonlyState() {
+            var fields = document.querySelectorAll('#<%= upProfile.ClientID %> input.info-value');
+            for (var i = 0; i < fields.length; i++) {
+                fields[i].setAttribute('readonly', 'readonly');
+                fields[i].style.background = '';
+            }
+            var selects = document.querySelectorAll('#<%= upProfile.ClientID %> select.info-value');
+            for (var i = 0; i < selects.length; i++) {
+                selects[i].disabled = true;
+            }
+        }
+
         function enterEdit() {
             var fields = document.querySelectorAll('#<%= upProfile.ClientID %> input.info-value');
             for (var i = 0; i < fields.length; i++) {
@@ -206,19 +223,21 @@
                 selects[i].disabled = false;
             }
             document.getElementById('editActions').classList.add('show');
+            document.getElementById('<%= hfEditing.ClientID %>').value = '1';
         }
 
         function exitEdit() {
-            var fields = document.querySelectorAll('#<%= upProfile.ClientID %> input.info-value');
-            for (var i = 0; i < fields.length; i++) {
-                fields[i].setAttribute('readonly', 'readonly');
-                fields[i].style.background = '';
-            }
-            var selects = document.querySelectorAll('#<%= upProfile.ClientID %> select.info-value');
-            for (var i = 0; i < selects.length; i++) {
-                selects[i].disabled = true;
-            }
+            setReadonlyState();
             document.getElementById('editActions').classList.remove('show');
+            document.getElementById('<%= hfEditing.ClientID %>').value = '0';
+        }
+
+        function restoreEdit() {
+            if (document.getElementById('<%= hfEditing.ClientID %>').value === '1') {
+                enterEdit();
+            } else {
+                setReadonlyState();
+            }
         }
 
         function showToast(msg, type) {
@@ -227,5 +246,10 @@
             el.className = 'toast-msg ' + type + ' show';
             setTimeout(function () { el.classList.remove('show'); }, 2500);
         }
+
+        setReadonlyState();
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+            restoreEdit();
+        });
     </script>
 </asp:Content>

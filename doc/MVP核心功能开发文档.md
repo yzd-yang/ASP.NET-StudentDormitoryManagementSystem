@@ -128,13 +128,14 @@ SmartDorm/
 ### 5.1 公共模块
 
 #### 登录页（login.aspx）✅
-- 学号/工号 + 密码 + 验证码
-- 数据库验证，区分学生/管理员角色
-- 登录成功后跳转对应首页
+- 学生/管理员标签切换，分开登录
+- 学生登录调用 `UserBLL.LoginStudent`，管理员调用 `UserBLL.LoginAdmin`
+- 学生无床位时跳转选宿批次页
+- 验证码校验
 
 #### 注册页（register.aspx）✅
-- 学生注册/老师注册标签切换
-- 学号、手机号、密码
+- 仅学生注册
+- 学号、手机号、密码（6位及以上）
 - 学号唯一性校验
 
 #### 重置密码（reset-password.aspx）✅
@@ -162,15 +163,17 @@ SmartDorm/
 
 #### 个人中心（student/profile.aspx）✅
 - 个人信息Hero卡片（头像、姓名、学号、宿舍、手机）— 动态数据
-- 个人信息卡片（邮箱、紧急联系人、学院下拉、专业下拉联动、年级）— 动态数据
+- 个人信息卡片（邮箱、紧急联系人、学院下拉、专业下拉联动、年级、班级选填）— 动态数据
 - 点击"编辑资料"进入编辑模式，保存/取消无刷新（UpdatePanel）
 - 入住状态栏（已分配/未分配）
 - 学院和专业使用 DropDownList，数据来自 Departments 表
+- 编辑状态通过 JS 控制，避免 ASP.NET ReadOnly 阻止回发数据
 
 #### 选宿批次（student/batch.aspx）✅
+- 无床位学生顶部导航显示"选宿"按钮
+- 点击"进入选宿"校验学院/专业/年级是否填写，未填写弹窗引导
 - 筛选栏（批次名称、楼栋、学院、专业、状态）
 - 批次列表表格（含状态标签和操作按钮）
-- 选宿小贴士
 
 #### 选/抢宿舍（student/grab-dorm.aspx）✅
 - 倒计时区域
@@ -257,7 +260,7 @@ public class UserBLL
     public static DataTable Login(string userNo, string password)
     public static bool RegisterStudent(string studentNo, string name, string phone, string password)
     public static DataTable GetStudentById(int studentId)
-    public static bool UpdateStudentInfo(int studentId, string email, string emergencyContact, string emergencyRelation, string emergencyPhone, string college, string major, string grade)
+    public static bool UpdateStudentInfo(int studentId, string email, string emergencyContact, string emergencyRelation, string emergencyPhone, string college, string major, string grade, string className)
     public static DataTable GetAdminById(int adminId)
 }
 ```

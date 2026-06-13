@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="login.aspx.cs" Inherits="login" ResponseEncoding="utf-8" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="login.aspx.cs" Inherits="login" ResponseEncoding="utf-8" %>
 
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -239,6 +239,9 @@
         .error-msg.show {
             display: block;
         }
+        .login-tabs { display:flex; border-bottom:2px solid rgba(0,0,0,0.05); margin-bottom:24px; }
+        .login-tab { flex:1; padding:12px; text-align:center; font-size:14px; font-weight:700; cursor:pointer; border:none; background:transparent; font-family:inherit; color:var(--on-surface-variant); border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.2s; }
+        .login-tab.active { color:var(--primary); border-bottom-color:var(--primary); }
     </style>
 </head>
 <body>
@@ -256,9 +259,15 @@
                 <div class="login-card-title">账号登录</div>
                 <div class="login-card-desc">欢迎回来，请输入您的信息以继续访问系统</div>
 
+                <div class="login-tabs">
+                    <button type="button" class="login-tab active" onclick="switchLoginTab('student')">学生登录</button>
+                    <button type="button" class="login-tab" onclick="switchLoginTab('admin')">管理员登录</button>
+                </div>
+                <asp:HiddenField ID="hfRole" runat="server" Value="student" />
+
                 <div style="display: flex; flex-direction: column; gap: 20px;">
                     <div>
-                        <label class="form-label">学号 / 工号</label>
+                        <label class="form-label" id="loginIdLabel">学号</label>
                         <div class="input-group">
                             <span class="material-symbols-outlined">person</span>
                             <asp:TextBox ID="txtUserNo" runat="server" />
@@ -317,6 +326,22 @@
         function refreshCode() {
             var img = document.getElementById('<%= imgCode.ClientID %>');
             img.src = '/checkcode.aspx?t=' + new Date().getTime();
+        }
+
+        function switchLoginTab(type) {
+            var tabs = document.querySelectorAll('.login-tab');
+            tabs.forEach(function(t) { t.classList.remove('active'); });
+            var label = document.getElementById('loginIdLabel');
+            var hf = document.getElementById('<%= hfRole.ClientID %>');
+            if (type === 'student') {
+                tabs[0].classList.add('active');
+                label.innerText = '学号';
+                hf.value = 'student';
+            } else {
+                tabs[1].classList.add('active');
+                label.innerText = '工号';
+                hf.value = 'admin';
+            }
         }
     </script>
 </body>

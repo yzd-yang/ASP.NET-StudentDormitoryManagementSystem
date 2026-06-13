@@ -19,7 +19,11 @@
             <div class="header-left">
                 <a href="/student/home.aspx" class="header-brand">SmartDorm</a>
                 <nav class="header-nav">
+                    <% if (HasBed()) { %>
                     <a href="/student/home.aspx" class="<%= IsActive("home") %>">我的宿舍</a>
+                    <% } else { %>
+                    <a href="/student/batch.aspx" class="<%= IsActive("batch") %>">选宿</a>
+                    <% } %>
                 </nav>
             </div>
             <div class="header-right">

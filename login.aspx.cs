@@ -9,15 +9,21 @@ public partial class login : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            txtUserNo.Attributes["placeholder"] = "\u8BF7\u8F93\u5165\u5B66\u53F7\u6216\u5DE5\u53F7";
-            txtPassword.Attributes["placeholder"] = "\u8BF7\u8F93\u5165\u60A8\u7684\u767B\u5F55\u5BC6\u7801";
-            txtVerifyCode.Attributes["placeholder"] = "\u9A8C\u8BC1\u7801";
+            txtUserNo.Attributes["placeholder"] = "请输入学号";
+            txtPassword.Attributes["placeholder"] = "请输入密码";
+            txtVerifyCode.Attributes["placeholder"] = "验证码";
 
             if (Session["UserId"] != null)
             {
                 string role = Session["Role"] != null ? Session["Role"].ToString() : "";
                 if (role == "student")
-                    Response.Redirect("/student/home.aspx");
+                {
+                    int uid = Convert.ToInt32(Session["UserId"]);
+                    if (DormBLL.HasBed(uid))
+                        Response.Redirect("/student/home.aspx");
+                    else
+                        Response.Redirect("/student/batch.aspx");
+                }
                 else
                     Response.Redirect("/admin/dashboard.aspx");
             }
@@ -29,44 +35,57 @@ public partial class login : System.Web.UI.Page
         string userNo = txtUserNo.Text.Trim();
         string password = txtPassword.Text.Trim();
         string verifyCode = txtVerifyCode.Text.Trim().ToUpper();
+        string loginRole = hfRole.Value;
 
         if (Session["CheckCode"] == null || verifyCode != Session["CheckCode"].ToString().ToUpper())
         {
-            ShowError("\u9A8C\u8BC1\u7801\u9519\u8BEF");
+            ShowError("验证码错误");
             return;
         }
 
         if (string.IsNullOrEmpty(userNo) || string.IsNullOrEmpty(password))
         {
-            ShowError("\u8BF7\u8F93\u5165\u5B66\u53F7/\u5DE5\u53F7\u548C\u5BC6\u7801");
+            ShowError("请输入账号和密码");
             return;
         }
 
-        DataTable dt = UserBLL.Login(userNo, password);
-        if (dt.Rows.Count == 0)
+        if (loginRole == "student")
         {
-            ShowError("\u5B66\u53F7/\u5DE5\u53F7\u6216\u5BC6\u7801\u9519\u8BEF");
-            return;
-        }
+            DataTable dt = UserBLL.LoginStudent(userNo, password);
+            if (dt.Rows.Count == 0)
+            {
+                ShowError("学号或密码错误");
+                return;
+            }
 
-        DataRow row = dt.Rows[0];
-        int userId = Convert.ToInt32(row["Id"]);
-        string name = row["Name"].ToString();
-        string role = row["Role"].ToString();
+            DataRow row = dt.Rows[0];
+            int userId = Convert.ToInt32(row["Id"]);
+            string name = row["Name"].ToString();
 
-        if (role == "student")
-        {
             Session["UserId"] = userId;
             Session["UserNo"] = userNo;
             Session["UserName"] = name;
             Session["Role"] = "student";
-            Response.Redirect("/student/home.aspx");
+
+            if (DormBLL.HasBed(userId))
+                Response.Redirect("/student/home.aspx");
+            else
+                Response.Redirect("/student/batch.aspx");
         }
         else
         {
-            DataTable adminInfo = UserBLL.GetAdminById(userId);
-            string roleName = adminInfo.Rows.Count > 0 ? adminInfo.Rows[0]["RoleName"].ToString() : "\u7BA1\u7406\u5458";
-            string adminRole = adminInfo.Rows.Count > 0 ? adminInfo.Rows[0]["Role"].ToString() : "2";
+            DataTable dt = UserBLL.LoginAdmin(userNo, password);
+            if (dt.Rows.Count == 0)
+            {
+                ShowError("工号或密码错误");
+                return;
+            }
+
+            DataRow row = dt.Rows[0];
+            int userId = Convert.ToInt32(row["Id"]);
+            string name = row["Name"].ToString();
+            string adminRole = row["Role"].ToString();
+            string roleName = adminRole == "1" ? "超级管理员" : adminRole == "2" ? "宿管" : "后勤";
 
             Session["AdminId"] = userId;
             Session["AdminNo"] = userNo;

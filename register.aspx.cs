@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Web;
 using System.Web.UI;
 
@@ -8,60 +8,52 @@ public partial class register : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            txtUserNo.Attributes["placeholder"] = "\u8BF7\u8F93\u5165\u5B66\u53F7";
-            txtPhone.Attributes["placeholder"] = "\u8BF7\u8F93\u516511\u4F4D\u624B\u673A\u53F7";
-            txtPassword.Attributes["placeholder"] = "8-20\u4F4D\u5B57\u6BCD\u6570\u5B57\u7EC4\u5408";
-            txtConfirmPassword.Attributes["placeholder"] = "\u8BF7\u518D\u6B21\u8F93\u5165\u5BC6\u7801";
+            txtUserNo.Attributes["placeholder"] = "请输入学号";
+            txtPhone.Attributes["placeholder"] = "请输入11位手机号";
+            txtPassword.Attributes["placeholder"] = "6位及以上字母数字组合";
+            txtConfirmPassword.Attributes["placeholder"] = "再次输入密码";
         }
     }
 
     protected void btnRegister_Click(object sender, EventArgs e)
     {
-        string userNo = txtUserNo.Text.Trim();
-        string phone = txtPhone.Text.Trim();
-        string password = txtPassword.Text.Trim();
-        string confirmPassword = txtConfirmPassword.Text.Trim();
-        string role = hfRole.Value;
+        string userNo = txtUserNo.Value.Trim();
+        string phone = txtPhone.Value.Trim();
+        string password = txtPassword.Value.Trim();
+        string confirmPassword = txtConfirmPassword.Value.Trim();
 
         if (string.IsNullOrEmpty(userNo) || string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(password))
         {
-            ShowError("\u8BF7\u586B\u5199\u5B8C\u6574\u4FE1\u606F");
+            ShowError("请填写完整信息");
             return;
         }
 
-        if (password.Length < 8 || password.Length > 20)
+        if (password.Length < 6)
         {
-            ShowError("\u5BC6\u7801\u957F\u5EA6\u5E94\u4E3A8-20\u4F4D");
+            ShowError("密码长度至少6位");
             return;
         }
 
         if (password != confirmPassword)
         {
-            ShowError("\u4E24\u6B21\u8F93\u5165\u7684\u5BC6\u7801\u4E0D\u4E00\u81F4");
+            ShowError("两次输入的密码不一致");
             return;
         }
 
         if (phone.Length != 11)
         {
-            ShowError("\u8BF7\u8F93\u5165\u6B63\u786E\u768411\u4F4D\u624B\u673A\u53F7");
+            ShowError("请输入正确的11位手机号");
             return;
         }
 
-        if (role == "student")
+        bool success = UserBLL.RegisterStudent(userNo, userNo, phone, password);
+        if (success)
         {
-            bool success = UserBLL.RegisterStudent(userNo, userNo, phone, password);
-            if (success)
-            {
-                Response.Redirect("login.aspx");
-            }
-            else
-            {
-                ShowError("\u5B66\u53F7\u5DF2\u5B58\u5728");
-            }
+            Response.Redirect("login.aspx");
         }
         else
         {
-            ShowError("\u8001\u5E08\u6CE8\u518C\u529F\u80FD\u6682\u672A\u5F00\u653E");
+            ShowError("学号已存在");
         }
     }
 
