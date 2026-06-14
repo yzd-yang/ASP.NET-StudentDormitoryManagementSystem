@@ -148,14 +148,17 @@
             align-items: center;
             justify-content: center;
             background: rgba(255, 255, 255, 0.5);
-            padding: 0 16px;
+            padding: 0 12px;
             font-size: 20px;
             font-weight: 700;
             letter-spacing: 0.1em;
             color: var(--on-surface);
             user-select: none;
             transition: all 0.2s;
+            overflow: hidden;
+            flex-shrink: 0;
         }
+        .vcode-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .vcode-img:hover {
             background: rgba(255, 255, 255, 0.8);
         }
