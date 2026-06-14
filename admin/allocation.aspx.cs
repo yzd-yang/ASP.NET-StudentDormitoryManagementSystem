@@ -26,10 +26,15 @@ public partial class admin_allocation : System.Web.UI.Page
         {
             LoadBuildings();
             LoadFloors();
-            LoadRooms();
             LoadFilterColleges();
             LoadFilterGrades();
         }
+        else if (!string.IsNullOrEmpty(Request.Form["PageBtn"]))
+        {
+            CurrentPage = Convert.ToInt32(Request.Form["PageBtn"]);
+        }
+
+        LoadRooms();
     }
 
     private void LoadBuildings()
@@ -368,13 +373,6 @@ public partial class admin_allocation : System.Web.UI.Page
 
     protected override void RaisePostBackEvent(IPostBackEventHandler sourceControl, string eventArgument)
     {
-        if (!string.IsNullOrEmpty(Request.Form["PageBtn"]))
-        {
-            CurrentPage = Convert.ToInt32(Request.Form["PageBtn"]);
-            LoadRooms();
-            return;
-        }
-
         base.RaisePostBackEvent(sourceControl, eventArgument);
     }
 }
