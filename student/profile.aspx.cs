@@ -136,7 +136,7 @@ public partial class student_profile : System.Web.UI.Page
     {
         ddlGrade.Items.Clear();
         ddlGrade.Items.Add(new ListItem("-- 请选择年级 --", ""));
-        DataTable dt = DormBLL.GetGrades();
+        DataTable dt = DormBLL.GetGradeYearRange();
         if (dt != null)
         {
             foreach (DataRow row in dt.Rows)

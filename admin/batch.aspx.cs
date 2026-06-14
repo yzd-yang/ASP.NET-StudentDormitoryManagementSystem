@@ -3,6 +3,7 @@ using System.Data;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using MySql.Data.MySqlClient;
 
 public partial class admin_batch : System.Web.UI.Page
 {
@@ -16,6 +17,7 @@ public partial class admin_batch : System.Web.UI.Page
 
         if (!IsPostBack)
         {
+            LoadGradeDropdowns();
             LoadStats();
             LoadBatches();
         }
@@ -29,6 +31,17 @@ public partial class admin_batch : System.Web.UI.Page
             string msg = Session["ToastMsg"].ToString();
             Session.Remove("ToastMsg");
             Page.ClientScript.RegisterStartupScript(this.GetType(), "toast", "showToast('" + msg + "','success');", true);
+        }
+    }
+
+    private void LoadGradeDropdowns()
+    {
+        DataTable dt = DormBLL.GetGradeYearRange();
+        foreach (DataRow row in dt.Rows)
+        {
+            string grade = row["Grade"].ToString();
+            ddlFilterGrade.Items.Add(new ListItem(grade, grade));
+            ddlGradeLimit.Items.Add(new ListItem(grade, grade));
         }
     }
 
@@ -105,6 +118,7 @@ public partial class admin_batch : System.Web.UI.Page
         if (e.CommandName == "EditBatch")
         {
             hfBatchId.Value = id.ToString();
+            LoadBatchData();
             DataTable dt = BatchBLL.GetBatchList("", -1);
             foreach (DataRow row in dt.Rows)
             {
@@ -115,8 +129,50 @@ public partial class admin_batch : System.Web.UI.Page
                     txtEndTime.Text = Convert.ToDateTime(row["EndTime"]).ToString("yyyy-MM-ddTHH:mm");
 
                     string gradeLimit = row["GradeLimit"] != DBNull.Value ? row["GradeLimit"].ToString() : "";
-
                     SetDropDownValue(ddlGradeLimit, gradeLimit);
+
+                    // 回显学院限定
+                    DataTable collegeLimits = BatchBLL.GetBatchCollegeLimits(id);
+                    if (collegeLimits.Rows.Count > 0)
+                    {
+                        string collegeName = collegeLimits.Rows[0]["CollegeName"].ToString();
+                        SetDropDownValue(ddlCollegeLimit, collegeName);
+
+                        // 加载专业列表后回显专业限定
+                        ddlMajorLimit.Items.Clear();
+                        ddlMajorLimit.Items.Add(new ListItem("不限", ""));
+                        DataTable majors = DormBLL.GetMajorsByCollege(collegeName);
+                        foreach (DataRow mRow in majors.Rows)
+                        {
+                            ddlMajorLimit.Items.Add(new ListItem(mRow["MajorName"].ToString(), mRow["MajorName"].ToString()));
+                        }
+
+                        DataTable majorLimits = BatchBLL.GetBatchMajorLimits(id);
+                        if (majorLimits.Rows.Count > 0)
+                        {
+                            SetDropDownValue(ddlMajorLimit, majorLimits.Rows[0]["MajorName"].ToString());
+                        }
+                    }
+
+                    // 回显已选宿舍
+                    DataTable batchRooms = BatchBLL.GetBatchRooms(id);
+                    string roomIds = "";
+                    string roomJson = "[";
+                    for (int i = 0; i < batchRooms.Rows.Count; i++)
+                    {
+                        if (i > 0) { roomIds += ","; roomJson += ","; }
+                        string roomId = batchRooms.Rows[i]["Id"].ToString();
+                        string roomNo = batchRooms.Rows[i]["RoomNo"].ToString();
+                        string buildingName = batchRooms.Rows[i]["BuildingName"].ToString();
+                        roomIds += roomId;
+                        roomJson += "{\"id\":" + roomId + ",\"roomNo\":\"" + buildingName + " " + roomNo + "\"}";
+                    }
+                    roomJson += "]";
+                    hfSelectedRoomIds.Value = roomIds;
+
+                    Page.ClientScript.RegisterStartupScript(this.GetType(), "editRooms",
+                        "selectedRooms=" + roomJson + ";renderSelectedRooms();", true);
+
                     break;
                 }
             }
@@ -148,6 +204,7 @@ public partial class admin_batch : System.Web.UI.Page
     private void LoadBatchData()
     {
         // 查询不可选房间：待开始/进行中批次的房间 + 已结束/已暂停批次中已满的房间
+        // 排除当前编辑批次的房间（允许直接修改）
         string reservedSql = @"
             SELECT DISTINCT br.RoomId FROM BatchRooms br
             JOIN SelectionBatches sb ON br.BatchId = sb.Id
@@ -158,7 +215,23 @@ public partial class admin_batch : System.Web.UI.Page
             JOIN Rooms r ON br.RoomId = r.Id
             WHERE sb.Status IN (2, 3)
               AND (SELECT COUNT(*) FROM Beds WHERE RoomId = r.Id AND Status = 0) = 0";
-        DataTable reservedDt = DBHelper.GetDataTable(reservedSql);
+
+        int excludeBatchId = 0;
+        if (!string.IsNullOrEmpty(hfBatchId.Value))
+        {
+            int.TryParse(hfBatchId.Value, out excludeBatchId);
+        }
+
+        DataTable reservedDt;
+        if (excludeBatchId > 0)
+        {
+            reservedSql = "SELECT RoomId FROM (" + reservedSql + ") AS reserved WHERE RoomId NOT IN (SELECT RoomId FROM BatchRooms WHERE BatchId=@ExcludeBatchId)";
+            reservedDt = DBHelper.GetDataTable(reservedSql, new MySqlParameter("@ExcludeBatchId", excludeBatchId));
+        }
+        else
+        {
+            reservedDt = DBHelper.GetDataTable(reservedSql);
+        }
         var reservedIds = new System.Collections.Generic.HashSet<int>();
         foreach (DataRow row in reservedDt.Rows)
             reservedIds.Add(Convert.ToInt32(row["RoomId"]));
@@ -342,7 +415,7 @@ public partial class admin_batch : System.Web.UI.Page
         if (!string.IsNullOrEmpty(hfBatchId.Value))
         {
             int id = Convert.ToInt32(hfBatchId.Value);
-            if (BatchBLL.UpdateBatch(id, batchName, startTime, endTime, gradeLimit, collegeLimits, majorLimits, batchStatus))
+            if (BatchBLL.UpdateBatch(id, batchName, startTime, endTime, gradeLimit, collegeLimits, majorLimits, batchStatus, roomIds))
             {
                 Session["ToastMsg"] = "修改成功";
                 Response.Redirect(Request.RawUrl);

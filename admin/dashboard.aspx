@@ -9,7 +9,6 @@
         .dash-welcome p { font-size:15px; color:var(--on-surface-variant); margin-top:4px; }
         .dash-actions { display:flex; gap:8px; }
         .dash-date-btn { display:flex; align-items:center; gap:8px; padding:10px 18px; background:rgba(255,255,255,0.6); border:1px solid rgba(0,0,0,0.06); border-radius:12px; font-size:14px; font-weight:600; color:var(--on-surface); cursor:pointer; font-family:inherit; }
-        .dash-export-btn { display:flex; align-items:center; gap:8px; padding:10px 18px; background:var(--primary); color:var(--on-primary); border:none; border-radius:12px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
 
         .stat-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
         .stat-card {
@@ -88,7 +87,7 @@
                 <span class="material-symbols-outlined" style="font-size:18px; color:var(--primary);">calendar_today</span>
                 <asp:Literal ID="litCurrentDate" runat="server" />
             </div>
-            <button class="dash-export-btn" type="button"><span class="material-symbols-outlined" style="font-size:18px;">download</span> 导出报表</button>
+
         </div>
     </div>
 

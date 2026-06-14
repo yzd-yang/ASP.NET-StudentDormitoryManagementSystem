@@ -120,7 +120,7 @@ public class BatchBLL
         return false;
     }
 
-    public static bool UpdateBatch(int id, string batchName, DateTime startTime, DateTime endTime, string gradeLimit, string[] collegeLimits, string[] majorLimits, int status)
+    public static bool UpdateBatch(int id, string batchName, DateTime startTime, DateTime endTime, string gradeLimit, string[] collegeLimits, string[] majorLimits, int status, int[] roomIds = null)
     {
         string sql = @"UPDATE SelectionBatches SET BatchName=@BatchName, StartTime=@StartTime, EndTime=@EndTime, 
                        GradeLimit=@GradeLimit, Status=@Status
@@ -136,43 +136,54 @@ public class BatchBLL
             new MySqlParameter("@Id", id)
         };
 
-        if (DBHelper.ExecuteNonQuery(sql, parameters) > 0)
+        DBHelper.ExecuteNonQuery(sql, parameters);
+
+        // 更新学院限制
+        DBHelper.ExecuteNonQuery("DELETE FROM BatchCollegeLimit WHERE BatchId=@BatchId", new MySqlParameter[] { new MySqlParameter("@BatchId", id) });
+        if (collegeLimits != null)
         {
-            // 更新学院限制
-            DBHelper.ExecuteNonQuery("DELETE FROM BatchCollegeLimit WHERE BatchId=@BatchId", new MySqlParameter[] { new MySqlParameter("@BatchId", id) });
-            if (collegeLimits != null)
+            foreach (string college in collegeLimits)
             {
-                foreach (string college in collegeLimits)
+                if (!string.IsNullOrEmpty(college))
                 {
-                    if (!string.IsNullOrEmpty(college))
-                    {
-                        DBHelper.ExecuteNonQuery("INSERT INTO BatchCollegeLimit (BatchId, CollegeName) VALUES (@BatchId, @CollegeName)", new MySqlParameter[] {
-                            new MySqlParameter("@BatchId", id),
-                            new MySqlParameter("@CollegeName", college)
-                        });
-                    }
+                    DBHelper.ExecuteNonQuery("INSERT INTO BatchCollegeLimit (BatchId, CollegeName) VALUES (@BatchId, @CollegeName)", new MySqlParameter[] {
+                        new MySqlParameter("@BatchId", id),
+                        new MySqlParameter("@CollegeName", college)
+                    });
                 }
             }
-
-            // 更新专业限制
-            DBHelper.ExecuteNonQuery("DELETE FROM BatchMajorLimit WHERE BatchId=@BatchId", new MySqlParameter[] { new MySqlParameter("@BatchId", id) });
-            if (majorLimits != null)
-            {
-                foreach (string major in majorLimits)
-                {
-                    if (!string.IsNullOrEmpty(major))
-                    {
-                        DBHelper.ExecuteNonQuery("INSERT INTO BatchMajorLimit (BatchId, MajorName) VALUES (@BatchId, @MajorName)", new MySqlParameter[] {
-                            new MySqlParameter("@BatchId", id),
-                            new MySqlParameter("@MajorName", major)
-                        });
-                    }
-                }
-            }
-
-            return true;
         }
-        return false;
+
+        // 更新专业限制
+        DBHelper.ExecuteNonQuery("DELETE FROM BatchMajorLimit WHERE BatchId=@BatchId", new MySqlParameter[] { new MySqlParameter("@BatchId", id) });
+        if (majorLimits != null)
+        {
+            foreach (string major in majorLimits)
+            {
+                if (!string.IsNullOrEmpty(major))
+                {
+                    DBHelper.ExecuteNonQuery("INSERT INTO BatchMajorLimit (BatchId, MajorName) VALUES (@BatchId, @MajorName)", new MySqlParameter[] {
+                        new MySqlParameter("@BatchId", id),
+                        new MySqlParameter("@MajorName", major)
+                    });
+                }
+            }
+        }
+
+        // 更新房间关联
+        DBHelper.ExecuteNonQuery("DELETE FROM BatchRooms WHERE BatchId=@BatchId", new MySqlParameter[] { new MySqlParameter("@BatchId", id) });
+        if (roomIds != null)
+        {
+            foreach (int roomId in roomIds)
+            {
+                DBHelper.ExecuteNonQuery("INSERT INTO BatchRooms (BatchId, RoomId) VALUES (@BatchId, @RoomId)", new MySqlParameter[] {
+                    new MySqlParameter("@BatchId", id),
+                    new MySqlParameter("@RoomId", roomId)
+                });
+            }
+        }
+
+        return true;
     }
 
     public static bool DeleteBatch(int id)
@@ -194,6 +205,18 @@ public class BatchBLL
                        JOIN Buildings b ON r.BuildingId = b.Id
                        WHERE br.BatchId=@BatchId
                        ORDER BY b.Name, r.RoomNo";
+        return DBHelper.GetDataTable(sql, new MySqlParameter[] { new MySqlParameter("@BatchId", batchId) });
+    }
+
+    public static DataTable GetBatchCollegeLimits(int batchId)
+    {
+        string sql = "SELECT CollegeName FROM BatchCollegeLimit WHERE BatchId=@BatchId";
+        return DBHelper.GetDataTable(sql, new MySqlParameter[] { new MySqlParameter("@BatchId", batchId) });
+    }
+
+    public static DataTable GetBatchMajorLimits(int batchId)
+    {
+        string sql = "SELECT MajorName FROM BatchMajorLimit WHERE BatchId=@BatchId";
         return DBHelper.GetDataTable(sql, new MySqlParameter[] { new MySqlParameter("@BatchId", batchId) });
     }
 

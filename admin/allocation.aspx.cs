@@ -82,7 +82,7 @@ public partial class admin_allocation : System.Web.UI.Page
     {
         ddlGrade.Items.Clear();
         ddlGrade.Items.Add(new ListItem("全部年级", ""));
-        DataTable dt = DormBLL.GetGrades();
+        DataTable dt = DormBLL.GetGradeYearRange();
         foreach (DataRow row in dt.Rows)
         {
             ddlGrade.Items.Add(new ListItem(row["Grade"].ToString(), row["Grade"].ToString()));

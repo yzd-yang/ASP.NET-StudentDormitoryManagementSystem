@@ -189,10 +189,16 @@ public class DormBLL
         return result != null ? Convert.ToInt32(result) : 0;
     }
 
-    public static DataTable GetGrades()
+    public static DataTable GetGradeYearRange()
     {
-        string sql = "SELECT DISTINCT Grade FROM Students WHERE Grade IS NOT NULL ORDER BY Grade DESC";
-        return DBHelper.GetDataTable(sql);
+        DataTable dt = new DataTable();
+        dt.Columns.Add("Grade", typeof(string));
+        int currentYear = DateTime.Now.Year;
+        for (int y = currentYear + 5; y >= currentYear - 5; y--)
+        {
+            dt.Rows.Add(y + "级");
+        }
+        return dt;
     }
 
     public static DataTable GetClasses(string college, string major, string grade)

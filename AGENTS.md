@@ -113,6 +113,10 @@ BLL 层查询这些表时普遍使用三表 JOIN：`Students s JOIN Departments 
 - 学生端移动端优先（<768px），管理端桌面优先（≥1024px）
 - 毛玻璃卡片效果：半透明白色 + `backdrop-filter: blur`
 
+## 年级下拉框数据源
+
+所有年级下拉框统一使用 `DormBLL.GetGradeYearRange()`，基于当前年份前后5年动态生成（如2026年→"2021级"~"2031级"）。不再使用数据库查询或硬编码。
+
 ## 选宿批次页面交互模式（`admin/batch.aspx`）
 
 弹窗内联动下拉框采用 **RegisterStartupScript 预加载 + JS 按需读取** 方案：
@@ -132,6 +136,8 @@ Page_Load → 查 DB → 构建 JSON → RegisterStartupScript 注入 JS 变量
 - 每次回发 `RegisterStartupScript` 都会重新注入，确保数据始终可用
 - 选中房间用 `hfSelectedRoomIds` HiddenField 传递给服务端保存
 - 房间数据含 `R` 字段：`1`=不可选（已被其他批次占用或已满），`0`=可选
+- 编辑批次时 `LoadBatchData()` 需在设置 `hfBatchId.Value` 之后调用，排除当前批次房间使其可编辑（`R=0`）
+- `UpdateBatch` 方法的 `roomIds` 参数为可选（`int[] roomIds = null`），编辑时必须传入
 
 ## 常见陷阱
 

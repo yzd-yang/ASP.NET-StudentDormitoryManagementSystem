@@ -137,9 +137,6 @@
             <label>适用年级</label>
             <asp:DropDownList ID="ddlFilterGrade" runat="server">
                 <asp:ListItem Value="" Text="全部年级" />
-                <asp:ListItem Value="2023级" Text="2023级" />
-                <asp:ListItem Value="2024级" Text="2024级" />
-                <asp:ListItem Value="2025级" Text="2025级" />
             </asp:DropDownList>
         </div>
         <div class="batch-filter-field">
@@ -224,9 +221,6 @@
                         <label>年级限定</label>
                         <asp:DropDownList ID="ddlGradeLimit" runat="server" CssClass="form-select">
                             <asp:ListItem Value="" Text="不限" />
-                            <asp:ListItem Value="2023级" Text="2023级" />
-                            <asp:ListItem Value="2024级" Text="2024级" />
-                            <asp:ListItem Value="2025级" Text="2025级" />
                         </asp:DropDownList>
                     </div>
                     <div class="form-group">
@@ -294,9 +288,6 @@
             var floorSelect = document.getElementById('<%= ddlModalFloor.ClientID %>');
             floorSelect.innerHTML = '<option value="0">全部楼层</option>';
             document.getElementById('roomGrid').innerHTML = '';
-            selectedRooms = [];
-            updateSelectedTags();
-            document.getElementById('<%= hfSelectedRoomIds.ClientID %>').value = '';
             if (buildingId > 0 && _bd[buildingId]) {
                 _bd[buildingId].floors.forEach(function(f) {
                     var opt = document.createElement('option');
@@ -365,14 +356,28 @@
         }
 
         function updateSelectedTags() {
+            renderSelectedRooms();
+        }
+
+        function renderSelectedRooms() {
             var container = document.getElementById('selectedRoomTags');
+            if (!container) return;
             container.innerHTML = '';
             selectedRooms.forEach(function(r) {
                 var tag = document.createElement('span');
-                tag.style.cssText = 'background:rgba(73,234,206,0.15); color:var(--primary); padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;';
-                tag.textContent = r.roomNo;
+                tag.style.cssText = 'background:rgba(73,234,206,0.15); color:var(--primary); padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; margin-right:6px; cursor:pointer;';
+                tag.textContent = r.roomNo + ' ×';
+                tag.title = '点击取消选择';
+                tag.onclick = function() {
+                    var idx = selectedRooms.findIndex(function(s) { return s.id == r.id; });
+                    if (idx >= 0) selectedRooms.splice(idx, 1);
+                    renderSelectedRooms();
+                    updateRoomGrid();
+                };
                 container.appendChild(tag);
             });
+            var hf = document.getElementById('<%= hfSelectedRoomIds.ClientID %>');
+            if (hf) hf.value = selectedRooms.map(function(r) { return r.id; }).join(',');
         }
 
         function showToast(msg, type) {
