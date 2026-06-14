@@ -31,9 +31,13 @@ public partial class admin_notice : System.Web.UI.Page
         if (!IsPostBack)
         {
             LoadScopeOptions();
-            LoadNotices();
+        }
+        else if (!string.IsNullOrEmpty(Request.Form["NoticePageBtn"]))
+        {
+            CurrentPage = Convert.ToInt32(Request.Form["NoticePageBtn"]);
         }
 
+        LoadNotices();
         UpdateFormButton();
     }
 
@@ -297,17 +301,5 @@ public partial class admin_notice : System.Web.UI.Page
             case 2: return "已撤回";
             default: return "";
         }
-    }
-
-    protected override void RaisePostBackEvent(IPostBackEventHandler sourceControl, string eventArgument)
-    {
-        if (!string.IsNullOrEmpty(Request.Form["NoticePageBtn"]))
-        {
-            CurrentPage = Convert.ToInt32(Request.Form["NoticePageBtn"]);
-            LoadNotices();
-            return;
-        }
-
-        base.RaisePostBackEvent(sourceControl, eventArgument);
     }
 }

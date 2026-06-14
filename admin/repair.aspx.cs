@@ -26,9 +26,14 @@ public partial class admin_repair : System.Web.UI.Page
         {
             LoadBuildings();
             LoadStats();
-            LoadRepairs();
             LoadAssignAdmins();
         }
+        else if (!string.IsNullOrEmpty(Request.Form["PageBtn"]))
+        {
+            CurrentPage = Convert.ToInt32(Request.Form["PageBtn"]);
+        }
+
+        LoadRepairs();
 
         // 处理点击行查看详情
         string eventTarget = Request.Form["__EVENTTARGET"];
@@ -282,17 +287,5 @@ public partial class admin_repair : System.Web.UI.Page
             case 3: return "router";
             default: return "build";
         }
-    }
-
-    protected override void RaisePostBackEvent(IPostBackEventHandler sourceControl, string eventArgument)
-    {
-        if (!string.IsNullOrEmpty(Request.Form["PageBtn"]))
-        {
-            CurrentPage = Convert.ToInt32(Request.Form["PageBtn"]);
-            LoadRepairs();
-            return;
-        }
-
-        base.RaisePostBackEvent(sourceControl, eventArgument);
     }
 }
