@@ -117,11 +117,6 @@
 
             <div class="reg-footer">
                 <p>&copy; 2024 智慧宿舍管理系统 版权所有</p>
-                <div class="reg-badges">
-                    <span class="reg-badge"><span class="material-symbols-outlined">verified_user</span> 安全门户</span>
-                    <span class="reg-badge"><span class="material-symbols-outlined">monitoring</span> 实时系统</span>
-                    <span class="reg-badge"><span class="material-symbols-outlined">support_agent</span> 24/7 支持</span>
-                </div>
             </div>
         </div>
     </form>

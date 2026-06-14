@@ -147,3 +147,4 @@ Page_Load → 查 DB → 构建 JSON → RegisterStartupScript 注入 JS 变量
 4. **图片上传路径**：头像 `Uploads/avatars/`，报修照片 `Uploads/repair/`，限制 jpg/png、5MB
 5. **弹窗内联动下拉框**：不要用 AutoPostBack 或 HiddenField，用 RegisterStartupScript 预加载 + JS 按需读取（详见"选宿批次页面交互模式"）
 6. **分页按钮不跳转**：页码按钮通过 `Literal` 渲染为普通 HTML `<button>`，不实现 `IPostBackEventHandler`，`RaisePostBackEvent` 不会触发。必须在 `Page_Load` 中用 `Request.Form["PageBtn"]` 读取页码，且数据加载方法需放在 `if (!IsPostBack)` 外面每次执行
+7. **Toast 提示不显示**：`RegisterStartupScript` 注入的脚本在 `</form>` 前执行，如果 `showToast()` 函数定义在 `</form>` 之后则调用不到。解决方案：用内联 JS 直接操作 DOM，或将函数定义放在表单内

@@ -115,4 +115,26 @@ public class UserBLL
         MySqlParameter[] parameters = new MySqlParameter[] { new MySqlParameter("@Id", adminId) };
         return DBHelper.GetDataTable(sql, parameters);
     }
+
+    public static DataTable VerifyStudent(string studentNo, string phone)
+    {
+        string sql = "SELECT Id, StudentNo, Name FROM Students WHERE StudentNo=@StudentNo AND Phone=@Phone AND Status=1";
+        MySqlParameter[] parameters = new MySqlParameter[]
+        {
+            new MySqlParameter("@StudentNo", studentNo),
+            new MySqlParameter("@Phone", phone)
+        };
+        return DBHelper.GetDataTable(sql, parameters);
+    }
+
+    public static bool ResetStudentPassword(int studentId, string newPassword)
+    {
+        string sql = "UPDATE Students SET Password=@Password WHERE Id=@Id";
+        MySqlParameter[] parameters = new MySqlParameter[]
+        {
+            new MySqlParameter("@Password", GetMD5(newPassword)),
+            new MySqlParameter("@Id", studentId)
+        };
+        return DBHelper.ExecuteNonQuery(sql, parameters) > 0;
+    }
 }

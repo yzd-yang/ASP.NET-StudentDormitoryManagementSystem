@@ -314,10 +314,6 @@
 
             <div class="login-footer">
                 <p>&copy; 2024 智慧宿舍管理系统 版权所有</p>
-                <div class="login-footer-badges">
-                    <span>安全等级：加固</span>
-                    <span>云端同步</span>
-                </div>
             </div>
         </div>
     </form>
