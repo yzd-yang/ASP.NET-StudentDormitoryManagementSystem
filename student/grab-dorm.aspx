@@ -122,13 +122,24 @@
         var selectedBedId = 0;
 
         function selectBed(btn, bedId) {
-            var card = btn.closest('.room-card');
-            var beds = card.querySelectorAll('.bed-btn:not(.occupied)');
-            beds.forEach(function(b) { b.classList.remove('selected'); });
+            // 清除所有房间的床位选中状态
+            document.querySelectorAll('.bed-btn.selected').forEach(function(b) {
+                b.classList.remove('selected');
+            });
+            // 重置所有房间的"选定此床位"按钮
+            document.querySelectorAll('.grab-btn.active').forEach(function(b) {
+                b.disabled = true;
+                b.classList.remove('active');
+                b.classList.add('disabled');
+            });
+
+            // 设置当前选中
             btn.classList.add('selected');
             selectedBedId = bedId;
             document.getElementById('<%= hfSelectedBedId.ClientID %>').value = bedId;
 
+            // 激活当前房间的"选定此床位"按钮
+            var card = btn.closest('.room-card');
             var grabBtn = card.querySelector('.grab-btn');
             if (grabBtn && !grabBtn.classList.contains('full-btn')) {
                 grabBtn.disabled = false;
