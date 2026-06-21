@@ -54,3 +54,7 @@ Uploads/*/*
 
 # 本地配置（可选）
 # web.config.local
+
+# OpenCode 和 OpenSpec 工具配置
+.opencode/
+openspec/
