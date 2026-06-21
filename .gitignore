@@ -24,3 +24,33 @@ Desktop.ini
 # 上传的报修图片
 Uploads/repair/images/*
 !Uploads/repair/images/.gitkeep
+
+# 用户上传的头像
+Uploads/avatars/*
+!Uploads/avatars/.gitkeep
+
+# 忽略整个 Uploads 目录下的文件，但保留目录结构
+# 忽略 Uploads 目录下的所有文件
+Uploads/*
+# 但保留子目录
+!Uploads/*/
+# 忽略子目录下的所有文件
+Uploads/*/*
+# 但保留 .gitkeep 文件
+!Uploads/**/.gitkeep
+
+# 日志文件
+*.log
+
+# 临时文件
+*.tmp
+*~
+
+# 备份文件
+*.bak
+
+# 缓存文件
+*.cache
+
+# 本地配置（可选）
+# web.config.local
